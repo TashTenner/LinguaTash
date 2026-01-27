@@ -1,9 +1,19 @@
 const headerNavLinks = [
   { href: '/', title: 'Home' },
-  { href: '/blog', title: 'Blog' },
-  { href: '/tags', title: 'Tags' },
-  { href: '/projects', title: 'Projects' },
+  { href: '/fonetikas', title: 'Fonetikas' },
+  { href: '/sprachwege', title: 'Sprachwege' },
+  { href: '/salten', title: 'Salten' },
   { href: '/about', title: 'About' },
+  { href: '/now', title: 'Now' },
+  { href: '/blog', title: 'Blog' },
 ]
+
+// const headerNavLinks = [
+//   { href: '/', title: 'Home' },
+//   { href: '/blog', title: 'Blog' },
+//   { href: '/tags', title: 'Tags' },
+//   { href: '/projects', title: 'Projects' },
+//   { href: '/about', title: 'About' },
+// ]
 
 export default headerNavLinks
