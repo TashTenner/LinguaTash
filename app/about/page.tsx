@@ -1,20 +1,257 @@
 import { Authors, allAuthors } from 'contentlayer/generated'
-import { MDXLayoutRenderer } from 'pliny/mdx-components'
 import AuthorLayout from '@/layouts/AuthorLayout'
 import { coreContent } from 'pliny/utils/contentlayer'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: 'About' })
+export const metadata = genPageMetadata({ title: 'About LinguaTash' })
 
 export default function Page() {
   const author = allAuthors.find((p) => p.slug === 'default') as Authors
   const mainContent = coreContent(author)
 
   return (
-    <>
-      <AuthorLayout content={mainContent}>
-        <MDXLayoutRenderer code={author.body.code} />
-      </AuthorLayout>
-    </>
+    <AuthorLayout content={mainContent}>
+      <div className="prose prose-neutral dark:prose-invert max-w-none">
+        {/* INTRO */}
+        <h1>Hola y bienvenida, bienvenido</h1>
+        <p>Qué alegría que hayas llegado hasta aquí.</p>
+        <p>
+          Mi nombre es Tash. Estudié Lingüística y Ciencias de la Educación en Jena, Alemania, y
+          trabajo desde hace años como especialista en adquisición de lenguas, tanto en la infancia
+          como en la edad adulta.
+        </p>
+
+        {/* IMAGE 1 */}
+        <div className="my-12">
+          {/* <img src="/images/about-portrait.jpg" alt="Retrato de Tash, fundadora de LinguaTash" /> */}
+        </div>
+
+        <h2>foto1</h2>
+
+        <p>
+          Mi trabajo se apoya en la investigación sobre adquisición del lenguaje, la teoría del
+          apego y las ciencias del aprendizaje. A esto se suma una amplia experiencia práctica en la
+          enseñanza de lenguas en distintos contextos y países —desde Nueva Zelanda hasta París y
+          Barcelona—, así como mi propia experiencia como madre en una familia multilingüe.
+        </p>
+
+        {/* QUOTE 1 */}
+        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+          No solo hablo de adquisición natural del lenguaje: la vivo.
+        </blockquote>
+
+        <p>
+          No solo hablo de adquisición natural del lenguaje: la vivo. Mis dos hijos crecen desde el
+          nacimiento con alemán, ruso y español, y aprenden catalán e inglés en la escuela. El
+          italiano también forma parte de su entorno cotidiano, gracias a una persona cercana que
+          los cuida cuando ni mi pareja ni yo podemos hacerlo.
+        </p>
+
+        {/* QUESTIONS */}
+        <h2>¿Te reconoces en alguna de estas situaciones?</h2>
+        <ul className="ml-6 list-disc">
+          <li>
+            ¿Te gustaría aprender alemán desde cero y sonar lo más natural posible en tu
+            pronunciación?
+          </li>
+          <li>
+            ¿Deseas, por fin, que las personas germanohablantes te entiendan sin que tu origen se
+            note de inmediato en cada palabra?
+          </li>
+          <li>
+            ¿Eres germanohablante, vives en Barcelona y deseas acompañar el desarrollo del alemán de
+            tus hijos bilingües?
+          </li>
+          <li>
+            ¿Te interesan materiales descargables o juegos multilingües basados en la fonética?
+          </li>
+        </ul>
+
+        {/* MY CONVICTION */}
+        <h2>Mi convicción</h2>
+        <p>
+          La enseñanza de lenguas, tanto en la escuela como en la mayoría de los cursos para
+          adultos, parte casi siempre del mismo punto: la palabra escrita. Se aprende a leer, a
+          memorizar estructuras y a producir frases incluso antes de haber desarrollado una base
+          oral sólida.
+        </p>
+        <p>Mi convicción es otra.</p>
+        <p>
+          Cuando una docente conoce en profundidad la lengua materna de la persona que aprende,
+          puede adaptar el proceso de adquisición a lo que esa persona ya trae consigo: sonidos,
+          ritmos, estructuras, intuiciones lingüísticas. Desde ahí, es posible guiar con precisión
+          aquello que aún no está presente y necesita ser adquirido.
+        </p>
+        <p>
+          Este proceso puede —y debe— darse sin recurrir a la lengua escrita en una primera fase. La
+          lectura y la escritura no desaparecen; simplemente llegan más tarde, cuando el idioma ya
+          se ha construido en el oído y en la voz, y cuando la persona empieza a sentirlo como algo
+          propio.
+        </p>
+        <p>
+          El trabajo fonético ocupa aquí un lugar central. La pronunciación no es un detalle
+          técnico, sino la base sobre la que se organiza todo lo demás.
+        </p>
+        <p>
+          He comprobado que este enfoque no solo transforma la relación de una persona con el
+          alemán, sino que también genera una conciencia lingüística más amplia: muchas personas
+          empiezan a percibir con mayor claridad cómo funcionan otras lenguas que ya conocen, y cómo
+          podrían adquirir una nueva de forma más consciente y respetuosa.
+        </p>
+
+        {/* LinguaTash */}
+        <h2>LinguaTash nace de esta convicción</h2>
+        <p>
+          La lengua, en su forma más natural, es oral. La lengua escrita llegó mucho después como un
+          intento de “capturar” la oralidad en algo visual. Cada idioma encontró su propia manera de
+          hacerlo, y por eso el aprendizaje no debería basarse primero en lo escrito.
+        </p>
+
+        {/* QUOTE 2 */}
+        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+          Cada idioma encontró su propia manera de hacerlo, y por eso el aprendizaje no debería
+          basarse primero en lo escrito.
+        </blockquote>
+
+        <p>
+          Vivo esta convicción en todo lo que hago: en la creación de mi método Fonetikas, en las
+          clases de alemán para niños bilingües en Barcelona y en mis propuestas de cuentos
+          bilingües y juegos fonéticos, que permiten adquirir vocabulario y estructuras directamente
+          desde el oído y la voz.
+        </p>
+
+        {/* IMAGE 2 */}
+        <div className="my-12">
+          {/* <img src="/images/about-portrait.jpg" alt="Retrato de Tash, fundadora de LinguaTash" /> */}
+        </div>
+
+        <h2>foto2</h2>
+
+        {/* FUNCIONA */}
+        <h2>Funciona</h2>
+        <p>
+          A pesar de los muchos obstáculos personales y vitales que he atravesado en los últimos
+          años, he mantenido el rumbo con mis proyectos, especialmente con Fonetikas, afinándolos y
+          mejorándolos de forma constante.
+        </p>
+        <p>
+          Hace unos nueve años probé la metodología Fonetikas con un compañero de piso argentino. En
+          2025, durante un reencuentro, me dijo que todavía recuerda lo aprendido en alemán y lo
+          aplica correctamente.
+        </p>
+        <p>
+          Ese tipo de feedback me llena de orgullo. Me emociona cada vez que veo que algo que
+          alguien aprendió conmigo sigue teniendo valor y utilidad en su vida.
+        </p>
+
+        {/* IMAGE 3 */}
+        <div className="my-12">
+          {/* <img src="/images/about-work.jpg" alt="Trabajo pedagógico en LinguaTash" /> */}
+        </div>
+
+        <h2>foto3</h2>
+
+        {/* TÚ TAMBIÉN PUEDES LOGRARLO */}
+        <h2>Tú también puedes lograrlo</h2>
+        <p>
+          Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad y adquiriendo
+          la lengua escrita más adelante, sin perder naturalidad y acercándote lo máximo posible a
+          la pronunciación de una persona nativa.
+        </p>
+
+        {/* QUOTE 3 */}
+        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+          Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad.
+        </blockquote>
+
+        <p>
+          Si ya hablas alemán, puedo ayudarte a mejorar tu pronunciación y a consolidar tu base
+          oral. También acompaño a familias bilingües en Barcelona: verás cómo tus hijos empiezan a
+          usar más alemán en casa e incluso a escribir en alemán, mientras tú los acompañas con
+          seguridad.
+        </p>
+        <p>
+          Si te interesa, también podemos jugar con los sonidos de distintos idiomas, explorando la
+          fonética y la adquisición natural del vocabulario a través del oído y la voz.
+        </p>
+        <p>
+          En mi blog comparto los pilares de la metodología Fonetikas, y en YouTube e Instagram
+          publico regularmente consejos prácticos para aprender alemán —y otras lenguas—.
+        </p>
+
+        {/* IMAGE 4 */}
+        <div className="my-12">
+          {/* <img src="/images/about-life.jpg" alt="Vida cotidiana y valores detrás de LinguaTash" /> */}
+        </div>
+
+        <h2>foto4</h2>
+
+        {/* MÁS ALLÁ DE LA ENSEÑANZA DE IDIOMAS */}
+        <h2>Más allá de la enseñanza de idiomas</h2>
+        <p>
+          No todo lo que me ha formado cabe en un título académico. Estas experiencias me definen y
+          han moldeado mi manera de enseñar y de acompañar el aprendizaje de lenguas.
+        </p>
+
+        <h3>Formación académica y profesional</h3>
+        <ul>
+          <li>Máster en Lingüística y Ciencias de la Educación, Jena (Alemania)</li>
+          <li>Estudios de interpretación simultánea alemán–inglés / inglés–alemán, Londres</li>
+          <li>Full Stack Development con JavaScript, Barcelona</li>
+          <li>
+            Creación de sitio web y app para el mundo del tango: bailo.app (actualmente en pausa)
+          </li>
+        </ul>
+
+        <h3>Aprender desde el cuerpo y la experiencia</h3>
+        <ul>
+          <li>Aprendí a nadar crawl de forma autodidacta durante mi estancia en Moscú</li>
+          <li>
+            Aprendí a bailar tango en Cuba, durante mis estudios en La Habana, y sigo viviéndolo
+            como un lenguaje
+          </li>
+          <li>Disfruto hacer manualidades, sola o con mi familia</li>
+        </ul>
+
+        <h3>Crianza, cuidado y coherencia vital</h3>
+        <ul>
+          <li>Dos partos naturales planificados en casa</li>
+          <li>
+            Crianza con pañales de tela y Elimination Communication (higiene infantil natural)
+          </li>
+          <li>Interés profundo por los procesos naturales de desarrollo</li>
+          <li>Vida vegetariana/vegana como elección ética y cotidiana</li>
+        </ul>
+
+        {/* QUÉ PUEDES ESPERAR */}
+        <h3>Qué puedes esperar de mí</h3>
+        <p>
+          Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e inspiración.
+          Estoy profundamente convencida de que cualquier persona adulta puede aprender alemán o
+          mejorar su alemán sin presión ni sufrimiento, independientemente de las experiencias
+          previas que haya tenido con otras lenguas.
+        </p>
+
+        {/* QUOTE 4 */}
+        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+          Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e inspiración.
+        </blockquote>
+
+        <p>En LinguaTash encontrarás propuestas para distintas necesidades:</p>
+        <ul>
+          <li>Cursos de alemán para adultos hispanohablantes (autoestudio o grupos)</li>
+          <li>
+            Escuela de alemán los sábados para niños de familias germanohablantes en Barcelona
+          </li>
+          <li>Material didáctico y juegos fonéticos para descargar</li>
+        </ul>
+        <p>
+          Cuando trabajamos de forma individual, no hay recetas estándar ni soluciones “talla
+          única”. Lo que ofrezco es un acompañamiento personalizado, ajustado a tu punto de partida,
+          a tus objetivos y a lo que necesitas ahora mismo. Solo así el aprendizaje puede ser
+          profundo y sostenible en el tiempo.
+        </p>
+      </div>
+    </AuthorLayout>
   )
 }
