@@ -1,18 +1,11 @@
-import { Authors, allAuthors } from 'contentlayer/generated'
-import AuthorLayout from '@/layouts/AuthorLayout'
-import { coreContent } from 'pliny/utils/contentlayer'
 import { genPageMetadata } from 'app/seo'
 
 export const metadata = genPageMetadata({ title: 'About LinguaTash' })
 
 export default function Page() {
-  const author = allAuthors.find((p) => p.slug === 'default') as Authors
-  const mainContent = coreContent(author)
-
   return (
-    <AuthorLayout content={mainContent}>
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        {/* INTRO */}
+    <main className="mx-auto max-w-5xl space-y-16 px-4 sm:px-6 lg:px-8">
+      <article className="prose prose-neutral dark:prose-invert max-w-none">
         <h1>Hola y bienvenida, bienvenido</h1>
         <p>Qué alegría que hayas llegado hasta aquí.</p>
         <p>
@@ -25,8 +18,6 @@ export default function Page() {
         <div className="my-12">
           {/* <img src="/images/about-portrait.jpg" alt="Retrato de Tash, fundadora de LinguaTash" /> */}
         </div>
-
-        <h2>foto1</h2>
 
         <p>
           Mi trabajo se apoya en la investigación sobre adquisición del lenguaje, la teoría del
@@ -41,13 +32,11 @@ export default function Page() {
         </blockquote>
 
         <p>
-          No solo hablo de adquisición natural del lenguaje: la vivo. Mis dos hijos crecen desde el
-          nacimiento con alemán, ruso y español, y aprenden catalán e inglés en la escuela. El
-          italiano también forma parte de su entorno cotidiano, gracias a una persona cercana que
-          los cuida cuando ni mi pareja ni yo podemos hacerlo.
+          Mis dos hijos crecen desde el nacimiento con alemán, ruso y español, y aprenden catalán e
+          inglés en la escuela. El italiano también forma parte de su entorno cotidiano, gracias a
+          una persona cercana que los cuida cuando ni mi pareja ni yo podemos hacerlo.
         </p>
 
-        {/* QUESTIONS */}
         <h2>¿Te reconoces en alguna de estas situaciones?</h2>
         <ul className="ml-6 list-disc">
           <li>
@@ -67,7 +56,6 @@ export default function Page() {
           </li>
         </ul>
 
-        {/* MY CONVICTION */}
         <h2>Mi convicción</h2>
         <p>
           La enseñanza de lenguas, tanto en la escuela como en la mayoría de los cursos para
@@ -99,7 +87,6 @@ export default function Page() {
           podrían adquirir una nueva de forma más consciente y respetuosa.
         </p>
 
-        {/* LinguaTash */}
         <h2>LinguaTash nace de esta convicción</h2>
         <p>
           La lengua, en su forma más natural, es oral. La lengua escrita llegó mucho después como un
@@ -122,12 +109,9 @@ export default function Page() {
 
         {/* IMAGE 2 */}
         <div className="my-12">
-          {/* <img src="/images/about-portrait.jpg" alt="Retrato de Tash, fundadora de LinguaTash" /> */}
+          {/* <img src="/images/about-portrait2.jpg" alt="Foto Tash" /> */}
         </div>
 
-        <h2>foto2</h2>
-
-        {/* FUNCIONA */}
         <h2>Funciona</h2>
         <p>
           A pesar de los muchos obstáculos personales y vitales que he atravesado en los últimos
@@ -146,12 +130,9 @@ export default function Page() {
 
         {/* IMAGE 3 */}
         <div className="my-12">
-          {/* <img src="/images/about-work.jpg" alt="Trabajo pedagógico en LinguaTash" /> */}
+          {/* <img src="/images/about-work.jpg" alt="Trabajo pedagógico" /> */}
         </div>
 
-        <h2>foto3</h2>
-
-        {/* TÚ TAMBIÉN PUEDES LOGRARLO */}
         <h2>Tú también puedes lograrlo</h2>
         <p>
           Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad y adquiriendo
@@ -184,9 +165,6 @@ export default function Page() {
           {/* <img src="/images/about-life.jpg" alt="Vida cotidiana y valores detrás de LinguaTash" /> */}
         </div>
 
-        <h2>foto4</h2>
-
-        {/* MÁS ALLÁ DE LA ENSEÑANZA DE IDIOMAS */}
         <h2>Más allá de la enseñanza de idiomas</h2>
         <p>
           No todo lo que me ha formado cabe en un título académico. Estas experiencias me definen y
@@ -223,7 +201,6 @@ export default function Page() {
           <li>Vida vegetariana/vegana como elección ética y cotidiana</li>
         </ul>
 
-        {/* QUÉ PUEDES ESPERAR */}
         <h3>Qué puedes esperar de mí</h3>
         <p>
           Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e inspiración.
@@ -232,7 +209,6 @@ export default function Page() {
           previas que haya tenido con otras lenguas.
         </p>
 
-        {/* QUOTE 4 */}
         <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
           Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e inspiración.
         </blockquote>
@@ -251,7 +227,7 @@ export default function Page() {
           a tus objetivos y a lo que necesitas ahora mismo. Solo así el aprendizaje puede ser
           profundo y sostenible en el tiempo.
         </p>
-      </div>
-    </AuthorLayout>
+      </article>
+    </main>
   )
 }
