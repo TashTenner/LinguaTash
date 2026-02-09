@@ -16,7 +16,7 @@ const siteMetadata = {
   youtube: 'https://www.youtube.com/@LinguaTash',
   instagram: 'https://www.instagram.com/linguatash',
   linkedin: 'https://www.linkedin.com',
-  threads: 'https://www.threads.net',
+  // threads: 'https://www.threads.net',
 
   locale: 'es-ES',
 

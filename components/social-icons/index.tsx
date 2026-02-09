@@ -22,7 +22,7 @@ const components = {
   twitter: Twitter,
   x: X,
   mastodon: Mastodon,
-  threads: Threads,
+  // threads: Threads,
   instagram: Instagram,
   medium: Medium,
   bluesky: Bluesky,
