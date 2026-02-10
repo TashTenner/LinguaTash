@@ -5,7 +5,7 @@ export const metadata = genPageMetadata({ title: 'About LinguaTash' })
 export default function Page() {
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 sm:px-6 lg:px-8">
-      <article className="prose prose-neutral dark:prose-invert max-w-none">
+      <article className="prose prose-neutral dark:prose-invert max-w-none rounded-2xl border border-gray-200 bg-gray-50 px-6 py-10 dark:border-gray-700 dark:bg-gray-950">
         <h1>Hola y bienvenida, bienvenido</h1>
         <p>Qué alegría que hayas llegado hasta aquí.</p>
         <p>
@@ -27,7 +27,7 @@ export default function Page() {
         </p>
 
         {/* QUOTE 1 */}
-        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+        <blockquote className="my-6 border-l-4 border-gray-200 pl-4 italic">
           No solo hablo de adquisición natural del lenguaje: la vivo.
         </blockquote>
 
@@ -95,7 +95,7 @@ export default function Page() {
         </p>
 
         {/* QUOTE 2 */}
-        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+        <blockquote className="my-6 border-l-4 border-gray-200 pl-4 italic">
           Cada idioma encontró su propia manera de hacerlo, y por eso el aprendizaje no debería
           basarse primero en lo escrito.
         </blockquote>
@@ -141,7 +141,7 @@ export default function Page() {
         </p>
 
         {/* QUOTE 3 */}
-        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+        <blockquote className="my-6 border-l-4 border-gray-200 pl-4 italic">
           Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad.
         </blockquote>
 
@@ -209,7 +209,7 @@ export default function Page() {
           previas que haya tenido con otras lenguas.
         </p>
 
-        <blockquote className="my-6 border-l-4 border-neutral-300 pl-4 italic">
+        <blockquote className="my-6 border-l-4 border-gray-200 pl-4 italic">
           Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e inspiración.
         </blockquote>
 

@@ -6,42 +6,40 @@
 
 /* Core theme configuration */
 @theme {
-  /* Font families */
-  /*--font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';*/
-
-  /* Body / default font */
+  /* Fonts */
   --font-sans: 'Noto Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-
-  /* Accent / headings / decorative */
   --font-accent: 'Caveat', cursive;
 
-  /* Colors */
-  /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
-  --color-primary-50: oklch(0.971 0.014 343.198);
-  --color-primary-100: oklch(0.948 0.028 342.258);
-  --color-primary-200: oklch(0.899 0.061 343.231);
-  --color-primary-300: oklch(0.823 0.12 346.018);
-  --color-primary-400: oklch(0.718 0.202 349.761);
-  --color-primary-500: oklch(0.656 0.241 354.308);
-  --color-primary-600: oklch(0.592 0.249 0.584);
-  --color-primary-700: oklch(0.525 0.223 3.958);
-  --color-primary-800: oklch(0.459 0.187 3.815);
-  --color-primary-900: oklch(0.408 0.153 2.432);
-  --color-primary-950: oklch(0.284 0.109 3.907);
+  /* ===== LinguaTash: ONLY 6 COLORS (5 used + 1 registered) ===== */
+  --color-authority: #081c3c; /* Deep Navy */
+  --color-background: #f4efe8; /* Soft Cream */
+  --color-surface: #e3ded7; /* Warm Light Grey */
+  --color-muted: #9a8f85; /* Warm Taupe (metadata only) */
 
-  --color-gray-50: oklch(0.985 0.002 247.839);
-  --color-gray-100: oklch(0.967 0.003 264.542);
-  --color-gray-200: oklch(0.928 0.006 264.531);
-  --color-gray-300: oklch(0.872 0.01 258.338);
-  --color-gray-400: oklch(0.707 0.022 261.325);
-  --color-gray-500: oklch(0.551 0.027 264.364);
-  --color-gray-600: oklch(0.446 0.03 256.802);
-  --color-gray-700: oklch(0.373 0.034 259.733);
-  --color-gray-800: oklch(0.278 0.033 256.848);
-  --color-gray-900: oklch(0.21 0.034 264.665);
-  --color-gray-950: oklch(0.13 0.028 261.692);
+  --color-accent-primary: #b3475a; /* Terracotta Rose (USED) */
+  --color-accent-secondary: #2f6f73; /* Deep Muted Teal (REGISTERED, DO NOT APPLY) */
+
+  /* Primary scale (Terracotta) */
+  --color-primary-400: #c66a7a;
+  --color-primary-500: #b3475a;
+  --color-primary-600: #9f3f50;
+
+  /*
+    Tailwind utilities (border-gray-200, text-gray-700, etc.) expect a gray scale.
+    We ALIAS all grays to the SAME 4 neutrals (still only using the 6 colors total).
+  */
+  --color-gray-50: var(--color-background);
+  --color-gray-100: var(--color-background);
+  --color-gray-200: var(--color-surface);
+  --color-gray-300: var(--color-surface);
+  --color-gray-400: var(--color-muted);
+  --color-gray-500: var(--color-muted);
+  --color-gray-600: var(--color-authority);
+  --color-gray-700: var(--color-authority);
+  --color-gray-800: var(--color-authority);
+  --color-gray-900: var(--color-authority);
+  --color-gray-950: var(--color-authority);
 
   /* Line heights */
   --line-height-11: 2.75rem;
@@ -55,25 +53,25 @@
   --z-80: 80;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
+  :root {
+    --lt-navy: #081c3c;
+    --lt-light: #f4efe8;
+    --lt-neutral: #e3ded7;
+    --lt-muted: #9a8f85;
+    --lt-accent: #b3475a;
+    /* NOTE: Teal is intentionally NOT duplicated here */
+  }
+
   /* Apply default border color to all elements */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-gray-200, currentColor); /* resolves to surface */
   }
 
-  /* Default outline color for links and buttons */
   a,
   button {
     outline-color: var(--color-primary-500);
@@ -86,9 +84,15 @@
     outline-color: var(--color-primary-500);
   }
 
-  /* Set default font for the whole page */
   body {
     font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-authority);
+  }
+
+  .dark body {
+    background-color: var(--color-authority);
+    color: var(--color-background); /* only allowed palette */
   }
 }
 
@@ -104,7 +108,6 @@
       }
     }
 
-    /* ALL headings use Noto Sans */
     & :where(h1, h2, h3, h4, h5, h6) {
       font-family: var(--font-sans);
       letter-spacing: var(--tracking-tight);
@@ -118,8 +121,9 @@
       font-weight: 600;
     }
 
+    /* WAS: --color-indigo-500 (adds a 7th color) */
     & :where(code):not(pre code) {
-      color: var(--color-indigo-500);
+      color: var(--color-primary-500);
       font-family: var(--font-sans);
     }
 
@@ -143,7 +147,7 @@
     }
 
     & :where(h1, h2, h3, h4, h5, h6) {
-      color: var(--color-gray-100);
+      color: var(--color-background);
       font-family: var(--font-sans);
     }
 
@@ -151,12 +155,21 @@
     & li,
     & blockquote {
       font-family: var(--font-sans);
+      color: var(--color-background);
     }
   }
 
-  /* Manual accent only */
   .font-accent {
     font-family: var(--font-accent);
+  }
+
+  /*
+    IMPORTANT:
+    Teal is registered as --color-accent-secondary but we avoid providing a ready utility that applies it.
+    Keep this class if it exists in markup; make it use Primary instead.
+  */
+  .accent-info {
+    color: var(--color-primary-500);
   }
 }
 
