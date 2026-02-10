@@ -35,7 +35,7 @@ export default function NowPage() {
               <em>duro</em> en español y <em>derevo</em> en ruso)
             </li>
             <li>
-              Comparar palabras similares en inglés, español y ruso: {' '} <em>wind</em> (inglés),{' '}
+              Comparar palabras similares en inglés, español y ruso: <em>wind</em> (inglés),{' '}
               <em>viento</em> (español), <em>ветер</em> (veter)
             </li>
             <li>
