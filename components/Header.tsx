@@ -1,5 +1,3 @@
-// line 32: <div className="no-scrollbar hidden max-w-40 items-center gap-x-4 overflow-x-auto sm:flex md:max-w-72 lg:max-w-96">
-
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Logo from '@/data/logo.svg'
@@ -7,6 +5,7 @@ import Link from './Link'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
+import SocialIcon from './social-icons' // <-- import SocialIcon
 
 const Header = () => {
   let headerClass = 'flex items-center w-full bg-white dark:bg-gray-950 justify-between py-10'
@@ -30,8 +29,10 @@ const Header = () => {
           )}
         </div>
       </Link>
+
       <div className="flex items-center space-x-4 leading-5 sm:-mr-6 sm:space-x-6">
-        <div className="hidden items-center gap-x-6 sm:flex">
+        {/* Nav links */}
+        <div className="hidden items-center gap-x-3 sm:flex">
           {headerNavLinks
             .filter((link) => link.href !== '/')
             .map((link) => (
@@ -44,6 +45,25 @@ const Header = () => {
               </Link>
             ))}
         </div>
+
+        {/* Social icons */}
+        <div className="hidden items-center gap-x-2 sm:flex">
+          {siteMetadata.email && (
+            <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={4} />
+          )}
+          {siteMetadata.youtube && (
+            <SocialIcon kind="youtube" href={siteMetadata.youtube} size={4} />
+          )}
+          {siteMetadata.linkedin && (
+            <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={4} />
+          )}
+          {siteMetadata.x && <SocialIcon kind="x" href={siteMetadata.x} size={6} />}
+          {siteMetadata.instagram && (
+            <SocialIcon kind="instagram" href={siteMetadata.instagram} size={4} />
+          )}
+        </div>
+
+        {/* Other header controls */}
         <SearchButton />
         <ThemeSwitch />
         <MobileNav />

@@ -5,7 +5,7 @@ export default function Home() {
     <main className="mx-auto max-w-5xl space-y-16 px-4 sm:px-6 lg:px-8">
       {/* First Quote */}
       <section className="py-16 text-center">
-        <blockquote className="text-2xl font-semibold text-gray-900 italic md:text-3xl dark:text-gray-100">
+        <blockquote className="font-accent text-2xl font-semibold text-gray-900 md:text-3xl dark:text-gray-100">
           "Una lengua se construye primero en el oído y en la voz. Leer y escribir solo tiene
           sentido cuando el idioma ya se siente natural."
         </blockquote>
@@ -46,7 +46,7 @@ export default function Home() {
 
       {/* Second Quote */}
       <section className="py-16 text-center">
-        <blockquote className="text-xl font-semibold text-gray-900 italic md:text-2xl dark:text-gray-100">
+        <blockquote className="font-accent text-2xl font-semibold text-gray-900 md:text-3xl dark:text-gray-100">
           "La capacidad de adquirir lenguas no se pierde con la edad. Lo que a menudo falta es un
           enfoque adecuado, basado en la lengua materna del aprendiz."
         </blockquote>
@@ -114,7 +114,7 @@ export default function Home() {
 
       {/* Placeholder / closing third quote */}
       <section className="py-16 text-center">
-        <blockquote className="text-lg font-semibold text-gray-700 italic md:text-xl dark:text-gray-300">
+        <blockquote className="font-accent text-2xl font-semibold text-gray-900 md:text-3xl dark:text-gray-100">
           "El idioma se adquiere primero en el oído y en la voz; la lectura y la escritura llegan
           después."
         </blockquote>

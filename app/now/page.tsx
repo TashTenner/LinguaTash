@@ -35,6 +35,10 @@ export default function NowPage() {
               <em>duro</em> en español y <em>derevo</em> en ruso)
             </li>
             <li>
+              Comparar palabras similares en inglés, español y ruso: {' '} <em>wind</em> (inglés),{' '}
+              <em>viento</em> (español), <em>ветер</em> (veter)
+            </li>
+            <li>
               Profundizar en el debate entre Noam Chomsky y Daniel Everett sobre si el lenguaje
               humano es innato y universal o principalmente moldeado por la cultura
             </li>
