@@ -52,9 +52,13 @@ export default function NowPage() {
           <h2>Enfoque personal</h2>
           <ul>
             <li>
-              Reflexionar sobre las dificultades de la crianza y cómo aliviarlas sin perder conexión
+              Reflexionar sobre las dificultades de la crianza desde el enfoque de la crianza
+              autoritativa (límites firmes con alta conexión emocional)
             </li>
-            <li>Aprender más sobre temas de salud que afectan a madres y familias</li>
+            <li>
+              Interés en el estudio del microbioma y su conexión con el cerebro, la regulación
+              emocional y la salud general
+            </li>
             <li>Encontrar formas realistas de volver al deporte después del embarazo y el parto</li>
           </ul>
         </section>
