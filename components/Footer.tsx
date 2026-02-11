@@ -53,8 +53,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/sprachwege" className="hover:text-primary-500">
-                  Sprachwege — escuela de alemán de los sábados para niños de familias
+                <Link href="/nordkreis" className="hover:text-primary-500">
+                  Nordkreis — escuela de alemán de los sábados para niños de familias
                   germanohablantes en Barcelona.
                 </Link>
               </li>

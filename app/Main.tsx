@@ -29,7 +29,7 @@ export default function Home() {
             partir de la fonética y la oralidad
           </li>
           <li>
-            <strong>Sprachwege</strong> – escuela de alemán de los sábados para familias
+            <strong>Nordkreis</strong> – escuela de alemán de los sábados para familias
             germanohablantes en Barcelona
           </li>
           <li>
@@ -74,20 +74,20 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Sprachwege */}
+          {/* Nordkreis */}
           <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
             <div>
-              <h3 className="text-xl font-semibold">Sprachwege</h3>
+              <h3 className="text-xl font-semibold">Nordkreis</h3>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Niños de familias germanohablantes en Barcelona: escuela de alemán los sábados,
                 centrada en el desarrollo natural del idioma.
               </p>
             </div>
             <Link
-              href="/sprachwege"
+              href="/nordkreis"
               className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-4 inline-block rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
             >
-              Conocer Sprachwege
+              Conocer Nordkreis
             </Link>
           </div>
 

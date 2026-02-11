@@ -1,7 +1,7 @@
 const headerNavLinks = [
   { href: '/', title: 'Home' },
   { href: '/fonetikas', title: 'Fonetikas' },
-  { href: '/sprachwege', title: 'Sprachwege' },
+  { href: '/nordkreis', title: 'Nordkreis' },
   { href: '/salten', title: 'Salten' },
   { href: '/about', title: 'About' },
   { href: '/now', title: 'Now' },
