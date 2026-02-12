@@ -2,7 +2,7 @@ const headerNavLinks = [
   { href: '/', title: 'Home' },
   { href: '/fonetikas', title: 'Fonetikas' },
   { href: '/nordkreis', title: 'Nordkreis' },
-  { href: '/salten', title: 'Salten' },
+  { href: '/resuena', title: 'Resuena' },
   { href: '/about', title: 'About' },
   { href: '/now', title: 'Now' },
   { href: '/blog', title: 'Blog' },

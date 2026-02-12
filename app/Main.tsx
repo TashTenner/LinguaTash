@@ -33,7 +33,7 @@ export default function Home() {
             germanohablantes en Barcelona
           </li>
           <li>
-            <strong>¡Salten!</strong> – un juego de mesa para adquirir vocabulario en distintas
+            <strong>Resuena</strong> – un juego de mesa para adquirir vocabulario en distintas
             lenguas mediante la fonética, sin lectura
           </li>
         </ul>
@@ -91,20 +91,20 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* ¡Salten! */}
+          {/* Resuena */}
           <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
             <div>
-              <h3 className="text-xl font-semibold">¡Salten!</h3>
+              <h3 className="text-xl font-semibold">Resuena</h3>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
                 Familias, adultos y niños: juego de mesa para adquirir vocabulario en varias lenguas
                 a través de la fonética, sin lectura de palabras.
               </p>
             </div>
             <Link
-              href="/salten"
+              href="/resuena"
               className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-4 inline-block rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
             >
-              Ver ¡Salten!
+              Ver Resuena
             </Link>
           </div>
         </div>

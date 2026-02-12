@@ -59,8 +59,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/salten" className="hover:text-primary-500">
-                  ¡Salten! — juego fonético descargable y materiales didácticos para adquirir
+                <Link href="/resuena" className="hover:text-primary-500">
+                  Resuena — juego fonético descargable y materiales didácticos para adquirir
                   idiomas.
                 </Link>
               </li>
