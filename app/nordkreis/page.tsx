@@ -1,11 +1,370 @@
 export default function NordkreisPage() {
   return (
-    <div className="prose dark:prose-invert max-w-none">
-      <h1>Nordkreis</h1>
-      <p>
-        LinguaTash is a space for language learning, multilingual parenting, and long-term thinking
-        about language acquisition.
-      </p>
-    </div>
+    <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
+      {/* HERO */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
+        <h1 className="text-5xl font-bold tracking-tight md:text-6xl">Nordkreis</h1>
+
+        <p className="mt-6 text-xl font-semibold text-[#B3475A] md:text-2xl">
+          Deutsche Gemeinschaft & Samstagsschule in Barcelona
+        </p>
+
+        <p className="mt-4 text-lg text-[#081C3C]/80 md:text-xl dark:text-[#F4EFE8]/80">
+          Ein Sprachraum für deutschsprachige Familien.
+          <br className="hidden md:block" />
+          Gemeinsam Deutsch leben, lernen und weitergeben.
+        </p>
+
+        <div className="mx-auto my-10 h-px w-20 bg-[#9A8F85]" />
+
+        <p className="text-xl font-semibold text-[#B3475A] md:text-2xl">
+          Comunidad alemana y escuela de sábado en Barcelona
+        </p>
+
+        <p className="mt-4 text-lg text-[#081C3C]/80 md:text-xl dark:text-[#F4EFE8]/80">
+          Un espacio lingüístico para familias germanohablantes.
+          <br className="hidden md:block" />
+          Vivir, aprender y transmitir el alemán juntos.
+        </p>
+      </section>
+
+      {/* ABOUT */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Willkommen bei Nordkreis</h2>
+
+            <p className="text-justify leading-relaxed opacity-90">
+              Nordkreis ist eine deutsche Gemeinschaft und Samstagsschule in Barcelona für
+              deutschsprachige Familien und ihre Kinder.
+            </p>
+
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Wir schaffen einen Sprachraum für Deutsch als Herkunftssprache. Einen Ort, an dem
+              Kinder nicht nur mit einem Elternteil Deutsch sprechen, sondern mit anderen Kindern,
+              Jugendlichen und Erwachsenen.
+            </p>
+
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Sprache wächst durch Beziehungen. Nordkreis verbindet Gemeinschaft, kulturelle
+              Identität und altersgerechte Sprachförderung.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Bienvenidos a Nordkreis</h2>
+
+            <p className="text-justify leading-relaxed opacity-90">
+              Nordkreis es una comunidad alemana y escuela de sábado en Barcelona para familias
+              germanohablantes y sus hijos.
+            </p>
+
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Creamos un espacio lingüístico para el alemán como lengua de herencia. Un lugar donde
+              los niños no solo escuchan alemán en casa, sino que lo viven con otros niños y
+              adultos.
+            </p>
+
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              La lengua crece a través de relaciones significativas. Nordkreis une comunidad,
+              identidad cultural y acompañamiento lingüístico acorde a la edad.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* PEDAGOGICAL APPROACH */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Pädagogischer Ansatz & Gruppen</h2>
+
+            {/* 0-3 Jahre */}
+            <h3 className="mt-4 mb-2 font-semibold">
+              Mutter/Vater-Kind-Gruppe (0–3 Jahre), 10:00 - 13:30 Uhr
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Diese Gruppe ist bewusst nicht angeleitet. Hier kommt der deutschsprachige Elternteil
+              mit seinem Kind. Die Ehepartner können ebenfalls teilnehmen, solange sie mit dem
+              eigenen Kind und anderen Kindern und Erwachsenen ausschließlich auf Deutsch sprechen.
+              Die Gruppe dient der Sozialisation und dem Aufbau einer deutschsprachigen
+              Gemeinschaft. Ab 11:30 Uhr können Kinder aus der Kindergruppe dazukommen und vor 11:30
+              die Kinder der Klasse 1-2.
+            </p>
+
+            {/* 3-5 Jahre */}
+            <h3 className="mt-6 mb-2 font-semibold">
+              Kindergruppe (3–5 Jahre, I3-I5), 10:00 – 11:30 Uhr
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Spielerische und interaktive Einheiten mit intensivem Deutschinput.
+            </p>
+            <ul className="mt-4 ml-6 list-disc space-y-2 opacity-90">
+              <li>Interaktives Storytelling</li>
+              <li>Rollenspiel und Nachspielen von Szenen</li>
+              <li>Puppen- und Figurenspiel (inkl. Puppentheater)</li>
+            </ul>
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Es wird noch nicht gelesen oder geschrieben. Der Fokus liegt auf Sprachinput,
+              Verstehen, Bewegung und dem Verknüpfen von Sprache mit Handlung.
+            </p>
+
+            {/* Primaria */}
+            <h3 className="mt-6 mb-2 font-semibold">
+              Klasse 1–2 (1.º Primaria und 2.º Primaria, 6-8 Jahre), 11:30 – 13:00 Uhr
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Deutsch als Herkunftssprache mit Fokus auf Erwerb der Schriftsprache. Die Kinder
+              lernen Lesen und Schreiben auf Deutsch, aufbauend auf dem Wissen, das sie bereits in
+              der katalanischen Schule erworben haben.
+            </p>
+          </div>
+
+          {/* SPANISH COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Enfoque pedagógico y grupos</h2>
+
+            {/* 0-3 años */}
+            <h3 className="mt-4 mb-2 font-semibold">
+              Grupo padres-bebés (0–3 años), 10:00 – 13:30
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Este grupo no está dirigido por una docente. Los padres/madres germanohablantes vienen
+              con sus hijos. Los cónyuges también pueden participar, siempre que hablen
+              exclusivamente alemán con sus hijos y con otros niños y adultos. Sirve para
+              socialización y creación de una comunidad de habla alemana. A partir de las 11:30 los
+              niños del grupo infantil pueden unirse y antes de las 11:30 los niños de Primaria
+              también pueden quedarse juntos.
+            </p>
+
+            {/* 3-5 años */}
+            <h3 className="mt-6 mb-2 font-semibold">
+              Grupo infantil (3–5 años, I3–I5), 10:00 – 11:30
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Sesiones lúdicas e interactivas con input lingüístico intenso en alemán.
+            </p>
+            <ul className="mt-4 ml-6 list-disc space-y-2 opacity-90">
+              <li>Narración interactiva</li>
+              <li>Representación de escenas</li>
+              <li>Teatro de títeres</li>
+            </ul>
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              No se trabaja la lectoescritura todavía. El enfoque está en la comprensión, la acción
+              y la conexión entre lenguaje y juego.
+            </p>
+
+            {/* Primaria */}
+            <h3 className="mt-6 mb-2 font-semibold">
+              Primaria (1.º Primaria y 2.º Primaria, 6–8 años), 11:30 – 13:00
+            </h3>
+            <p className="text-justify leading-relaxed opacity-90">
+              Alemán como lengua de herencia con enfoque en lectura y escritura. Se construye sobre
+              los conocimientos que los niños ya han adquirido en la escuela catalana.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Warum Nordkreis?</h2>
+
+            <p className="mt-3 text-justify opacity-90">
+              Ich selbst bin bilingual in Deutschland aufgewachsen. Erst als junge Erwachsene habe
+              ich gespürt, wie sehr mir der kontinuierliche Kontakt zu meiner zweiten Sprache und
+              Kultur gefehlt hat.
+            </p>
+
+            <p className="mt-3 text-justify opacity-90">
+              In einem mehrsprachigen Umfeld werden die Umgebungssprachen immer dominant sein. Damit
+              eine Herkunftssprache stark bleibt, braucht es:
+            </p>
+
+            <ul className="mt-3 ml-6 list-disc space-y-2 opacity-90">
+              <li>eine Gemeinschaft</li>
+              <li>mehrere Bezugspersonen</li>
+              <li>gemeinsame Traditionen</li>
+              <li>akademische Sprachentwicklung</li>
+              <li>echte Beziehungen in dieser Sprache</li>
+            </ul>
+
+            <p className="mt-3 text-justify opacity-90">
+              Nordkreis möchte genau diesen Raum schaffen: Eine deutsche Gemeinschaft in Barcelona,
+              in der Erwachsene Traditionen wiederbeleben und Kinder ihre Herkunftssprache lebendig
+              und selbstbewusst entwickeln können.
+            </p>
+          </div>
+
+          {/* SPANISH COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">¿Por qué Nordkreis?</h2>
+
+            <p className="mt-3 text-justify opacity-90">
+              Crecí bilingüe en Alemania y solo de adulta entendí cuánto me había faltado un
+              contacto continuo con mi segunda lengua y cultura.
+            </p>
+
+            <p className="mt-3 text-justify opacity-90">
+              En un entorno como Barcelona, las lenguas sociales siempre serán dominantes. Para que
+              una lengua de herencia se mantenga fuerte necesita:
+            </p>
+
+            <ul className="mt-3 ml-6 list-disc space-y-2 opacity-90">
+              <li>comunidad</li>
+              <li>varias relaciones significativas</li>
+              <li>vivencia de tradiciones</li>
+              <li>desarrollo académico</li>
+              <li>vínculos reales en esa lengua</li>
+            </ul>
+
+            <p className="mt-3 text-justify opacity-90">
+              Nordkreis quiere ofrecer exactamente eso: una comunidad alemana donde las familias
+              puedan vivir su cultura y acompañar el desarrollo lingüístico y académico de sus hijos
+              en alemán.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ANNUAL STRUCTURE */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Jahresstruktur</h2>
+
+            <p className="mt-3 text-justify opacity-90">
+              Nordkreis trifft sich insgesamt ca. 20 Mal pro Schuljahr. In der Regel finden die
+              Treffen zwei Mal pro Monat statt. Je nach Verfügbarkeit der Schule kann es Monate mit
+              einem oder drei Terminen geben – im Jahresdurchschnitt sind es etwa zwei Treffen pro
+              Monat.
+            </p>
+
+            <p className="mt-3 text-justify opacity-90">
+              Zusätzlich werden besondere Aktivitäten rund um wichtige deutsche Traditionen
+              angeboten, zum Beispiel:
+            </p>
+
+            <ul className="mt-3 ml-6 list-disc space-y-2 opacity-90">
+              <li>St. Martin</li>
+              <li>Weihnachten</li>
+              <li>Ostern</li>
+              <li>Weitere kulturelle Feste im Jahreskreis</li>
+            </ul>
+
+            <p className="mt-3 text-justify opacity-90">
+              Diese zusätzlichen Veranstaltungen stärken das Gemeinschaftsgefühl und geben den
+              Kindern die Möglichkeit, deutsche Bräuche aktiv zu erleben – nicht nur sprachlich,
+              sondern auch emotional und sozial.
+            </p>
+          </div>
+
+          {/* SPANISH COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Estructura anual</h2>
+
+            <p className="mt-3 text-justify opacity-90">
+              Nordkreis se reúne aproximadamente 20 veces por curso escolar. Normalmente los
+              encuentros tienen lugar dos veces al mes. Según la disponibilidad del centro, puede
+              haber meses con uno o tres encuentros; el promedio anual es de dos reuniones
+              mensuales.
+            </p>
+
+            <p className="mt-3 text-justify opacity-90">
+              Además, se ofrecerán actividades especiales relacionadas con tradiciones alemanas
+              importantes, por ejemplo:
+            </p>
+
+            <ul className="mt-3 ml-6 list-disc space-y-2 opacity-90">
+              <li>San Martín</li>
+              <li>Navidad</li>
+              <li>Pascua</li>
+              <li>Otras celebraciones culturales a lo largo del año</li>
+            </ul>
+
+            <p className="mt-3 text-justify opacity-90">
+              Estas actividades refuerzan el sentimiento de comunidad y permiten que los niños vivan
+              las tradiciones alemanas de manera activa, no solo desde la lengua, sino también desde
+              la experiencia compartida.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* LOCATION & TIMES */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 text-center dark:bg-[#081C3C]">
+        <h2 className="mb-6 text-2xl font-semibold">Ort / Lugar</h2>
+
+        <p className="opacity-90">
+          Escuela La Salle Gràcia
+          <br />
+          Plaça del Nord 14
+          <br />
+          08024 Barcelona
+        </p>
+      </section>
+
+      {/* FEES */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+        <h2 className="mb-6 text-center text-2xl font-semibold">
+          Beiträge pro Monat / Cuotas por mes
+        </h2>
+
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN COLUMN */}
+          <div>
+            <ul className="ml-6 list-disc space-y-2 opacity-90">
+              <li>1 Kind unter 3 Jahren: 30 €</li>
+              <li>2 Kinder unter 3 Jahren: 50 €</li>
+              <li>1 Kind ab 3 Jahren: 50 €</li>
+              <li>Kind ab 3 + Kind unter 3: 70 €</li>
+              <li>2 Kinder ab 3 Jahren: 90 €</li>
+              <li>Einschreibegebühr (Pilotphase): 60 € einmalig</li>
+            </ul>
+
+            <p className="mt-4 text-justify opacity-90">
+              Das Projekt startet ab 5 Kindern in der Kindergruppe und 6 Kindern in der
+              Mutter-Kind-Gruppe. Die Beiträge decken Raumkosten, Organisation, Materialien und
+              Platzreservierung.
+            </p>
+          </div>
+
+          {/* SPANISH COLUMN */}
+          <div>
+            <ul className="ml-6 list-disc space-y-2 opacity-90">
+              <li>1 niño menor de 3 años: 30 €</li>
+              <li>2 niños menores de 3 años: 50 €</li>
+              <li>1 niño a partir de 3 años: 50 €</li>
+              <li>Niño a partir de 3 + niño menor de 3: 70 €</li>
+              <li>2 niños a partir de 3 años: 90 €</li>
+              <li>Matrícula (fase piloto): 60 € una vez</li>
+            </ul>
+
+            <p className="mt-4 text-justify opacity-90">
+              El proyecto comienza a partir de 5 niños en el grupo infantil y 6 niños en el grupo
+              padres-bebés. Las cuotas cubren los costes del espacio, la organización, los
+              materiales y la reserva de plazas.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section className="rounded-2xl border border-[#9A8F85]/30 bg-[#081C3C] px-6 py-20 text-center text-[#F4EFE8]">
+        <h2 className="mb-6 text-2xl font-semibold">Kontakt / Contacto</h2>
+
+        <a
+          href="mailto:nordkreis@linguatash.com"
+          className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 font-medium transition-transform duration-300 hover:scale-105"
+        >
+          nordkreis@linguatash.com
+        </a>
+      </section>
+    </main>
   )
 }
