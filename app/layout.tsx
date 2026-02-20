@@ -14,7 +14,7 @@ import { Metadata } from 'next'
 
 const notoSans = Noto_Sans({
   subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-sans',
 })

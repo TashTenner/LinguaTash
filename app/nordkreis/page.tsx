@@ -3,7 +3,21 @@ export default function NordkreisPage() {
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
       {/* HERO */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
-        <h1 className="text-5xl font-bold tracking-tight md:text-6xl">Nordkreis</h1>
+        {/* Nordkreis Logo */}
+        <div className="flex justify-center">
+          <img
+            src="/static/images/nordkreis-icon.png"
+            alt="Nordkreis Logo"
+            className="mb-8 h-24 w-auto md:h-28"
+          />
+        </div>
+
+        <h1 className="text-5xl leading-none md:text-6xl">
+          <span className="font-[400]" style={{ letterSpacing: '-0.05em' }}>
+            Nord
+          </span>
+          <span className="font-[200] opacity-95">kreis</span>
+        </h1>
 
         <p className="mt-6 text-xl font-semibold text-[#B3475A] md:text-2xl">
           Deutsche Gemeinschaft & Samstagsschule in Barcelona
@@ -80,22 +94,27 @@ export default function NordkreisPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Pädagogischer Ansatz & Gruppen</h2>
 
-            {/* 0-3 Jahre */}
-            <h3 className="mt-4 mb-2 font-semibold">
-              Mutter/Vater-Kind-Gruppe (0–3 Jahre), 10:00 - 13:30 Uhr
-            </h3>
+            <p className="mb-6 text-justify leading-relaxed opacity-90">
+              Nordkreis ist in aufeinander aufbauende Gruppen gegliedert. Jede Stufe trägt einen
+              eigenen Namen und begleitet die Kinder und Jugendlichen über mehrere Jahre hinweg. Zum
+              Start im September können – bei Erreichen der Mindestteilnehmerzahl – Spielkreis,
+              Entdeckerkreis und Kompasskreis beginnen. Die weiteren Gruppen sind in Planung.
+            </p>
+
+            {/* Spielkreis */}
+            <h3 className="mt-4 mb-2 font-semibold">Spielkreis (0–3 Jahre), 10:00 – 13:30 Uhr</h3>
             <p className="text-justify leading-relaxed opacity-90">
               Diese Gruppe ist bewusst nicht angeleitet. Hier kommt der deutschsprachige Elternteil
               mit seinem Kind. Die Ehepartner können ebenfalls teilnehmen, solange sie mit dem
               eigenen Kind und anderen Kindern und Erwachsenen ausschließlich auf Deutsch sprechen.
               Die Gruppe dient der Sozialisation und dem Aufbau einer deutschsprachigen
-              Gemeinschaft. Ab 11:30 Uhr können Kinder aus der Kindergruppe dazukommen und vor 11:30
-              die Kinder der Klasse 1-2.
+              Gemeinschaft. Ab 11:30 Uhr können Kinder aus dem Entdeckerkreis dazukommen und vor
+              11:30 die Kinder aus dem Kompasskreis.
             </p>
 
-            {/* 3-5 Jahre */}
+            {/* Entdeckerkreis */}
             <h3 className="mt-6 mb-2 font-semibold">
-              Kindergruppe (3–5 Jahre, I3-I5), 10:00 – 11:30 Uhr
+              Entdeckerkreis (3–5 Jahre, I3–I5), 10:00 – 11:30 Uhr
             </h3>
             <p className="text-justify leading-relaxed opacity-90">
               Spielerische und interaktive Einheiten mit intensivem Deutschinput.
@@ -110,14 +129,28 @@ export default function NordkreisPage() {
               Verstehen, Bewegung und dem Verknüpfen von Sprache mit Handlung.
             </p>
 
-            {/* Primaria */}
+            {/* Kompasskreis */}
             <h3 className="mt-6 mb-2 font-semibold">
-              Klasse 1–2 (1.º Primaria und 2.º Primaria, 6-8 Jahre), 11:30 – 13:00 Uhr
+              Kompasskreis (1.º & 2.º Primaria, 6–8 Jahre), 11:30 – 13:00 Uhr
             </h3>
             <p className="text-justify leading-relaxed opacity-90">
               Deutsch als Herkunftssprache mit Fokus auf Erwerb der Schriftsprache. Die Kinder
               lernen Lesen und Schreiben auf Deutsch, aufbauend auf dem Wissen, das sie bereits in
               der katalanischen Schule erworben haben.
+            </p>
+
+            {/* Future Groups */}
+            <h3 className="mt-8 mb-2 font-semibold">Weitere geplante Gruppen</h3>
+            <ul className="ml-6 list-disc space-y-2 opacity-90">
+              <li>Nordlichter (Primaria 3–4)</li>
+              <li>Polarkreis (Primaria 5–6)</li>
+              <li>Denkraum (ESO 1–2)</li>
+              <li>Weitblick (ESO 3–4)</li>
+              <li>Abschlusskreis (17–18 Jahre)</li>
+            </ul>
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Diese Gruppen werden schrittweise aufgebaut und starten bei ausreichender Nachfrage
+              und Verfügbarkeit qualifizierter Lehrkräfte.
             </p>
           </div>
 
@@ -125,22 +158,27 @@ export default function NordkreisPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Enfoque pedagógico y grupos</h2>
 
-            {/* 0-3 años */}
-            <h3 className="mt-4 mb-2 font-semibold">
-              Grupo padres-bebés (0–3 años), 10:00 – 13:30
-            </h3>
+            <p className="mb-6 text-justify leading-relaxed opacity-90">
+              Nordkreis está estructurado en grupos progresivos que acompañan a niños y jóvenes
+              durante varios años. En septiembre podrán comenzar – si se alcanza el número mínimo de
+              alumnos – Spielkreis, Entdeckerkreis y Kompasskreis. Los demás niveles se abrirán
+              progresivamente según la demanda y la disponibilidad de profesorado.
+            </p>
+
+            {/* Spielkreis */}
+            <h3 className="mt-4 mb-2 font-semibold">Spielkreis (0–3 años), 10:00 – 13:30</h3>
             <p className="text-justify leading-relaxed opacity-90">
               Este grupo no está dirigido por una docente. Los padres/madres germanohablantes vienen
               con sus hijos. Los cónyuges también pueden participar, siempre que hablen
               exclusivamente alemán con sus hijos y con otros niños y adultos. Sirve para
               socialización y creación de una comunidad de habla alemana. A partir de las 11:30 los
-              niños del grupo infantil pueden unirse y antes de las 11:30 los niños de Primaria
-              también pueden quedarse juntos.
+              niños del Entdeckerkreis pueden unirse y antes de las 11:30 los niños del Kompasskreis
+              también pueden coincidir.
             </p>
 
-            {/* 3-5 años */}
+            {/* Entdeckerkreis */}
             <h3 className="mt-6 mb-2 font-semibold">
-              Grupo infantil (3–5 años, I3–I5), 10:00 – 11:30
+              Entdeckerkreis (3–5 años, I3–I5), 10:00 – 11:30
             </h3>
             <p className="text-justify leading-relaxed opacity-90">
               Sesiones lúdicas e interactivas con input lingüístico intenso en alemán.
@@ -155,13 +193,28 @@ export default function NordkreisPage() {
               y la conexión entre lenguaje y juego.
             </p>
 
-            {/* Primaria */}
+            {/* Kompasskreis */}
             <h3 className="mt-6 mb-2 font-semibold">
-              Primaria (1.º Primaria y 2.º Primaria, 6–8 años), 11:30 – 13:00
+              Kompasskreis (1.º & 2.º Primaria, 6–8 años), 11:30 – 13:00
             </h3>
             <p className="text-justify leading-relaxed opacity-90">
-              Alemán como lengua de herencia con enfoque en lectura y escritura. Se construye sobre
-              los conocimientos que los niños ya han adquirido en la escuela catalana.
+              Alemán como lengua de herencia con enfoque en lectura y escritura. Se aprende a leer y
+              a escribir, construyendo sobre los conocimientos que los niños ya han adquirido en la
+              escuela catalana.
+            </p>
+
+            {/* Future Groups */}
+            <h3 className="mt-8 mb-2 font-semibold">Próximos grupos</h3>
+            <ul className="ml-6 list-disc space-y-2 opacity-90">
+              <li>Nordlichter (Primaria 3–4)</li>
+              <li>Polarkreis (Primaria 5–6)</li>
+              <li>Denkraum (ESO 1–2)</li>
+              <li>Weitblick (ESO 3–4)</li>
+              <li>Abschlusskreis (17–18 años)</li>
+            </ul>
+            <p className="mt-4 text-justify leading-relaxed opacity-90">
+              Estos grupos se implementarán progresivamente y comenzarán según la demanda y la
+              disponibilidad de profesorado cualificado.
             </p>
           </div>
         </div>
@@ -312,43 +365,43 @@ export default function NordkreisPage() {
       {/* FEES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <h2 className="mb-6 text-center text-2xl font-semibold">
-          Beiträge pro Monat / Cuotas por mes
+          Beiträge pro Monat / Cuotas mensuales
         </h2>
 
         <div className="grid gap-12 md:grid-cols-2">
           {/* GERMAN COLUMN */}
           <div>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
-              <li>1 Kind unter 3 Jahren: 30 €</li>
-              <li>2 Kinder unter 3 Jahren: 50 €</li>
-              <li>1 Kind ab 3 Jahren: 50 €</li>
-              <li>Kind ab 3 + Kind unter 3: 70 €</li>
+              <li>1 Kind im Spielkreis (0–3): 30 €</li>
+              <li>2 Kinder im Spielkreis (0–3): 50 €</li>
+              <li>1 Kind ab 3 Jahren (Entdeckerkreis / Kompasskreis): 50 €</li>
+              <li>1 Kind ab 3 + 1 Kind im Spielkreis: 70 €</li>
               <li>2 Kinder ab 3 Jahren: 90 €</li>
               <li>Einschreibegebühr (Pilotphase): 60 € einmalig</li>
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
-              Das Projekt startet ab 5 Kindern in der Kindergruppe und 6 Kindern in der
-              Mutter-Kind-Gruppe. Die Beiträge decken Raumkosten, Organisation, Materialien und
-              Platzreservierung.
+              Der Start erfolgt bei Erreichen der Mindestteilnehmerzahl (5 Kinder im Entdeckerkreis,
+              6 Kinder im Spielkreis). Die Beiträge decken Raumkosten, Organisation, Materialien
+              sowie die Platzreservierung.
             </p>
           </div>
 
           {/* SPANISH COLUMN */}
           <div>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
-              <li>1 niño menor de 3 años: 30 €</li>
-              <li>2 niños menores de 3 años: 50 €</li>
-              <li>1 niño a partir de 3 años: 50 €</li>
-              <li>Niño a partir de 3 + niño menor de 3: 70 €</li>
+              <li>1 niño en Spielkreis (0–3): 30 €</li>
+              <li>2 niños en Spielkreis (0–3): 50 €</li>
+              <li>1 niño a partir de 3 años (Entdeckerkreis / Kompasskreis): 50 €</li>
+              <li>1 niño a partir de 3 + 1 niño en Spielkreis: 70 €</li>
               <li>2 niños a partir de 3 años: 90 €</li>
-              <li>Matrícula (fase piloto): 60 € una vez</li>
+              <li>Matrícula (fase piloto): 60 € pago único</li>
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
-              El proyecto comienza a partir de 5 niños en el grupo infantil y 6 niños en el grupo
-              padres-bebés. Las cuotas cubren los costes del espacio, la organización, los
-              materiales y la reserva de plazas.
+              El proyecto comenzará al alcanzarse el número mínimo de alumnos (5 niños en
+              Entdeckerkreis, 6 niños en Spielkreis). Las cuotas cubren el alquiler del espacio, la
+              organización, los materiales y la reserva de plaza.
             </p>
           </div>
         </div>

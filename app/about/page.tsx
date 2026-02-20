@@ -179,7 +179,7 @@ export default function Page() {
           <li>
             Creación de sitio web y app para el mundo del tango: bailo.app (actualmente en pausa)
           </li>
-          <li>Certificado de Especialización en Data Scientist, Universitat Oberta de Catalunya</li>
+          <li>Especialización en Data Scientist, Universitat Oberta de Catalunya</li>
         </ul>
 
         <h3>Aprender desde el cuerpo y la experiencia</h3>
