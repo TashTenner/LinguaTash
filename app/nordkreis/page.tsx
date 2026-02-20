@@ -87,6 +87,16 @@ export default function NordkreisPage() {
         </div>
       </section>
 
+      <section>
+        <div className="my-20 flex justify-center">
+          <img
+            src="/static/images/nordkreis-icon.png"
+            alt="Nordkreis Logo"
+            className="h-8 w-auto"
+          />
+        </div>
+      </section>
+
       {/* PEDAGOGICAL APPROACH */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -220,6 +230,16 @@ export default function NordkreisPage() {
         </div>
       </section>
 
+      <section>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="font-[Caveat] text-3xl leading-relaxed">
+            „Sprache muss sich sicher anfühlen. Erst wenn sie sichtbar wertgeschätzt wird, wird sie
+            Teil der eigenen Identität.“
+          </p>
+          <p className="mt-4 text-sm tracking-wide opacity-60">Nordkreis</p>
+        </div>
+      </section>
+
       {/* WHY */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -281,6 +301,16 @@ export default function NordkreisPage() {
               en alemán.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="font-[Caveat] text-3xl leading-relaxed">
+            „Sprache wird lebendig, wenn ich erlebe, wie viele Menschen sie sprechen. Gemeinschaft
+            gibt ihr Sinn — Vielfalt erweitert meinen Wortschatz.“
+          </p>
+          <p className="mt-4 text-sm tracking-wide opacity-60">Nordkreis</p>
         </div>
       </section>
 
@@ -349,6 +379,16 @@ export default function NordkreisPage() {
         </div>
       </section>
 
+      <section>
+        <div className="my-20 flex justify-center">
+          <img
+            src="/static/images/nordkreis-icon.png"
+            alt="Nordkreis Logo"
+            className="h-8 w-auto"
+          />
+        </div>
+      </section>
+
       {/* LOCATION & TIMES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 text-center dark:bg-[#081C3C]">
         <h2 className="mb-6 text-2xl font-semibold">Ort / Lugar</h2>
@@ -378,9 +418,9 @@ export default function NordkreisPage() {
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
-              Der Start erfolgt bei Erreichen der Mindestteilnehmerzahl (5 Kinder im Entdeckerkreis,
-              6 Kinder im Spielkreis). Die Beiträge decken Raumkosten, Organisation, Materialien
-              sowie die Platzreservierung.
+              Der Start erfolgt bei Erreichen der Mindestteilnehmerzahl (Spielkreis: 6–10 Kinder;
+              Entdeckerkreis: 5–10 Kinder). Die Beiträge decken Raumkosten, Organisation,
+              Materialien sowie die Platzreservierung.
             </p>
           </div>
 
@@ -397,8 +437,8 @@ export default function NordkreisPage() {
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
-              El proyecto comenzará al alcanzarse el número mínimo de alumnos (5 niños en
-              Entdeckerkreis, 6 niños en Spielkreis). Las cuotas cubren el alquiler del espacio, la
+              El proyecto comenzará al alcanzarse el número mínimo de alumnos (Spielkreis: 6–10
+              niños; Entdeckerkreis: 5–10 niños). Las cuotas cubren el alquiler del espacio, la
               organización, los materiales y la reserva de plaza.
             </p>
           </div>
