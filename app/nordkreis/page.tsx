@@ -4,11 +4,16 @@ export default function NordkreisPage() {
       {/* HERO */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
         {/* Nordkreis Logo */}
-        <div className="flex justify-center">
+        <div className="mb-8 flex justify-center">
           <img
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
-            className="mb-8 h-24 w-auto md:h-28"
+            className="block h-24 w-auto md:h-28 dark:hidden"
+          />
+          <img
+            src="/static/images/nordkreis-icon-dark.png"
+            alt="Nordkreis Dark Logo"
+            className="hidden h-24 w-auto md:h-28 dark:block"
           />
         </div>
 
@@ -92,7 +97,12 @@ export default function NordkreisPage() {
           <img
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
-            className="h-8 w-auto"
+            className="block h-8 w-auto dark:hidden"
+          />
+          <img
+            src="/static/images/nordkreis-icon-dark.png"
+            alt="Nordkreis Dark Logo"
+            className="hidden h-8 w-auto dark:block"
           />
         </div>
       </section>
@@ -384,7 +394,12 @@ export default function NordkreisPage() {
           <img
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
-            className="h-8 w-auto"
+            className="block h-8 w-auto dark:hidden"
+          />
+          <img
+            src="/static/images/nordkreis-icon-dark.png"
+            alt="Nordkreis Dark Logo"
+            className="hidden h-8 w-auto dark:block"
           />
         </div>
       </section>
