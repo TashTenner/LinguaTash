@@ -329,8 +329,8 @@ export default function NordkreisPage() {
             </p>
 
             <p className="mt-3 text-justify opacity-90">
-              Además, se ofrecerán actividades especiales relacionadas con tradiciones alemanas
-              importantes, por ejemplo:
+              Se ofrecerán actividades especiales relacionadas con tradiciones alemanas importantes,
+              por ejemplo:
             </p>
 
             <ul className="mt-3 ml-6 list-disc space-y-2 opacity-90">
@@ -364,17 +364,14 @@ export default function NordkreisPage() {
 
       {/* FEES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
-        <h2 className="mb-6 text-center text-2xl font-semibold">
-          Beiträge pro Monat / Cuotas mensuales
-        </h2>
-
         <div className="grid gap-12 md:grid-cols-2">
           {/* GERMAN COLUMN */}
           <div>
+            <h2 className="mb-6 text-2xl font-semibold">Beiträge pro Monat</h2>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
               <li>1 Kind im Spielkreis (0–3): 30 €</li>
               <li>2 Kinder im Spielkreis (0–3): 50 €</li>
-              <li>1 Kind ab 3 Jahren (Entdeckerkreis / Kompasskreis): 50 €</li>
+              <li>1 Kind ab 3 Jahren (Entdeckerkreis oder Kompasskreis): 50 €</li>
               <li>1 Kind ab 3 + 1 Kind im Spielkreis: 70 €</li>
               <li>2 Kinder ab 3 Jahren: 90 €</li>
               <li>Einschreibegebühr (Pilotphase): 60 € einmalig</li>
@@ -389,10 +386,11 @@ export default function NordkreisPage() {
 
           {/* SPANISH COLUMN */}
           <div>
+            <h2 className="mb-6 text-2xl font-semibold">Cuotas mensuales</h2>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
               <li>1 niño en Spielkreis (0–3): 30 €</li>
               <li>2 niños en Spielkreis (0–3): 50 €</li>
-              <li>1 niño a partir de 3 años (Entdeckerkreis / Kompasskreis): 50 €</li>
+              <li>1 niño a partir de 3 años (Entdeckerkreis o Kompasskreis): 50 €</li>
               <li>1 niño a partir de 3 + 1 niño en Spielkreis: 70 €</li>
               <li>2 niños a partir de 3 años: 90 €</li>
               <li>Matrícula (fase piloto): 60 € pago único</li>
