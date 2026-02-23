@@ -87,7 +87,13 @@ export default function ResuenaPage() {
           {/* Der Sommerweihnachtsmann */}
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-xl font-semibold">Der Sommerweihnachtsmann</h3>
+              <h3
+                className="tag text-xl font-semibold break-words"
+                style={{ fontSize: 'calc(1rem + 0.5vw)' }}
+              >
+                Der Sommerweihnachtsmann
+              </h3>
+
               <span className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A]">
                 En desarrollo
               </span>
@@ -134,7 +140,7 @@ export default function ResuenaPage() {
 
         <a
           href="mailto:resuena@linguatash.com"
-          className="mt-6 w-fit max-w-full rounded-xl bg-[#B3475A] px-6 py-3 font-medium break-words transition-transform duration-300 hover:scale-105"
+          className="mt-6 w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap transition-transform duration-300 hover:scale-105 sm:text-sm"
         >
           resuena@linguatash.com
         </a>
