@@ -466,7 +466,7 @@ export default function NordkreisPage() {
 
         <a
           href="mailto:nordkreis@linguatash.com"
-          className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 font-medium transition-transform duration-300 hover:scale-105"
+          className="mt-6 w-fit max-w-full rounded-xl bg-[#B3475A] px-6 py-3 font-medium break-words transition-transform duration-300 hover:scale-105"
         >
           nordkreis@linguatash.com
         </a>

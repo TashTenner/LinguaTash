@@ -129,7 +129,7 @@ export default function Footer() {
 
         {/* Bottom line */}
         <div className="mt-16 flex flex-col items-center border-t border-gray-200 pt-6 dark:border-gray-100">
-          <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="mb-2 flex flex-col items-center space-y-1 text-sm text-gray-500 sm:flex-row sm:space-y-0 sm:space-x-2 dark:text-gray-400">
             <div>{siteMetadata.author}</div>
             <div>{` • `}</div>
             <div>{`© ${new Date().getFullYear()}`}</div>

@@ -65,7 +65,7 @@ export default function ResuenaPage() {
         <div className="space-y-8">
           {/* ¡Salten! */}
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-xl font-semibold">¡Salten!</h3>
               <span className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A]">
                 En desarrollo
@@ -86,7 +86,7 @@ export default function ResuenaPage() {
 
           {/* Der Sommerweihnachtsmann */}
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-xl font-semibold">Der Sommerweihnachtsmann</h3>
               <span className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A]">
                 En desarrollo
@@ -134,7 +134,7 @@ export default function ResuenaPage() {
 
         <a
           href="mailto:resuena@linguatash.com"
-          className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 font-medium transition-transform duration-300 hover:scale-105"
+          className="mt-6 w-fit max-w-full rounded-xl bg-[#B3475A] px-6 py-3 font-medium break-words transition-transform duration-300 hover:scale-105"
         >
           resuena@linguatash.com
         </a>
