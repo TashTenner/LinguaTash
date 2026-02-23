@@ -465,10 +465,10 @@ export default function NordkreisPage() {
         <h2 className="mb-6 text-2xl font-semibold">Kontakt / Contacto</h2>
 
         <a
-          href="mailto:resuena@linguatash.com"
-          className="mt-6 w-fit max-w-full rounded-xl bg-[#B3475A] px-6 py-3 font-medium break-words transition-transform duration-300 hover:scale-105"
+          href="mailto:alemanydu@linguatash.com"
+          className="mt-6 w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap transition-transform duration-300 hover:scale-105 sm:text-sm"
         >
-          resuena@linguatash.com
+          alemanydu@linguatash.com
         </a>
       </section>
     </main>
