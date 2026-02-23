@@ -11,7 +11,7 @@ const siteMetadata = {
   siteRepo: 'https://github.com/TashTenner/linguatash',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/social-banner.png`,
-  email: 'team@linguatash.com',
+  email: 'info@linguatash.com',
 
   youtube: 'https://www.youtube.com/@LinguaTash',
   instagram: 'https://www.instagram.com/linguatash',

@@ -43,9 +43,6 @@ const Header = () => {
 
         {/* Social icons */}
         <div className="hidden items-center gap-x-2 sm:flex">
-          {siteMetadata.email && (
-            <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={4} />
-          )}
           {siteMetadata.youtube && (
             <SocialIcon kind="youtube" href={siteMetadata.youtube} size={4} />
           )}

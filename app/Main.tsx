@@ -20,10 +20,11 @@ export default function Home() {
         </p>
 
         <p className="text-lg text-gray-600 dark:text-gray-400">
-          De esta base nacen tres proyectos complementarios:
+          De esta base nacen cuatro proyectos complementarios: <strong>Fonetikas</strong> –{' '}
+          <strong>Nordkreis</strong> – <strong>Aleman·y·Du</strong> – <strong>Resuena</strong>
         </p>
 
-        <ul className="list-inside list-disc space-y-2 text-gray-600 dark:text-gray-400">
+        {/* <ul className="list-inside list-disc space-y-2 text-gray-600 dark:text-gray-400">
           <li>
             <strong>Fonetikas</strong> – adquisición del alemán para adultos hispanohablantes a
             partir de la fonética y la oralidad
@@ -33,10 +34,14 @@ export default function Home() {
             germanohablantes en Barcelona
           </li>
           <li>
+            <strong>Aleman·y·Du</strong> – Programa de alemán extraescolar centrado en la fonética y
+            la expresión oral (I3–4º ESO).
+          </li>
+          <li>
             <strong>Resuena</strong> – un juego de mesa para adquirir vocabulario en distintas
             lenguas mediante la fonética, sin lectura
           </li>
-        </ul>
+        </ul> */}
 
         <p className="text-lg text-gray-600 dark:text-gray-400">
           Todos parten del mismo principio: la lengua se adquiere primero en el oído y en la voz; la
@@ -56,9 +61,9 @@ export default function Home() {
       <section className="space-y-12">
         <h2 className="text-center text-3xl font-bold">Mis propuestas</h2>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2">
           {/* Fonetikas */}
-          <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
+          <div className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
             <div>
               <h3 className="text-xl font-semibold">Fonetikas</h3>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
@@ -68,14 +73,14 @@ export default function Home() {
             </div>
             <Link
               href="/fonetikas"
-              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-4 inline-block rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               Descubrir Fonetikas
             </Link>
           </div>
 
           {/* Nordkreis */}
-          <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
+          <div className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
             <div>
               <h3 className="text-xl font-semibold">Nordkreis</h3>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
@@ -85,14 +90,31 @@ export default function Home() {
             </div>
             <Link
               href="/nordkreis"
-              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-4 inline-block rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               Conocer Nordkreis
             </Link>
           </div>
 
+          {/* Alemán y Du */}
+          <div className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
+            <div>
+              <h3 className="text-xl font-semibold">Alemán·y·Du</h3>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Programa de alemán extraescolar centrado en la fonética y la expresión oral (I3–4º
+                ESO).
+              </p>
+            </div>
+            <Link
+              href="/alemanydu"
+              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Descubrir Alemán·y·Du
+            </Link>
+          </div>
+
           {/* Resuena */}
-          <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
+          <div className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
             <div>
               <h3 className="text-xl font-semibold">Resuena</h3>
               <p className="mt-2 text-gray-600 dark:text-gray-400">
@@ -102,7 +124,7 @@ export default function Home() {
             </div>
             <Link
               href="/resuena"
-              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-4 inline-block rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="bg-primary-500 hover:bg-primary-600 focus-visible:outline-primary-500 mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               Ver Resuena
             </Link>
