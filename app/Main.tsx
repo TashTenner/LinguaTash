@@ -21,27 +21,8 @@ export default function Home() {
 
         <p className="text-lg text-gray-600 dark:text-gray-400">
           De esta base nacen cuatro proyectos complementarios: <strong>Fonetikas</strong> –{' '}
-          <strong>Nordkreis</strong> – <strong>Aleman·y·Du</strong> – <strong>Resuena</strong>
+          <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong>
         </p>
-
-        {/* <ul className="list-inside list-disc space-y-2 text-gray-600 dark:text-gray-400">
-          <li>
-            <strong>Fonetikas</strong> – adquisición del alemán para adultos hispanohablantes a
-            partir de la fonética y la oralidad
-          </li>
-          <li>
-            <strong>Nordkreis</strong> – escuela de alemán de los sábados para familias
-            germanohablantes en Barcelona
-          </li>
-          <li>
-            <strong>Aleman·y·Du</strong> – Programa de alemán extraescolar centrado en la fonética y
-            la expresión oral (I3–4º ESO).
-          </li>
-          <li>
-            <strong>Resuena</strong> – un juego de mesa para adquirir vocabulario en distintas
-            lenguas mediante la fonética, sin lectura
-          </li>
-        </ul> */}
 
         <p className="text-lg text-gray-600 dark:text-gray-400">
           Todos parten del mismo principio: la lengua se adquiere primero en el oído y en la voz; la
