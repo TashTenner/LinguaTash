@@ -48,8 +48,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <Link href="/fonetikas" className="hover:text-primary-500">
-                  Fonetikas — cursos de alemán para adultos hispanohablantes, basados en la fonética
-                  y la oralidad.
+                  Fonetikas — cursos online de alemán para adultos hispanohablantes, basados en la
+                  fonética y la oralidad.
                 </Link>
               </li>
               <li>
@@ -59,25 +59,70 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/nordkreis" className="hover:text-primary-500">
+                  Alemán·y·Du — extraescolares de alemán con enfoque comunicativo para alumnado de
+                  I3 a 4º de ESO en Barcelona.
+                </Link>
+              </li>
+              <li>
                 <Link href="/resuena" className="hover:text-primary-500">
-                  Resuena — juego fonético descargable y materiales didácticos para adquirir
-                  idiomas.
+                  Resuena — juegos y audiolibros descargables para aprender y mejorar idiomas, con
+                  enfoque en el multilingüismo.
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* 4 — Social */}
-          <div className="space-y-4">
+          {/* 4 — Contacto */}
+          <div className="space-y-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Conecta conmigo
             </h3>
 
-            <div className="flex flex-wrap gap-4">
-              <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={6} />
-              <SocialIcon kind="youtube" href={siteMetadata.youtube} size={6} />
-              <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} />
-              <SocialIcon kind="instagram" href={siteMetadata.instagram} size={6} />
+            {/* Social Media */}
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Redes sociales</p>
+
+              <div className="flex flex-wrap gap-4">
+                <SocialIcon kind="youtube" href={siteMetadata.youtube} size={6} />
+                <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} />
+                <SocialIcon kind="instagram" href={siteMetadata.instagram} size={6} />
+              </div>
+            </div>
+
+            {/* Emails */}
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                Correos de contacto
+              </p>
+
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li>
+                  <a href="mailto:info@linguatash.com" className="hover:text-primary-500">
+                    info@linguatash.com
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:fonetikas@linguatash.com" className="hover:text-primary-500">
+                    fonetikas@linguatash.com
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:nordkreis@linguatash.com" className="hover:text-primary-500">
+                    nordkreis@linguatash.com
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:alemanydu@linguatash.com" className="hover:text-primary-500">
+                    alemanydu@linguatash.com
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:resuena@linguatash.com" className="hover:text-primary-500">
+                    resuena@linguatash.com
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
