@@ -34,7 +34,7 @@ export default function Footer() {
               realmente posible en tu vida cotidiana.
             </p>
 
-            <Link href="/about" className="text-primary-500 hover:text-primary-600">
+            <Link href="/perfil" className="text-primary-500 hover:text-primary-600">
               Más sobre mí →
             </Link>
           </div>
