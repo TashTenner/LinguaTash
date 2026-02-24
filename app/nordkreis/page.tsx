@@ -246,7 +246,6 @@ export default function NordkreisPage() {
             „Sprache muss sich sicher anfühlen. Erst wenn sie sichtbar wertgeschätzt wird, wird sie
             Teil der eigenen Identität.“
           </p>
-          <p className="mt-4 text-sm tracking-wide opacity-60">Nordkreis</p>
         </div>
       </section>
 
@@ -320,7 +319,6 @@ export default function NordkreisPage() {
             „Sprache wird lebendig, wenn ich erlebe, wie viele Menschen sie sprechen. Gemeinschaft
             gibt ihr Sinn — Vielfalt erweitert meinen Wortschatz.“
           </p>
-          <p className="mt-4 text-sm tracking-wide opacity-60">Nordkreis</p>
         </div>
       </section>
 

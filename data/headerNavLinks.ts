@@ -4,7 +4,7 @@ const headerNavLinks = [
   { href: '/nordkreis', title: 'Nordkreis' },
   { href: '/alemanydu', title: 'Alemán·y·Du' },
   { href: '/resuena', title: 'Resuena' },
-  { href: '/about', title: 'About' },
+  { href: '/perfil', title: 'Perfil' },
   { href: '/now', title: 'Now' },
   { href: '/blog', title: 'Blog' },
 ]
