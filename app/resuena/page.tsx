@@ -86,6 +86,21 @@ export default function ResuenaPage() {
             </p>
           </div>
 
+          <section>
+            <div className="my-20 flex justify-center">
+              <img
+                src="/static/images/resuena-icon.png"
+                alt="Resuena Logo"
+                className="block h-8 w-auto dark:hidden"
+              />
+              <img
+                src="/static/images/Resuena-icon-dark.png"
+                alt="Resuena Dark Logo"
+                className="hidden h-8 w-auto dark:block"
+              />
+            </div>
+          </section>
+
           {/* Der Sommerweihnachtsmann */}
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">

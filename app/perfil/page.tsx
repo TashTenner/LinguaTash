@@ -18,8 +18,8 @@ export default function Page() {
         <p>
           Mi trabajo se apoya en la investigación sobre adquisición del lenguaje, la teoría del
           apego y las ciencias del aprendizaje. A esto se suma una amplia experiencia práctica en la
-          enseñanza de lenguas en distintos contextos y países —desde Nueva Zelanda hasta París y
-          Barcelona—, así como mi propia experiencia como madre en una familia multilingüe.
+          enseñanza de lenguas en distintos contextos y países, desde Nueva Zelanda hasta París y
+          Barcelona, así como mi propia experiencia como madre en una familia multilingüe.
         </p>
 
         <p>
@@ -83,7 +83,7 @@ export default function Page() {
         </p>
 
         <p>
-          Este proceso puede —y debe— darse sin recurrir a la lengua escrita en una primera fase. La
+          Este proceso puede y debe darse sin recurrir a la lengua escrita en una primera fase. La
           lectura y la escritura no desaparecen; simplemente llegan más tarde, cuando el idioma ya
           se ha construido en el oído y en la voz, y cuando la persona empieza a sentirlo como algo
           propio.
@@ -156,7 +156,7 @@ export default function Page() {
 
         <p>
           En mi blog comparto los pilares de la metodología Fonetikas, y en YouTube e Instagram
-          publico regularmente consejos prácticos para aprender alemán —y otras lenguas—.
+          publico regularmente consejos prácticos para aprender alemán y otras lenguas.
         </p>
       </section>
 
