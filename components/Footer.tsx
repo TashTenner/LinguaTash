@@ -29,7 +29,7 @@ export default function Footer() {
 
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Imagino un mundo donde aprender idiomas en la edad adulta sea una experiencia natural,
-              vivida con alegría y confianza — a través del oído, la voz y el juego. Mi misión es
+              vivida con alegría y confianza: a través del oído, la voz y el juego. Mi misión es
               acompañarte con claridad y fundamento para que este camino sea sostenible, humano y
               realmente posible en tu vida cotidiana.
             </p>

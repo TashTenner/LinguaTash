@@ -16,7 +16,7 @@ export default function Home() {
         <p className="text-lg opacity-80">
           LinguaTash es el espacio donde convergen mi trabajo y mi experiencia en adquisición del
           lenguaje. A través de distintos proyectos, exploro cómo se adquieren las lenguas de forma
-          natural — en la infancia, en la edad adulta y a través del juego.
+          natural: en la infancia, en la edad adulta y a través del juego.
         </p>
 
         <p className="text-lg opacity-80">

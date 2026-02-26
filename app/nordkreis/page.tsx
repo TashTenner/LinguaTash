@@ -1,3 +1,5 @@
+import Link from '../../components/Link'
+
 export default function NordkreisPage() {
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -46,7 +48,6 @@ export default function NordkreisPage() {
           Vivir, aprender y transmitir el alemán juntos.
         </p>
       </section>
-
       {/* ABOUT */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -91,7 +92,6 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
-
       <section>
         <div className="my-20 flex justify-center">
           <img
@@ -106,7 +106,6 @@ export default function NordkreisPage() {
           />
         </div>
       </section>
-
       {/* PEDAGOGICAL APPROACH */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -239,7 +238,6 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
-
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
@@ -248,7 +246,6 @@ export default function NordkreisPage() {
           </p>
         </div>
       </section>
-
       {/* WHY */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -312,16 +309,14 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
-
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
             „Sprache wird lebendig, wenn ich erlebe, wie viele Menschen sie sprechen. Gemeinschaft
-            gibt ihr Sinn — Vielfalt erweitert meinen Wortschatz.“
+            gibt ihr Sinn und Vielfalt erweitert meinen Wortschatz.“
           </p>
         </div>
       </section>
-
       {/* ANNUAL STRUCTURE */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -402,6 +397,84 @@ export default function NordkreisPage() {
         </div>
       </section>
 
+      {/* DaF vs DaH */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-8 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Zwei unterschiedliche sprachliche Wege</h2>
+
+            <p className="leading-relaxed opacity-90">
+              Kinder lernen Deutsch aus unterschiedlichen Ausgangssituationen. Deshalb unterscheiden
+              wir zwischen Deutsch als Fremdsprache (DaF) und Deutsch als Herkunftssprache (DaH).
+            </p>
+
+            <h3 className="mt-8 mb-3 text-xl font-semibold">
+              <Link href="/alemanydu" className="hover:underline">
+                Alemán·y·Du
+              </Link>{' '}
+              — DaF
+            </h3>
+
+            <p className="leading-relaxed opacity-90">
+              Für Kinder ohne Deutsch im familiären Umfeld. Der Spracherwerb beginnt strukturiert
+              von Grund auf (Aussprache, Wortschatz, erste Grammatik).
+            </p>
+
+            <h3 className="mt-8 mb-3 text-xl font-semibold">Nordkreis — DaH</h3>
+
+            <p className="leading-relaxed opacity-90">
+              Für Kinder mit Deutsch als Familiensprache. Die vorhandene Sprachbasis wird gefestigt
+              und akademisch weiterentwickelt (Lesen, Schreiben, Ausbau des Wortschatzes).
+            </p>
+          </div>
+
+          {/* SPANISH COLUMN */}
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Dos enfoques lingüísticos diferentes</h2>
+
+            <p className="leading-relaxed opacity-90">
+              Los niños aprenden alemán desde puntos de partida distintos. Por ello diferenciamos
+              entre Alemán como lengua extranjera (DaF) y Alemán como lengua de herencia (DaH).
+            </p>
+
+            <h3 className="mt-8 mb-3 text-xl font-semibold">
+              <Link href="/alemanydu" className="hover:underline">
+                Alemán·y·Du
+              </Link>{' '}
+              — DaF
+            </h3>
+
+            <p className="leading-relaxed opacity-90">
+              Para niños sin alemán en el entorno familiar. El aprendizaje comienza desde la base
+              (pronunciación, vocabulario y gramática inicial).
+            </p>
+
+            <h3 className="mt-8 mb-3 text-xl font-semibold">Nordkreis — DaH</h3>
+
+            <p className="leading-relaxed opacity-90">
+              Para niños que ya crecen con alemán en casa. Se consolida y desarrolla la lengua a
+              nivel académico (lectura, escritura y ampliación de vocabulario).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="my-20 flex justify-center">
+          <img
+            src="/static/images/nordkreis-icon.png"
+            alt="Nordkreis Logo"
+            className="block h-8 w-auto dark:hidden"
+          />
+          <img
+            src="/static/images/nordkreis-icon-dark.png"
+            alt="Nordkreis Dark Logo"
+            className="hidden h-8 w-auto dark:block"
+          />
+        </div>
+      </section>
+
       {/* LOCATION & TIMES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 text-center dark:bg-[#081C3C]">
         <h2 className="mb-6 text-2xl font-semibold">Ort / Lugar</h2>
@@ -414,7 +487,6 @@ export default function NordkreisPage() {
           08024 Barcelona
         </p>
       </section>
-
       {/* FEES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -457,7 +529,6 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
-
       {/* CONTACT */}
       <section className="rounded-2xl border border-[#9A8F85]/30 bg-[#081C3C] px-6 py-20 text-center text-[#F4EFE8]">
         <h2 className="mb-6 text-2xl font-semibold">Kontakt / Contacto</h2>
