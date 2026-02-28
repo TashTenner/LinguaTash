@@ -24,7 +24,7 @@ const ContentSecurityPolicy = `
   media-src *.s3.amazonaws.com;
   connect-src 'self' cloud.umami.is;
   font-src 'self';
-  frame-src giscus.app
+  frame-src giscus.app;
 `
 
 const securityHeaders = [
