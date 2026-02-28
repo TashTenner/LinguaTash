@@ -22,7 +22,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
-  connect-src 'self' cloud.umami.is;
+  connect-src 'self' cloud.umami.is https://api-gateway.umami.dev;
   font-src 'self';
   frame-src giscus.app;
 `
