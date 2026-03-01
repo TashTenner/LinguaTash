@@ -56,7 +56,7 @@ const Header = () => {
         </div>
 
         {/* Other header controls */}
-        <SearchButton />
+        {/* <SearchButton /> */}
         <ThemeSwitch />
         <MobileNav />
       </div>

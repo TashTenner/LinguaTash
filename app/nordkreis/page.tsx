@@ -48,6 +48,7 @@ export default function NordkreisPage() {
           Vivir, aprender y transmitir el alemán juntos.
         </p>
       </section>
+
       {/* ABOUT */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -92,6 +93,7 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
+
       <section>
         <div className="my-20 flex justify-center">
           <img
@@ -106,6 +108,7 @@ export default function NordkreisPage() {
           />
         </div>
       </section>
+      
       {/* PEDAGOGICAL APPROACH */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">

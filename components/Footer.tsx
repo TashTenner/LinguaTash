@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
@@ -8,20 +7,7 @@ export default function Footer() {
     <footer className="mt-24 border-t border-gray-200 dark:border-gray-100">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-4">
-          {/* 1 — Portrait */}
-          <div className="space-y-4">
-            <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700">
-              <Image
-                src="/static/images/ocean.jpeg"
-                alt="Retrato de Tash, fundadora de LinguaTash"
-                width={420}
-                height={420}
-                className="h-auto w-full object-cover"
-              />
-            </div>
-          </div>
-
-          {/* 2 — About */}
+          {/* 1 — Sobre mí */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Mi nombre es Tash
@@ -39,47 +25,43 @@ export default function Footer() {
             </Link>
           </div>
 
-          {/* 3 — Offers */}
+          {/* 2 — Proyectos */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Lo que ofrezco
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Proyectos</h3>
 
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <Link href="/fonetikas" className="hover:text-primary-500">
-                  Fonetikas — cursos online de alemán para adultos hispanohablantes, basados en la
-                  fonética y la oralidad.
+                  Fonetikas
                 </Link>
               </li>
               <li>
                 <Link href="/nordkreis" className="hover:text-primary-500">
-                  Nordkreis — escuela de alemán de los sábados para niños de familias
-                  germanohablantes en Barcelona.
+                  Nordkreis
                 </Link>
               </li>
               <li>
-                <Link href="/nordkreis" className="hover:text-primary-500">
-                  Alemán·y·Du — extraescolares de alemán con enfoque comunicativo para alumnado de
-                  I3 a 4º de ESO en Barcelona.
+                <Link href="/alemanydu" className="hover:text-primary-500">
+                  Alemán·y·Du
                 </Link>
               </li>
               <li>
                 <Link href="/resuena" className="hover:text-primary-500">
-                  Resuena — juegos y audiolibros descargables para aprender y mejorar idiomas, con
-                  enfoque en el multilingüismo.
+                  Resuena
+                </Link>
+              </li>
+              <li>
+                <Link href="/1p2l" className="hover:text-primary-500">
+                  1P2L
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* 4 — Contacto */}
+          {/* 3 — Contacto */}
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Conecta conmigo
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Contacto</h3>
 
-            {/* Social Media */}
             <div className="space-y-3">
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Redes sociales</p>
 
@@ -90,11 +72,8 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Emails */}
             <div className="space-y-3">
-              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                Correos de contacto
-              </p>
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Correos</p>
 
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <li>
@@ -122,28 +101,49 @@ export default function Footer() {
                     resuena@linguatash.com
                   </a>
                 </li>
+                <li>
+                  <a href="mailto:1p2l@linguatash.com" className="hover:text-primary-500">
+                    1p2l@linguatash.com
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
+
+          {/* 4 — Legal */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Información legal
+            </h3>
+
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <li>
+                <Link href="/politica-de-privacidad" className="hover:text-primary-500">
+                  Política de privacidad
+                </Link>
+              </li>
+              <li>
+                <Link href="/aviso-legal" className="hover:text-primary-500">
+                  Aviso legal
+                </Link>
+              </li>
+              <li>
+                <Link href="/politica-de-cookies" className="hover:text-primary-500">
+                  Política de Cookies
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom line */}
+        {/* Línea inferior */}
         <div className="mt-16 flex flex-col items-center border-t border-gray-200 pt-6 dark:border-gray-100">
           <div className="mb-2 flex flex-col items-center space-y-1 text-sm text-gray-500 sm:flex-row sm:space-y-0 sm:space-x-2 dark:text-gray-400">
             <div>{siteMetadata.author}</div>
-            <div>{` • `}</div>
-            <div>{`© ${new Date().getFullYear()}`}</div>
-            <div>{` • `}</div>
+            <div> • </div>
+            <div>© {new Date().getFullYear()}</div>
+            <div> • </div>
             <Link href="/">{siteMetadata.title}</Link>
-          </div>
-
-          <div className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <Link
-              href="https://github.com/timlrx/tailwind-nextjs-starter-blog"
-              className="hover:text-primary-500 underline underline-offset-4"
-            >
-              Tailwind Nextjs Theme
-            </Link>
           </div>
         </div>
       </div>
