@@ -1,6 +1,6 @@
 # LinguaTash
 
-LinguaTash is 
+LinguaTash is
 a content-driven website focused on language learning, multilingual parenting, and natural language acquisition.  
 The project combines long-form educational content, practical resources, and course offerings, built with modern web technologies for performance, accessibility, and scalability.
 
