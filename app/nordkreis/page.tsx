@@ -108,7 +108,7 @@ export default function NordkreisPage() {
           />
         </div>
       </section>
-      
+
       {/* PEDAGOGICAL APPROACH */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
