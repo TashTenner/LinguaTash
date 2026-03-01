@@ -94,7 +94,7 @@ export default function ResuenaPage() {
                 className="block h-8 w-auto dark:hidden"
               />
               <img
-                src="/static/images/Resuena-icon-dark.png"
+                src="/static/images/resuena-icon-dark.png"
                 alt="Resuena Dark Logo"
                 className="hidden h-8 w-auto dark:block"
               />

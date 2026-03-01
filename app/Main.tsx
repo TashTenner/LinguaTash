@@ -45,13 +45,28 @@ export default function Home() {
         <div className="grid gap-10 md:grid-cols-2">
           {/* Fonetikas */}
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
-            <div>
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src="/static/images/fonetikas-icon.png"
+                  alt="Fonetikas Logo"
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <img
+                  src="/static/images/fonetikas-icon-dark.png"
+                  alt="Fonetikas Dark Logo"
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
               <h3 className="text-xl font-semibold">Fonetikas</h3>
+
               <p className="mt-4 opacity-90">
                 Adultos hispanohablantes: aprendizaje de alemán desde cero o reconstrucción de la
                 base oral, basado en fonética y contrastes con el español.
               </p>
             </div>
+
             <Link
               href="/fonetikas"
               className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
@@ -62,13 +77,28 @@ export default function Home() {
 
           {/* Nordkreis */}
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] p-8 dark:bg-[#081C3C]">
-            <div>
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src="/static/images/nordkreis-icon.png"
+                  alt="Nordkreis Logo"
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <img
+                  src="/static/images/nordkreis-icon-dark.png"
+                  alt="Nordkreis Dark Logo"
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
               <h3 className="text-xl font-semibold">Nordkreis</h3>
+
               <p className="mt-4 opacity-90">
                 Niños de familias germanohablantes en Barcelona: escuela de alemán los sábados,
                 centrada en el desarrollo natural del idioma.
               </p>
             </div>
+
             <Link
               href="/nordkreis"
               className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
@@ -77,15 +107,30 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Alemán y Du */}
+          {/* Alemán·y·Du */}
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
-            <div>
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src="/static/images/alemanydu-icon.png"
+                  alt="Alemán y Du Logo"
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <img
+                  src="/static/images/alemanydu-icon-dark.png"
+                  alt="Alemán y Du Dark Logo"
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
               <h3 className="text-xl font-semibold">Alemán·y·Du</h3>
+
               <p className="mt-4 opacity-90">
                 Programa de alemán extraescolar centrado en la fonética y la expresión oral (I3–4º
                 ESO).
               </p>
             </div>
+
             <Link
               href="/alemanydu"
               className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
@@ -96,18 +141,65 @@ export default function Home() {
 
           {/* Resuena */}
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] p-8 dark:bg-[#081C3C]">
-            <div>
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src="/static/images/resuena-icon.png"
+                  alt="Resuena Logo"
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <img
+                  src="/static/images/resuena-icon-dark.png"
+                  alt="Resuena Dark Logo"
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
               <h3 className="text-xl font-semibold">Resuena</h3>
+
               <p className="mt-4 opacity-90">
                 Familias, adultos y niños: juego de mesa para adquirir vocabulario en varias lenguas
                 a través de la fonética, sin lectura de palabras.
               </p>
             </div>
+
             <Link
               href="/resuena"
               className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
             >
               Ver Resuena
+            </Link>
+          </div>
+
+          {/* 1P2L */}
+          <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <img
+                  src="/static/images/1p2l-icon.png"
+                  alt="1P2L Logo"
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <img
+                  src="/static/images/1p2l-icon-dark.png"
+                  alt="1P2L Dark Logo"
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
+              <h3 className="text-xl font-semibold">1P2L</h3>
+
+              <p className="mt-4 opacity-90">
+                Transmisión consciente de dos lenguas de herencia por una sola persona, basada en
+                identidad, tiempo y contexto.
+              </p>
+            </div>
+
+            <Link
+              href="/1p2l"
+              className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
+            >
+              Ver 1P2L
             </Link>
           </div>
         </div>
