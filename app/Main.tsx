@@ -20,8 +20,9 @@ export default function Home() {
         </p>
 
         <p className="text-lg opacity-80">
-          De esta base nacen cuatro proyectos complementarios: <strong>Fonetikas</strong> –{' '}
-          <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong>
+          De esta base nacen cinco proyectos complementarios: <strong>Fonetikas</strong> –{' '}
+          <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong> –{' '}
+          <strong>1P2L</strong>
         </p>
 
         <p className="text-lg opacity-80">
