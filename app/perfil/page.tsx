@@ -7,12 +7,17 @@ export default function Page() {
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
       <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <h1 className="text-4xl font-semibold">Hola y bienvenida, bienvenido</h1>
+
         <p>Qué alegría que hayas llegado hasta aquí.</p>
 
         <p>
-          Mi nombre es Tash. Estudié Lingüística y Ciencias de la Educación en Jena, Alemania, y
-          trabajo desde hace años como especialista en adquisición de lenguas, tanto en la infancia
-          como en la edad adulta.
+          Mi nombre es Tash. Estudié Lingüística y Ciencias de la Educación en Jena, Alemania, y soy{' '}
+          <span className="font-semibold text-[#B3475A]">
+            Coach de adquisición natural del alemán
+          </span>{' '}
+          (German Language Acquisition Coach). Tras años de experiencia en la enseñanza de idiomas y
+          la creación de mi propio método, Fonetikas, acompaño procesos de adquisición tanto en la
+          infancia como en la edad adulta.
         </p>
 
         <p>
