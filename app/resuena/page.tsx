@@ -58,15 +58,21 @@ export default function ResuenaPage() {
         <h2 className="text-2xl font-semibold">Proyectos en desarrollo</h2>
 
         <div className="space-y-8">
-          {/* ¡Salten! */}
+          {/* Salten */}
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-xl font-semibold">¡Salten!</h3>
+              <h3 className="text-xl font-semibold">Salten</h3>
 
               <div className="flex gap-2">
-                <span className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A]">
+                {/* <span className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A]">
                   En desarrollo
-                </span>
+                </span> */}
+                <a
+                  href="/resuena/salten"
+                  className="rounded-full bg-[#B3475A]/10 px-3 py-1 text-sm text-[#B3475A] transition hover:bg-[#B3475A]/20"
+                >
+                  Más información
+                </a>
 
                 <span className="rounded-full bg-[#081C3C]/10 px-3 py-1 text-sm text-[#081C3C] dark:bg-[#F4EFE8]/20 dark:text-[#081C3C]">
                   Juego
