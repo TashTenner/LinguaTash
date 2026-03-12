@@ -1,5 +1,5 @@
 'use client'
-import AudioCard from '../../../components/AudioCard'
+// import AudioCard from '../../../components/AudioCard'
 
 import { useState } from 'react'
 
@@ -15,7 +15,7 @@ export default function SaltenPage() {
 
   const PRICE_PER_LANGUAGE = 4
 
-  const [selected, setSelected] = useState([])
+  const [selected, setSelected] = useState<string[]>([])
   const [email, setEmail] = useState('')
 
   function toggleLanguage(code) {
