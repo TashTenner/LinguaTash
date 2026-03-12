@@ -147,41 +147,42 @@ export default function SaltenPage() {
             <p className="text-sm font-medium">Español</p>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/es-ES_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
 
           <div className="space-y-2 text-center">
             <p className="text-sm font-medium">Catalán</p>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/ca-ES_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
 
           <div className="space-y-2 text-center">
             <p className="text-sm font-medium">Inglés</p>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/en-GB_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
 
           <div className="space-y-2 text-center">
             <p className="text-sm font-medium">Alemán</p>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/de-DE_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
 
           <div className="space-y-2 text-center">
             <p className="text-sm font-medium">Italiano</p>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/it-IT_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
 
           <div className="space-y-2 text-center">
             <p className="text-sm font-medium">Ruso</p>
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <audio controls src="/static/audios/ru-RU_NA01.mp3" className="mx-auto w-full" />
-            <track kind="captions" srcLang="ru" label="Ruso" default />
+            {/* <track kind="captions" srcLang="ru" label="Ruso" default /> */}
           </div>
         </div>
       </section>
