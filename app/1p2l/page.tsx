@@ -92,10 +92,10 @@ export default function OnePersonTwoLanguagesPage() {
 
             <p>I was born bilingual in the former German Democratic Republic, GDR.</p>
             <p>
-              My mother was bilingual in Russian and Armenian, with Russian as her dominant
+              My mother is bilingual in Russian and Armenian, with Russian as her dominant
               language, from Yerevan, Armenia.
             </p>
-            <p>My father is a German speaker.</p>
+            <p>My father was a German speaker.</p>
             <p>School and social environment were in German.</p>
 
             <p>The language I spoke with my mother was Russian.</p>
