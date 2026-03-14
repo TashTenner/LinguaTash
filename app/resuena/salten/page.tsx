@@ -155,13 +155,18 @@ export default function SaltenPage() {
       <section className="space-y-8">
         <h2 className="text-2xl font-semibold">¿Qué incluye cada idioma?</h2>
 
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-6">
           {[
             { n: '150', label: 'Audios', sub: 'Pronunciación nativa' },
             { n: '150', label: 'Imágenes', sub: 'Ilustradas y numeradas' },
             { n: '10', label: 'Cartas Joker', sub: 'Comodines del juego' },
             { n: '1', label: 'Documento', sub: 'IDs + descripciones' },
             { n: '1', label: 'Manual', sub: 'Guía de uso' },
+            {
+              n: '1',
+              label: 'Carta de idioma',
+              sub: 'Indica el idioma en el que se juega la ronda',
+            },
           ].map(({ n, label, sub }) => (
             <div
               key={label}
