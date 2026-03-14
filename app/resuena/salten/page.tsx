@@ -285,7 +285,7 @@ export default function SaltenPage() {
         <div className="divide-y divide-[#9A8F85]/20 rounded-xl border border-[#9A8F85]/40 px-6">
           <FaqItem question="¿Puedo comprar más idiomas más adelante?">
             Sí. Cada idioma es un pack independiente. Puedes empezar con uno y añadir más cuando
-            quieras, al mismo precio de 4 € por idioma.
+            quieras, al mismo precio de 3 € por idioma.
           </FaqItem>
           <FaqItem question="¿Cómo recibo los archivos tras la compra?">
             Recibirás un email con un enlace de descarga segura. Los archivos incluyen los audios
@@ -337,7 +337,7 @@ export default function SaltenPage() {
 
         {/* Language selector */}
         <div className="space-y-4">
-          <p className="font-medium">1. Selecciona los idiomas (4 € cada uno)</p>
+          <p className="font-medium">1. Selecciona los idiomas (3 € cada uno)</p>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {LANGUAGES.map((lang) => (
               <button
@@ -356,7 +356,7 @@ export default function SaltenPage() {
                   )}
                 </div>
                 <div className="mt-1 text-xs opacity-60">{lang.note}</div>
-                <div className="mt-2 text-sm font-semibold">4 €</div>
+                <div className="mt-2 text-sm font-semibold">3 €</div>
               </button>
             ))}
           </div>
