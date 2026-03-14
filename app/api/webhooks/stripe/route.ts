@@ -20,12 +20,12 @@ const r2 = new S3Client({
 
 // ── Language metadata ────────────────────────────────────────────────────────
 const LANGUAGE_META: Record<string, { name: string; file: string }> = {
-  es: { name: 'Español', file: 'salten/es/salten-es-test.zip' },
-  ca: { name: 'Catalán', file: 'salten/ca/salten-ca.zip' },
-  en: { name: 'Inglés', file: 'salten/en/salten-en.zip' },
-  de: { name: 'Alemán', file: 'salten/de/salten-de.zip' },
-  it: { name: 'Italiano', file: 'salten/it/salten-it.zip' },
-  ru: { name: 'Ruso', file: 'salten/ru/salten-ru.zip' },
+  es: { name: 'Español', file: 'salten-es.zip' },
+  ca: { name: 'Catalán', file: 'salten-ca.zip' },
+  en: { name: 'Inglés', file: 'salten-en.zip' },
+  de: { name: 'Alemán', file: 'salten-de.zip' },
+  it: { name: 'Italiano', file: 'salten-it.zip' },
+  ru: { name: 'Ruso', file: 'salten-ru.zip' },
 }
 
 // ── Generate a signed R2 URL (expires in 24h) ────────────────────────────────

@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
 })
 
-const PRICE_PER_LANGUAGE = 4 // €4 per language
+const PRICE_PER_LANGUAGE = 3 // €3 per language
 
 export async function POST(req: NextRequest) {
   console.log('[Checkout] Request received')
@@ -56,8 +56,8 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Salten - Language Packs',
-              description: `${languages.length} language pack(s)`,
+              name: 'Salten - Paquetes de idiomas',
+              description: `${languages.length} paquete${languages.length > 1 ? 's' : ''} de idioma${languages.length > 1 ? 's' : ''}`,
               metadata: {
                 languages: languages.join(','),
               },
