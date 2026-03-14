@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 // Language definitions
 const LANGUAGES = [
@@ -97,8 +98,9 @@ export default function SaltenPage() {
       // Redirect to Stripe Checkout
       // Redirect directly — no Stripe.js needed for Checkout URL redirect
       window.location.href = data.url
-    } catch (err: any) {
-      setErrors({ general: err.message })
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      setErrors({ general: errorMessage })
     } finally {
       setLoading(false)
     }
@@ -187,10 +189,13 @@ export default function SaltenPage() {
           con <strong>15 cartas</strong> y <strong>15 audios</strong> por grupo.
         </p>
         <div className="rounded-xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-4 dark:bg-[#081C3C]">
-          <img
+          <Image
             src="/static/images/saltenAnimalsExample.jpg"
             alt="Ejemplo cartas Salten"
             className="mx-auto rounded-lg"
+            width={600}
+            height={400}
+            priority
           />
         </div>
         <div className="rounded-xl border border-[#9A8F85]/30 bg-[#F4EFE8]/60 p-6 dark:bg-[#081C3C]/60">
