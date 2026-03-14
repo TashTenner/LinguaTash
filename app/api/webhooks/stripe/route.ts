@@ -192,9 +192,10 @@ export async function POST(req: NextRequest) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!)
     console.log('[Webhook] ✓ Signature verified')
-  } catch (err: any) {
-    console.error('[Webhook] Signature verification failed:', err.message)
-    return NextResponse.json({ error: `Webhook error: ${err.message}` }, { status: 400 })
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Signature verification failed'
+    console.error('[Webhook] Signature verification failed:', errorMessage)
+    return NextResponse.json({ error: `Webhook error: ${errorMessage}` }, { status: 400 })
   }
 
   // 2. Only handle checkout.session.completed
@@ -250,9 +251,9 @@ export async function POST(req: NextRequest) {
     // You have: nombre, nif, customerEmail, languages, session.amount_total
 
     return NextResponse.json({ received: true })
-  } catch (err: any) {
-    console.error('[Webhook] Error processing order:', err.message)
-    // Return 500 so Stripe retries the webhook
-    return NextResponse.json({ error: err.message }, { status: 500 })
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    console.error('[Webhook] Error processing order:', errorMessage)
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }

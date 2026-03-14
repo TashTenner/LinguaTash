@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export default function OnePersonTwoLanguagesPage() {
   return (
     <main className="mx-auto max-w-6xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -5,14 +7,18 @@ export default function OnePersonTwoLanguagesPage() {
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
         {/* 1P2L Logo */}
         <div className="mb-8 flex justify-center">
-          <img
+          <Image
             src="/static/images/1p2l-icon.png"
             alt="1P2L Logo"
+            width={600}
+            height={400}
             className="block h-24 w-auto md:h-28 dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/1p2l-icon-dark.png"
             alt="1P2L Dark Logo"
+            width={600}
+            height={400}
             className="hidden h-24 w-auto md:h-28 dark:block"
           />
         </div>
@@ -92,8 +98,8 @@ export default function OnePersonTwoLanguagesPage() {
 
             <p>I was born bilingual in the former German Democratic Republic, GDR.</p>
             <p>
-              My mother is bilingual in Russian and Armenian, with Russian as her dominant
-              language, from Yerevan, Armenia.
+              My mother is bilingual in Russian and Armenian, with Russian as her dominant language,
+              from Yerevan, Armenia.
             </p>
             <p>My father was a German speaker.</p>
             <p>School and social environment were in German.</p>
