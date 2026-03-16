@@ -143,11 +143,9 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
 
   // Logos
-  const logoLinguatashPath =
-    process.env.LOGO_LINGUATASH_PATH || 'static/images/LinguaTashLogoWithNameV3.png'
-  const logoResuenaPath = process.env.LOGO_RESUENA_PATH || 'static/images/resuenaLogoInvoice.png'
-  const logoLinguatash = await loadLogo(pdfDoc, logoLinguatashPath)
-  const logoResuena = await loadLogo(pdfDoc, logoResuenaPath)
+  const logoCombinedPath =
+    process.env.LOGO_COMBINED_PATH || 'static/images/LinguaTashResuenaLogoInvoice.png'
+  const logoCombined = await loadLogo(pdfDoc, logoCombinedPath)
 
   // Emisor data from env
   const emisor = {
@@ -189,51 +187,24 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
   const LOGO_STRIP_H = 52
   drawRect(page, 0, PAGE_H - 56 - LOGO_STRIP_H, PAGE_W, LOGO_STRIP_H, CREAM)
 
-  // Logo strip vertical center
+  // Combined logo — centered vertically in the cream strip
   const stripCenterY = PAGE_H - 56 - LOGO_STRIP_H / 2
-
-  // Both logos same height (44px), vertically centered in strip
-  const LOGO_H = 44
-  let nextLogoX = MARGIN
-  if (logoLinguatash) {
-    const scale = LOGO_H / logoLinguatash.height
-    const w = logoLinguatash.width * scale
-    page.drawImage(logoLinguatash, {
-      x: nextLogoX,
-      y: stripCenterY - LOGO_H / 2,
+  if (logoCombined) {
+    const h = LOGO_STRIP_H - 8
+    const scale = h / logoCombined.height
+    const w = logoCombined.width * scale
+    page.drawImage(logoCombined, {
+      x: MARGIN,
+      y: stripCenterY - h / 2,
       width: w,
-      height: LOGO_H,
-    })
-    nextLogoX += w + 20
-  }
-  if (logoResuena) {
-    const scale = LOGO_H / logoResuena.height
-    const w = logoResuena.width * scale
-    page.drawImage(logoResuena, {
-      x: nextLogoX,
-      y: stripCenterY - LOGO_H / 2,
-      width: w,
-      height: LOGO_H,
+      height: h,
     })
   }
 
-  // Right side of logo strip: brand text aligned in two lines
-  // "Resuena · LinguaTash" on first line, "linguatash.com" below — right aligned
-  const brandLine1 = 'Resuena · LinguaTash'
-  const brandLine2 = 'linguatash.com'
-  const line1W = fontBold.widthOfTextAtSize(brandLine1, 9)
-  const line2W = fontRegular.widthOfTextAtSize(brandLine2, 8)
-  const brandX = PAGE_W - MARGIN - Math.max(line1W, line2W)
-  drawText(page, brandLine1, brandX, stripCenterY + 4, fontBold, 9, NAVY)
-  drawText(
-    page,
-    brandLine2,
-    brandX + (Math.max(line1W, line2W) - line2W) / 2,
-    stripCenterY - 10,
-    fontRegular,
-    8,
-    MUTED
-  )
+  // Right side: website URL only
+  const brandLine = 'linguatash.com'
+  const brandLineW = fontRegular.widthOfTextAtSize(brandLine, 8)
+  drawText(page, brandLine, PAGE_W - MARGIN - brandLineW, stripCenterY - 4, fontRegular, 8, MUTED)
 
   // Thin separator line below logo strip
   drawLine(page, 0, PAGE_H - 56 - LOGO_STRIP_H, PAGE_W, MUTED)
