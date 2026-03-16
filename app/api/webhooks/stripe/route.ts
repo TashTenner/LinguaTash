@@ -141,7 +141,6 @@ async function getCountryEvidence(paymentIntentId: string) {
 
 // ── Create Verifactu invoice ──────────────────────────────────────────────────
 // Base URL: https://api.verifactu-api.com/v1
-// Sandbox:  https://sandbox.verifactu-api.com/v1
 async function createVerifactuInvoice({
   invoiceNumber,
   issueDate,
@@ -162,10 +161,9 @@ async function createVerifactuInvoice({
   sessionId: string
 }) {
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
-  const isSandbox = process.env.VERIFACTU_SANDBOX === 'true'
-  const baseUrl = isSandbox
-    ? 'https://sandbox.verifactu-api.com/v1'
-    : 'https://api.verifactu-api.com/v1'
+  // Use verifacturapi.com — confirmed working from dashboard logs
+  // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
+  const baseUrl = 'https://verifacturapi.com'
 
   // One line item per language
   const lineas = languages.map((code) => {
@@ -194,7 +192,7 @@ async function createVerifactuInvoice({
 
   console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
 
-  const res = await fetch(`${baseUrl}/facturas`, {
+  const res = await fetch(`${baseUrl}/api/v1/verifactu/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
