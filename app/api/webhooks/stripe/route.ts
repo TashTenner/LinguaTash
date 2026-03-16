@@ -163,7 +163,7 @@ async function createVerifactuInvoice({
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
   // Use verifacturapi.com — confirmed working from dashboard logs
   // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
-  const baseUrl = 'https://verifacturapi.com'
+  const baseUrl = 'https://www.verifacturapi.com'
 
   // One line item per language
   const lineas = languages.map((code) => {
