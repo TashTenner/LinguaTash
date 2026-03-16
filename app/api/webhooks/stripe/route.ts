@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-// ── Stripe ──────────────────────────────────────────────────────────────────
+// ── Stripe ───────────────────────────────────────────────────────────────────
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
 })
@@ -18,17 +18,18 @@ const r2 = new S3Client({
   },
 })
 
-// ── Language metadata ────────────────────────────────────────────────────────
+// ── Language metadata ─────────────────────────────────────────────────────────
+// File keys match exactly what you have in R2 (flat structure under salten/es/ etc.)
 const LANGUAGE_META: Record<string, { name: string; file: string }> = {
-  es: { name: 'Español', file: 'salten-es.zip' },
-  ca: { name: 'Catalán', file: 'salten-ca.zip' },
-  en: { name: 'Inglés', file: 'salten-en.zip' },
-  de: { name: 'Alemán', file: 'salten-de.zip' },
-  it: { name: 'Italiano', file: 'salten-it.zip' },
-  ru: { name: 'Ruso', file: 'salten-ru.zip' },
+  es: { name: 'Español', file: 'salten/es/salten-es-test.zip' }, // update when real file ready
+  ca: { name: 'Catalán', file: 'salten/ca/salten-ca.zip' },
+  en: { name: 'Inglés', file: 'salten/en/salten-en.zip' },
+  de: { name: 'Alemán', file: 'salten/de/salten-de.zip' },
+  it: { name: 'Italiano', file: 'salten/it/salten-it.zip' },
+  ru: { name: 'Ruso', file: 'salten/ru/salten-ru.zip' },
 }
 
-// ── Generate a signed R2 URL (expires in 24h) ────────────────────────────────
+// ── Generate signed R2 download URL (24h) ────────────────────────────────────
 async function getDownloadUrl(fileKey: string): Promise<string> {
   const command = new GetObjectCommand({
     Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
@@ -37,7 +38,43 @@ async function getDownloadUrl(fileKey: string): Promise<string> {
   return getSignedUrl(r2, command, { expiresIn: 60 * 60 * 24 }) // 24 hours
 }
 
-// ── Send email via MailerSend REST API ───────────────────────────────────────
+// ── Fetch country evidence from Stripe PaymentIntent ─────────────────────────
+// Returns two independent country signals for Hacienda evidence:
+//   billingCountry — country from the billing address the buyer entered in Stripe Checkout
+//   cardCountry    — issuing country of the card (from BIN database, cannot be faked by buyer)
+async function getCountryEvidence(paymentIntentId: string): Promise<{
+  billingCountry: string | null
+  cardCountry: string | null
+  cardBrand: string | null
+  cardLast4: string | null
+  cardFunding: string | null
+}> {
+  try {
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
+      expand: ['payment_method'],
+    })
+
+    const pm = pi.payment_method as Stripe.PaymentMethod | null
+    return {
+      billingCountry: pm?.billing_details?.address?.country ?? null,
+      cardCountry: pm?.card?.country ?? null,
+      cardBrand: pm?.card?.brand ?? null,
+      cardLast4: pm?.card?.last4 ?? null,
+      cardFunding: pm?.card?.funding ?? null,
+    }
+  } catch (err) {
+    console.error('[Webhook] Could not fetch PaymentIntent details:', err)
+    return {
+      billingCountry: null,
+      cardCountry: null,
+      cardBrand: null,
+      cardLast4: null,
+      cardFunding: null,
+    }
+  }
+}
+
+// ── Send download email via MailerSend ───────────────────────────────────────
 async function sendDownloadEmail({
   toEmail,
   toName,
@@ -71,7 +108,9 @@ async function sendDownloadEmail({
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0; padding:0; background:#f4efe8; font-family:'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color:#081c3c;">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 20px;">
@@ -136,7 +175,7 @@ async function sendDownloadEmail({
             <td style="background: #f4efe8; padding: 24px 40px; text-align: center;
                         border-top: 1px solid #e3ded7;">
               <p style="margin: 0; font-size: 12px; color: #9a8f85;">
-                LinguaTash · Barcelona, Catalunya ·
+                LinguaTash · Reus, Catalunya ·
                 <a href="https://linguatash.com" style="color: #b3475a;">linguatash.com</a>
               </p>
             </td>
@@ -163,7 +202,7 @@ async function sendDownloadEmail({
       to: [{ email: toEmail, name: toName }],
       subject: 'Salten — Tus archivos de descarga',
       html,
-      text: `Hola ${toName},\n\nGracias por tu compra de Salten\n\nTus enlaces de descarga (válidos 24h):\n\n${downloadLinks.map((l) => `${l.name}: ${l.url}`).join('\n')}\n\nSi tienes cualquier problema escríbenos a resuena@linguatash.com\n\nLinguaTash`,
+      text: `Hola ${toName},\n\nGracias por tu compra de Salten.\n\nTus enlaces de descarga (válidos 24h):\n\n${downloadLinks.map((l) => `${l.name}: ${l.url}`).join('\n')}\n\nSi tienes cualquier problema escríbenos a resuena@linguatash.com\n\nLinguaTash`,
     }),
   })
 
@@ -173,7 +212,7 @@ async function sendDownloadEmail({
   }
 }
 
-// ── Webhook handler ──────────────────────────────────────────────────────────
+// ── Webhook handler ───────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   console.log('[Webhook] Request received')
 
@@ -207,11 +246,29 @@ export async function POST(req: NextRequest) {
 
   const session = event.data.object as Stripe.Checkout.Session
 
-  // 3. Extract metadata saved during checkout
-  const { nombre, languages: languagesRaw, nif } = session.metadata || {}
+  // 3. Extract metadata
+  const {
+    nombre,
+    languages: languagesRaw,
+    nif,
+    nombreEmpresa,
+    domicilio,
+    codigoPostal,
+    ciudad,
+    pais: paisDeclarado,
+    newsletter,
+  } = session.metadata || {}
+
   const customerEmail = session.customer_email || session.customer_details?.email
 
-  console.log('[Webhook] Metadata:', { nombre, languagesRaw, nif, customerEmail })
+  console.log('[Webhook] Metadata:', {
+    nombre,
+    languagesRaw,
+    customerEmail,
+    paisDeclarado,
+    newsletter,
+    hasFactura: !!nif,
+  })
 
   if (!customerEmail || !languagesRaw || !nombre) {
     console.error('[Webhook] Missing required metadata', session.metadata)
@@ -221,9 +278,31 @@ export async function POST(req: NextRequest) {
   const languages = languagesRaw.split(',').filter(Boolean)
 
   try {
-    console.log('[Webhook] Processing languages:', languages)
+    // 4. Fetch country evidence from PaymentIntent
+    // Two independent signals Hacienda cannot dispute:
+    //   billingCountry — from Stripe Checkout billing form
+    //   cardCountry    — from card BIN (issuing country, cannot be faked)
+    const paymentIntentId = session.payment_intent as string | null
+    const countryEvidence = paymentIntentId
+      ? await getCountryEvidence(paymentIntentId)
+      : {
+          billingCountry: null,
+          cardCountry: null,
+          cardBrand: null,
+          cardLast4: null,
+          cardFunding: null,
+        }
 
-    // 4. Generate signed R2 download URLs for each purchased language
+    console.log('[Webhook] Country evidence:', {
+      declared: paisDeclarado || 'not provided',
+      billing: countryEvidence.billingCountry || 'unavailable',
+      card: countryEvidence.cardCountry || 'unavailable',
+      cardBrand: countryEvidence.cardBrand,
+      cardLast4: countryEvidence.cardLast4,
+    })
+
+    // 5. Generate signed R2 download URLs
+    console.log('[Webhook] Processing languages:', languages)
     const downloadLinks = await Promise.all(
       languages.map(async (code) => {
         const meta = LANGUAGE_META[code]
@@ -233,27 +312,22 @@ export async function POST(req: NextRequest) {
         return { name: meta.name, url }
       })
     )
-
     console.log('[Webhook] ✓ Download links generated')
 
-    // 5. Send download email via MailerSend
+    // 6. Send download email
     await sendDownloadEmail({
       toEmail: customerEmail,
       toName: nombre,
       languages,
       downloadLinks,
     })
-
-    console.log(`[Webhook] ✓ Email sent to ${customerEmail} for languages: ${languagesRaw}`)
-
-    // 6. TODO: Verifactu invoice generation
-    // When you're ready to implement Verifactu, add it here.
-    // You have: nombre, nif, customerEmail, languages, session.amount_total
+    console.log(`[Webhook] ✓ Email sent to ${customerEmail}`)
 
     return NextResponse.json({ received: true })
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error'
     console.error('[Webhook] Error processing order:', errorMessage)
+    // Return 500 so Stripe retries the webhook
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
