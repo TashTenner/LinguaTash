@@ -192,8 +192,14 @@ async function createVerifactuInvoice({
 
   console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
 
-  const res = await fetch(`${baseUrl}/api/v1/verifactu/create`, {
+  // First make a HEAD/OPTIONS request to find the final URL after any redirects
+  // Then POST directly to that URL to avoid redirect stripping the body
+  const targetUrl = `${baseUrl}/api/v1/verifactu/create`
+  console.log('[Verifactu] POSTing to:', targetUrl)
+
+  const res = await fetch(targetUrl, {
     method: 'POST',
+    redirect: 'manual', // don't auto-follow — capture redirect URL instead
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
@@ -201,20 +207,39 @@ async function createVerifactuInvoice({
     body: JSON.stringify(body),
   })
 
+  // If redirected, follow manually with POST to preserve body
+  let finalRes = res
+  if (res.status === 301 || res.status === 302 || res.status === 307 || res.status === 308) {
+    const redirectUrl = res.headers.get('location')
+    console.log('[Verifactu] Redirect detected →', redirectUrl)
+    if (!redirectUrl) throw new Error('Verifactu redirected but no Location header found')
+    finalRes = await fetch(redirectUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
+      },
+      body: JSON.stringify(body),
+    })
+  }
+
   // Log raw response for debugging before parsing
-  const rawText = await res.text()
-  console.log('[Verifactu] Raw response status:', res.status)
+  const rawText = await finalRes.text()
+  console.log('[Verifactu] Raw response status:', finalRes.status)
   console.log('[Verifactu] Raw response body:', rawText.slice(0, 500))
 
   let data: Record<string, unknown>
   try {
     data = JSON.parse(rawText) as Record<string, unknown>
   } catch {
-    throw new Error(`Verifactu returned non-JSON (status ${res.status}): ${rawText.slice(0, 200)}`)
+    throw new Error(
+      `Verifactu returned non-JSON (status ${finalRes.status}): ${rawText.slice(0, 200)}`
+    )
   }
 
-  if (!res.ok) {
-    throw new Error(`Verifactu API error ${res.status}: ${JSON.stringify(data)}`)
+  if (!finalRes.ok) {
+    throw new Error(`Verifactu API error ${finalRes.status}: ${JSON.stringify(data)}`)
   }
 
   console.log('[Verifactu] ✓ Invoice registered:', invoiceNumber)
