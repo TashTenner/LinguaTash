@@ -200,7 +200,7 @@ async function createVerifactuInvoice({
 
   console.log('[Verifactu] Sending invoice:', JSON.stringify(body, null, 2))
 
-  const res = await fetch('http://verifacturapi.com/api/v1/verifactu/create', {
+  const res = await fetch('https://verifacturapi.com/api/v1/verifactu/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
