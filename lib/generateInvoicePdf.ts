@@ -184,10 +184,6 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
   drawText(page, 'FACTURA / INVOICE', MARGIN, PAGE_H - 24, fontBold, 16, CREAM)
   drawText(page, `Nº ${data.invoiceNumber}`, MARGIN, PAGE_H - 40, fontRegular, 9, CREAM)
   drawText(page, `Fecha / Date: ${dateFormatted}`, MARGIN, PAGE_H - 52, fontRegular, 9, CREAM)
-  // Brand label right side
-  //   drawText(page, 'Resuena · LinguaTash', PAGE_W - MARGIN - 110, PAGE_H - 32, fontBold, 9, ROSE)
-  //   drawText(page, 'linguatash.com', PAGE_W - MARGIN - 80, PAGE_H - 46, fontRegular, 8, CREAM)
-
   // ── CREAM LOGO STRIP ────────────────────────────────────────────────────────
   // Logos on cream background — always visible regardless of logo colours
   const LOGO_STRIP_H = 52
@@ -196,30 +192,28 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
   // Logo strip vertical center
   const stripCenterY = PAGE_H - 56 - LOGO_STRIP_H / 2
 
-  // LinguaTash — primary brand, 48px tall
+  // Both logos same height (44px), vertically centered in strip
+  const LOGO_H = 44
   let nextLogoX = MARGIN
   if (logoLinguatash) {
-    const h = 48
-    const scale = h / logoLinguatash.height
+    const scale = LOGO_H / logoLinguatash.height
     const w = logoLinguatash.width * scale
     page.drawImage(logoLinguatash, {
       x: nextLogoX,
-      y: stripCenterY - h / 2,
+      y: stripCenterY - LOGO_H / 2,
       width: w,
-      height: h,
+      height: LOGO_H,
     })
     nextLogoX += w + 20
   }
-  // Resuena — sub-brand, 38px tall, vertically centered with LinguaTash
   if (logoResuena) {
-    const h = 38
-    const scale = h / logoResuena.height
+    const scale = LOGO_H / logoResuena.height
     const w = logoResuena.width * scale
     page.drawImage(logoResuena, {
       x: nextLogoX,
-      y: stripCenterY - h / 2,
+      y: stripCenterY - LOGO_H / 2,
       width: w,
-      height: h,
+      height: LOGO_H,
     })
   }
 

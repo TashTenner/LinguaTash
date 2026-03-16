@@ -505,7 +505,8 @@ export async function POST(req: NextRequest) {
         sessionId: session.id,
       })
       // Extract QR URL from response if available
-      verifactuQrUrl = (verifactuResponse as any)?.data?.qr_code ?? null
+      verifactuQrUrl =
+        (verifactuResponse as { data?: { qr_code?: string } } | null)?.data?.qr_code ?? null
       console.log('[Webhook] ✓ Verifactu invoice registered')
     } catch (verifactuErr: unknown) {
       console.error('[Webhook] Verifactu error (non-fatal):', verifactuErr)
