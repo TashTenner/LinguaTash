@@ -140,8 +140,8 @@ async function getCountryEvidence(paymentIntentId: string) {
 }
 
 // ── Create Verifactu invoice ──────────────────────────────────────────────────
-// Calls verifactu-api.com to register the invoice with AEAT.
-// Returns the API response data for storage.
+// Base URL: https://api.verifactu-api.com/v1
+// Sandbox:  https://sandbox.verifactu-api.com/v1
 async function createVerifactuInvoice({
   invoiceNumber,
   issueDate,
@@ -162,45 +162,39 @@ async function createVerifactuInvoice({
   sessionId: string
 }) {
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
+  const isSandbox = process.env.VERIFACTU_SANDBOX === 'true'
+  const baseUrl = isSandbox
+    ? 'https://sandbox.verifactu-api.com/v1'
+    : 'https://api.verifactu-api.com/v1'
 
-  // Build one line item per language
-  const items = languages.map((code) => {
+  // One line item per language
+  const lineas = languages.map((code) => {
     const { base } = splitPrice(amountPerLanguage, ivaRate)
     const langName = LANGUAGE_META[code]?.name ?? code
     return {
-      description: `Salten — Pack ${langName} (descarga digital)`,
-      quantity: 1,
-      unit_price: base, // base imponible per unit
-      tax_rate: ivaRate,
-      aeat_code: '01', // IVA general / exempt
-      regime_key: null,
-      operation_qualification: ivaRate === 0 ? 'S2' : 'S1', // S2 = no sujeta, S1 = sujeta
+      concepto: `Salten — Pack ${langName} (descarga digital)${ivaRate === 0 ? ' — Art. 69 Ley 37/1992' : ''}`,
+      cantidad: 1,
+      precio: base,
+      tipo_iva: ivaRate,
     }
   })
 
   const body: Record<string, unknown> = {
-    series: 'RESUENA',
-    number: invoiceNumber,
-    issue_date: issueDate,
-    invoice_type: nif ? 'F1' : 'F2', // F1 = completa, F2 = simplificada
-    description: `Salten — ${languages.length} pack${languages.length > 1 ? 's' : ''} de idioma${languages.length > 1 ? 's' : ''}`,
-    currency: 'EUR',
-    external_reference: sessionId,
-    customer: {
-      name: nombre,
-      ...(nif ? { nif } : {}), // only include NIF for factura completa
+    emisor: { nif: emisorNif },
+    receptor: {
+      nombre,
+      ...(nif ? { nif } : {}),
     },
-    items,
+    numero_factura: invoiceNumber,
+    fecha_expedicion: issueDate,
+    tipo: nif ? 'completa' : 'simplificada',
+    lineas,
+    notas: `Referencia Stripe: ${sessionId}`,
   }
 
-  // Add non-EU IVA exemption note in description if applicable
-  if (ivaRate === 0) {
-    body.description = `${body.description} — Operación no sujeta a IVA (Art. 69 Ley 37/1992)`
-  }
+  console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
 
-  console.log('[Verifactu] Sending invoice:', JSON.stringify(body, null, 2))
-
-  const res = await fetch('https://verifacturapi.com/api/v1/verifactu/create', {
+  const res = await fetch(`${baseUrl}/facturas`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -209,10 +203,20 @@ async function createVerifactuInvoice({
     body: JSON.stringify(body),
   })
 
-  const data = await res.json()
+  // Log raw response for debugging before parsing
+  const rawText = await res.text()
+  console.log('[Verifactu] Raw response status:', res.status)
+  console.log('[Verifactu] Raw response body:', rawText.slice(0, 500))
 
-  if (!res.ok || !data.ok) {
-    throw new Error(`Verifactu API error: ${JSON.stringify(data)}`)
+  let data: Record<string, unknown>
+  try {
+    data = JSON.parse(rawText) as Record<string, unknown>
+  } catch {
+    throw new Error(`Verifactu returned non-JSON (status ${res.status}): ${rawText.slice(0, 200)}`)
+  }
+
+  if (!res.ok) {
+    throw new Error(`Verifactu API error ${res.status}: ${JSON.stringify(data)}`)
   }
 
   console.log('[Verifactu] ✓ Invoice registered:', invoiceNumber)
@@ -383,6 +387,93 @@ async function addToNewsletter(email: string, nombre: string): Promise<void> {
   }
 }
 
+// ── Slack notifications ───────────────────────────────────────────────────────
+// Posts order events to #linguatash-orders channel for real-time monitoring.
+// Each event shows exactly what happened — email sent, PDF saved, errors, etc.
+async function sendSlackNotification(blocks: object[]): Promise<void> {
+  if (!process.env.SLACK_WEBHOOK_URL) return // skip if not configured
+  try {
+    await fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocks }),
+    })
+  } catch (err) {
+    console.warn('[Webhook] Slack notification failed (non-fatal):', err)
+  }
+}
+
+function slackOrderBlocks({
+  invoiceNumber,
+  customerEmail,
+  nombre,
+  languages,
+  amountTotal,
+  ivaRate,
+  effectiveCountry,
+  countryEvidence,
+  steps,
+  hasError,
+}: {
+  invoiceNumber: string
+  customerEmail: string
+  nombre: string
+  languages: string[]
+  amountTotal: number
+  ivaRate: number
+  effectiveCountry: string
+  countryEvidence: { declared: string | null; billing: string | null; card: string | null }
+  steps: { label: string; ok: boolean; detail?: string }[]
+  hasError: boolean
+}) {
+  const statusEmoji = hasError ? '⚠️' : '✅'
+  const langList = languages.join(', ')
+  const ivaNote = ivaRate === 0 ? ' (sin IVA — fuera UE)' : ` (IVA ${ivaRate}%)`
+
+  return [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: `${statusEmoji} Nueva venta Salten — ${invoiceNumber}`,
+      },
+    },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*Cliente:*\n${nombre}` },
+        { type: 'mrkdwn', text: `*Email:*\n${customerEmail}` },
+        { type: 'mrkdwn', text: `*Idiomas:*\n${langList}` },
+        { type: 'mrkdwn', text: `*Total:*\n${amountTotal.toFixed(2)} €${ivaNote}` },
+        {
+          type: 'mrkdwn',
+          text: `*País (declarado / billing / tarjeta):*\n${countryEvidence.declared ?? '—'} / ${countryEvidence.billing ?? '—'} / ${countryEvidence.card ?? '—'}`,
+        },
+        { type: 'mrkdwn', text: `*País efectivo IVA:*\n${effectiveCountry}` },
+      ],
+    },
+    { type: 'divider' },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: steps
+          .map((s) => `${s.ok ? '✓' : '✗'} *${s.label}*${s.detail ? ` — ${s.detail}` : ''}`)
+          .join('\n'),
+      },
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `${new Date().toISOString()} · Salten · LinguaTash`,
+        },
+      ],
+    },
+  ]
+}
+
 // ── Webhook handler ───────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   console.log('[Webhook] Request received')
@@ -511,7 +602,7 @@ export async function POST(req: NextRequest) {
     console.log('[Webhook] ✓ Download links generated')
 
     // 4. Register invoice with Verifactu / AEAT
-    let verifactuResponse = null
+    let verifactuResponse: Record<string, unknown> | null = null
     let verifactuQrUrl: string | null = null
     try {
       verifactuResponse = await createVerifactuInvoice({
@@ -620,6 +711,49 @@ export async function POST(req: NextRequest) {
     if (newsletter === 'true') {
       await addToNewsletter(customerEmail, nombre)
     }
+
+    // 8. Send Slack notification — summary of everything that happened
+    await sendSlackNotification(
+      slackOrderBlocks({
+        invoiceNumber,
+        customerEmail,
+        nombre,
+        languages,
+        amountTotal: (session.amount_total ?? 0) / 100,
+        ivaRate,
+        effectiveCountry,
+        countryEvidence: {
+          declared: paisDeclarado || null,
+          billing: countryEvidence.billingCountry,
+          card: countryEvidence.cardCountry,
+        },
+        steps: [
+          {
+            label: 'País / IVA determinado',
+            ok: true,
+            detail: `${effectiveCountry} — ${ivaRate}%`,
+          },
+          {
+            label: 'URLs de descarga R2',
+            ok: downloadLinks.length > 0,
+            detail: `${downloadLinks.length} idioma(s)`,
+          },
+          {
+            label: 'Verifactu / AEAT',
+            ok: verifactuResponse !== null,
+            detail: verifactuResponse !== null ? 'registrada' : 'error — revisar',
+          },
+          { label: 'PDF generado y guardado en R2', ok: pdfBytes !== null },
+          { label: 'Email enviado al cliente', ok: true, detail: customerEmail },
+          {
+            label: 'Newsletter',
+            ok: true,
+            detail: newsletter === 'true' ? 'añadido a lista' : 'no solicitado',
+          },
+        ],
+        hasError: verifactuResponse === null || pdfBytes === null,
+      })
+    )
 
     // Mark as processed in R2 — prevents duplicate emails on Stripe retries
     try {
