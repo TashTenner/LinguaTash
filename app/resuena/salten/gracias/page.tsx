@@ -19,6 +19,11 @@ export default function GraciasPage() {
           <span className="text-sm">
             Los enlaces son válidos durante <strong>24 horas</strong>.
           </span>
+          <br />
+          <span className="text-sm">
+            Recibirás el email en unos minutos. Si no aparece en 10 minutos, revisa tu carpeta de
+            spam.
+          </span>
         </p>
       </section>
 

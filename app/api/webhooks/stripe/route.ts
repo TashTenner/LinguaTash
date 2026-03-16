@@ -444,6 +444,26 @@ export async function POST(req: NextRequest) {
   }
 
   const languages = languagesRaw.split(',').filter(Boolean)
+
+  // ── Idempotency check ───────────────────────────────────────────────────────
+  // Stripe may retry webhooks if our response is slow. Check R2 to see if we
+  // already processed this session — if so, return 200 immediately without
+  // re-sending email or re-generating invoice.
+  try {
+    const existing = await r2.send(
+      new GetObjectCommand({
+        Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
+        Key: `processed/${session.id}`,
+      })
+    )
+    if (existing) {
+      console.log('[Webhook] ⚡ Already processed, skipping:', session.id)
+      return NextResponse.json({ received: true })
+    }
+  } catch {
+    // Key doesn't exist — first time processing, continue normally
+  }
+
   const createdAt = new Date(event.created * 1000)
   const issueDate = createdAt.toISOString().split('T')[0] // YYYY-MM-DD
   const invoiceNumber = generateInvoiceNumber(session.id, createdAt)
@@ -599,6 +619,14 @@ export async function POST(req: NextRequest) {
     // 7. Add to newsletter if buyer opted in
     if (newsletter === 'true') {
       await addToNewsletter(customerEmail, nombre)
+    }
+
+    // Mark as processed in R2 — prevents duplicate emails on Stripe retries
+    try {
+      await saveToR2(`processed/${session.id}`, new Date().toISOString(), 'text/plain')
+      console.log('[Webhook] ✓ Marked as processed:', session.id)
+    } catch (markErr) {
+      console.warn('[Webhook] Could not mark as processed (non-fatal):', markErr)
     }
 
     return NextResponse.json({ received: true })
