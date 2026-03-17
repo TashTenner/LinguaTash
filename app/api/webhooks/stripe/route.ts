@@ -163,28 +163,37 @@ async function createVerifactuInvoice({
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
   // Use verifacturapi.com — confirmed working from dashboard logs
   // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
-  const baseUrl = 'https://verifacturapi.com'
+  const baseUrl = 'https://verifacturapi.com' // https forces direct connection, no redirect
 
-  // One line item per language
+  // One line item per language — field names from docs
   const lineas = languages.map((code) => {
     const { base } = splitPrice(amountPerLanguage, ivaRate)
     const langName = LANGUAGE_META[code]?.name ?? code
     return {
-      concepto: `Salten — Pack ${langName} (descarga digital)${ivaRate === 0 ? ' — Art. 69 Ley 37/1992' : ''}`,
-      cantidad: 1,
-      precio: base,
-      tipo_iva: ivaRate,
+      description: `Salten — Pack ${langName} (descarga digital)${ivaRate === 0 ? ' — Art. 69 Ley 37/1992' : ''}`,
+      quantity: 1,
+      unit_price: base,
+      tax_rate: ivaRate,
+      aeat_code: '01',
+      regime_key: null,
+      operation_qualification: ivaRate === 0 ? 'S2' : 'S1',
     }
   })
 
+  // Field names exactly as per verifacturapi.com docs
   const body: Record<string, unknown> = {
-    nif_emisor: emisorNif,
-    numero_factura: invoiceNumber,
-    fecha_expedicion: issueDate,
-    tipo_factura: nif ? 'F1' : 'F2',
-    ...(nif ? { nif_receptor: nif, nombre_receptor: nombre } : { nombre_receptor: nombre }),
-    lineas,
-    notas: `Referencia Stripe: ${sessionId}`,
+    series: 'RESUENA',
+    number: invoiceNumber,
+    issue_date: issueDate,
+    invoice_type: nif ? 'F1' : 'F2',
+    description: `Salten — ${languages.length} pack${languages.length > 1 ? 's' : ''} de idioma${languages.length > 1 ? 's' : ''}${ivaRate === 0 ? ' — Operación no sujeta a IVA (Art. 69 Ley 37/1992)' : ''}`,
+    currency: 'EUR',
+    external_reference: sessionId.slice(-64), // max 64 chars
+    customer: {
+      name: nombre,
+      ...(nif ? { nif } : {}),
+    },
+    items: lineas,
   }
 
   console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
