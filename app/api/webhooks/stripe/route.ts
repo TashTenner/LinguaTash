@@ -568,14 +568,15 @@ export async function POST(req: NextRequest) {
   const languages = languagesRaw.split(',').filter(Boolean)
 
   // ── Idempotency check ───────────────────────────────────────────────────────
-  // Stripe may retry webhooks if our response is slow. Check R2 to see if we
-  // already processed this session — if so, return 200 immediately without
-  // re-sending email or re-generating invoice.
+  // Write the marker FIRST before any processing — this prevents duplicate
+  // emails/Slack messages if Stripe retries while we're still working.
+  // Uses R2 conditional write: if key already exists, skip processing.
+  const idempotencyKey = `processed/${session.id}`
   try {
     const existing = await r2.send(
       new GetObjectCommand({
         Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
-        Key: `processed/${session.id}`,
+        Key: idempotencyKey,
       })
     )
     if (existing) {
@@ -583,7 +584,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true })
     }
   } catch {
-    // Key doesn't exist — first time processing, continue normally
+    // Key doesn't exist — first time. Write marker immediately before processing.
+    try {
+      await saveToR2(idempotencyKey, new Date().toISOString(), 'text/plain')
+      console.log('[Webhook] ✓ Idempotency marker written:', session.id)
+    } catch (markErr) {
+      console.warn('[Webhook] Could not write idempotency marker:', markErr)
+    }
   }
 
   const createdAt = new Date(event.created * 1000)
@@ -785,14 +792,6 @@ export async function POST(req: NextRequest) {
         hasError: verifactuResponse === null || pdfBytes === null,
       })
     )
-
-    // Mark as processed in R2 — prevents duplicate emails on Stripe retries
-    try {
-      await saveToR2(`processed/${session.id}`, new Date().toISOString(), 'text/plain')
-      console.log('[Webhook] ✓ Marked as processed:', session.id)
-    } catch (markErr) {
-      console.warn('[Webhook] Could not mark as processed (non-fatal):', markErr)
-    }
 
     return NextResponse.json({ received: true })
   } catch (err: unknown) {
