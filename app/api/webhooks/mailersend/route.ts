@@ -68,14 +68,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  // MailerSend sends { type, data: { ... } }
+  // MailerSend v2 payload structure:
+  // { type: "activity.delivered", created_at: "...", data: { type: "delivered", subject: "...", recipient: "email@...", ... } }
   const eventType = (payload.type as string) ?? 'unknown'
   const data = (payload.data ?? {}) as Record<string, unknown>
+  const createdAt = (payload.created_at as string) ?? new Date().toISOString()
 
-  const recipient = ((data.recipient as Record<string, unknown>)?.email as string) ?? 'unknown'
-  const subject = ((data.message as Record<string, unknown>)?.subject as string) ?? '—'
-  const timestamp = (data.created_at as string) ?? new Date().toISOString()
-  const messageId = ((data.message as Record<string, unknown>)?.id as string) ?? '—'
+  const recipient = (data.recipient as string) ?? 'unknown'
+  const subject = (data.subject as string) ?? '—'
+  const messageId = (data.email_id as string) ?? (data.message_id as string) ?? '—'
+  const timestamp = createdAt
 
   const meta = EVENT_META[eventType] ?? { emoji: 'ℹ️', label: eventType, urgent: false }
 
