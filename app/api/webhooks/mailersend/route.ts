@@ -10,12 +10,17 @@
 //   SLACK_WEBHOOK_URL          — Slack incoming webhook URL
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac } from 'crypto'
+import crypto, { createHmac } from 'crypto'
 
 // ── Verify MailerSend webhook signature ───────────────────────────────────────
 function verifySignature(body: string, signature: string, secret: string): boolean {
-  const expected = createHmac('sha256', secret).update(body).digest('hex')
-  return signature === expected
+  try {
+    const computed = createHmac('sha256', secret).update(body, 'utf8').digest('hex')
+    // Use timingSafeEqual to prevent timing attacks
+    return crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(computed, 'hex'))
+  } catch {
+    return false
+  }
 }
 
 // ── Event metadata ────────────────────────────────────────────────────────────
@@ -51,8 +56,15 @@ export async function POST(req: NextRequest) {
   console.log('[MailerSend webhook] Request received')
 
   const body = await req.text()
-  const signature = req.headers.get('x-mailersend-signature') ?? ''
+  const signature = req.headers.get('Signature') ?? req.headers.get('signature') ?? ''
   const secret = process.env.MAILERSEND_WEBHOOK_SECRET ?? ''
+
+  // Log headers for debugging (remove after confirmed working)
+  console.log('[MailerSend webhook] Signature header:', signature?.slice(0, 20))
+  console.log(
+    '[MailerSend webhook] All headers:',
+    JSON.stringify(Object.fromEntries(req.headers.entries()))
+  )
 
   // Verify signature if secret is configured
   if (secret && !verifySignature(body, signature, secret)) {
