@@ -163,7 +163,7 @@ async function createVerifactuInvoice({
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
   // Use verifacturapi.com — confirmed working from dashboard logs
   // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
-  const baseUrl = 'https://www.verifacturapi.com'
+  const baseUrl = 'https://api.verifactu-api.com/v1'
 
   // One line item per language
   const lineas = languages.map((code) => {
@@ -178,14 +178,11 @@ async function createVerifactuInvoice({
   })
 
   const body: Record<string, unknown> = {
-    emisor: { nif: emisorNif },
-    receptor: {
-      nombre,
-      ...(nif ? { nif } : {}),
-    },
+    nif_emisor: emisorNif,
     numero_factura: invoiceNumber,
     fecha_expedicion: issueDate,
-    tipo: nif ? 'completa' : 'simplificada',
+    tipo_factura: nif ? 'F1' : 'F2',
+    ...(nif ? { nif_receptor: nif, nombre_receptor: nombre } : { nombre_receptor: nombre }),
     lineas,
     notas: `Referencia Stripe: ${sessionId}`,
   }
@@ -194,8 +191,9 @@ async function createVerifactuInvoice({
 
   // First make a HEAD/OPTIONS request to find the final URL after any redirects
   // Then POST directly to that URL to avoid redirect stripping the body
-  const targetUrl = `${baseUrl}/api/v1/verifactu/create`
+  const targetUrl = `${baseUrl}/facturas`
   console.log('[Verifactu] POSTing to:', targetUrl)
+  console.log('[Verifactu] Using API key prefix:', process.env.VERIFACTU_API_KEY?.slice(0, 10))
 
   const res = await fetch(targetUrl, {
     method: 'POST',
@@ -211,7 +209,8 @@ async function createVerifactuInvoice({
   let finalRes = res
   if (res.status === 301 || res.status === 302 || res.status === 307 || res.status === 308) {
     const redirectUrl = res.headers.get('location')
-    console.log('[Verifactu] Redirect detected →', redirectUrl)
+    console.log('[Verifactu] Redirect detected → Final URL will be:', redirectUrl)
+    console.log('[Verifactu] Redirect status was:', res.status)
     if (!redirectUrl) throw new Error('Verifactu redirected but no Location header found')
     finalRes = await fetch(redirectUrl, {
       method: 'POST',
