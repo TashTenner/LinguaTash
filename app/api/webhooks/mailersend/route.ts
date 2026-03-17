@@ -20,12 +20,16 @@ function verifySignature(body: string, signature: string, secret: string): boole
 
 // ── Event metadata ────────────────────────────────────────────────────────────
 const EVENT_META: Record<string, { emoji: string; label: string; urgent: boolean }> = {
-  delivered: { emoji: '📬', label: 'Email entregado / Delivered', urgent: false },
-  soft_bounced: { emoji: '⚠️', label: 'Rebote temporal / Soft bounce', urgent: true },
-  hard_bounced: { emoji: '🚫', label: 'Rebote permanente / Hard bounce', urgent: true },
-  spam_complaint: { emoji: '🚨', label: 'Marcado como spam / Spam complaint', urgent: true },
-  opened: { emoji: '👁️', label: 'Email abierto / Opened', urgent: false },
-  clicked: { emoji: '🔗', label: 'Enlace clicado / Link clicked', urgent: false },
+  'activity.delivered': { emoji: '📬', label: 'Email entregado / Delivered', urgent: false },
+  'activity.soft_bounced': { emoji: '⚠️', label: 'Rebote temporal / Soft bounce', urgent: true },
+  'activity.hard_bounced': { emoji: '🚫', label: 'Rebote permanente / Hard bounce', urgent: true },
+  'activity.spam_complaint': {
+    emoji: '🚨',
+    label: 'Marcado como spam / Spam complaint',
+    urgent: true,
+  },
+  'activity.opened': { emoji: '👁️', label: 'Email abierto / Opened', urgent: false },
+  'activity.clicked': { emoji: '🔗', label: 'Enlace clicado / Link clicked', urgent: false },
 }
 
 // ── Send to Slack ─────────────────────────────────────────────────────────────
@@ -107,9 +111,9 @@ export async function POST(req: NextRequest) {
         text:
           eventType === 'hard_bounced'
             ? '🔴 *Hard bounce* — esta dirección no existe o rechaza emails. Contacta al cliente por otro medio.'
-            : eventType === 'soft_bounced'
+            : eventType === 'activity.soft_bounced'
               ? '🟡 *Soft bounce* — entrega temporal fallida. MailerSend reintentará automáticamente.'
-              : eventType === 'spam_complaint'
+              : eventType === 'activity.spam_complaint'
                 ? '🔴 *Spam* — el destinatario marcó el email como spam. Revisa el contenido y considera contactar al cliente.'
                 : '',
       },
