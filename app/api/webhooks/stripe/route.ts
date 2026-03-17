@@ -163,7 +163,7 @@ async function createVerifactuInvoice({
   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
   // Use verifacturapi.com — confirmed working from dashboard logs
   // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
-  const baseUrl = 'https://api.verifactu-api.com/v1'
+  const baseUrl = 'https://verifacturapi.com'
 
   // One line item per language
   const lineas = languages.map((code) => {
@@ -191,7 +191,7 @@ async function createVerifactuInvoice({
 
   // First make a HEAD/OPTIONS request to find the final URL after any redirects
   // Then POST directly to that URL to avoid redirect stripping the body
-  const targetUrl = `${baseUrl}/facturas`
+  const targetUrl = `${baseUrl}/api/v1/verifactu/create`
   console.log('[Verifactu] POSTing to:', targetUrl)
   console.log('[Verifactu] Using API key prefix:', process.env.VERIFACTU_API_KEY?.slice(0, 10))
 
