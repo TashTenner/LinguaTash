@@ -21,12 +21,12 @@ const r2 = new S3Client({
 
 // ── Language metadata ────────────────────────────────────────────────────────
 const LANGUAGE_META: Record<string, { name: string; file: string }> = {
-  es: { name: 'Español', file: 'salten/salten-es.zip' },
-  ca: { name: 'Catalán', file: 'salten/salten-ca.zip' },
-  en: { name: 'Inglés', file: 'salten/salten-en.zip' },
-  de: { name: 'Alemán', file: 'salten/salten-de.zip' },
-  it: { name: 'Italiano', file: 'salten/salten-it.zip' },
-  ru: { name: 'Ruso', file: 'salten/salten-ru.zip' },
+  es: { name: 'Español', file: 'salten/salten-es-ES.zip' },
+  ca: { name: 'Catalán', file: 'salten/salten-ca-ES.zip' },
+  en: { name: 'Inglés', file: 'salten/salten-en-GB.zip' },
+  de: { name: 'Alemán', file: 'salten/salten-de-DE.zip' },
+  it: { name: 'Italiano', file: 'salten/salten-it-IT.zip' },
+  ru: { name: 'Ruso', file: 'salten/salten-ru-RU.zip' },
 }
 
 // ── EU country codes (for IVA determination) ─────────────────────────────────
@@ -139,120 +139,118 @@ async function getCountryEvidence(paymentIntentId: string) {
   }
 }
 
-// ── Create Verifactu invoice ──────────────────────────────────────────────────
-// Base URL: https://api.verifactu-api.com/v1
-async function createVerifactuInvoice({
-  invoiceNumber,
-  issueDate,
-  nombre,
-  nif,
-  languages,
-  amountPerLanguage,
-  ivaRate,
-  sessionId,
-}: {
-  invoiceNumber: string
-  issueDate: string
-  nombre: string
-  nif: string | null
-  languages: string[]
-  amountPerLanguage: number
-  ivaRate: number
-  sessionId: string
-}) {
-  const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
-  // Use verifacturapi.com — confirmed working from dashboard logs
-  // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
-  const baseUrl = 'https://verifacturapi.com' // https forces direct connection, no redirect
-
-  // One line item per language — field names from docs
-  const lineas = languages.map((code) => {
-    const { base } = splitPrice(amountPerLanguage, ivaRate)
-    const langName = LANGUAGE_META[code]?.name ?? code
-    return {
-      description: `Salten — Pack ${langName} (descarga digital)${ivaRate === 0 ? ' — Art. 69 Ley 37/1992' : ''}`,
-      quantity: 1,
-      unit_price: base,
-      tax_rate: ivaRate,
-      aeat_code: '01',
-      regime_key: null,
-      operation_qualification: ivaRate === 0 ? 'S2' : 'S1',
-    }
-  })
-
-  // Field names exactly as per verifacturapi.com docs
-  const body: Record<string, unknown> = {
-    series: 'RESUENA',
-    number: invoiceNumber,
-    issue_date: issueDate,
-    invoice_type: nif ? 'F1' : 'F2',
-    description: `Salten — ${languages.length} pack${languages.length > 1 ? 's' : ''} de idioma${languages.length > 1 ? 's' : ''}${ivaRate === 0 ? ' — Operación no sujeta a IVA (Art. 69 Ley 37/1992)' : ''}`,
-    currency: 'EUR',
-    external_reference: sessionId.slice(-64), // max 64 chars
-    customer: {
-      name: nombre,
-      ...(nif ? { nif } : {}),
-    },
-    items: lineas,
-  }
-
-  console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
-
-  // First make a HEAD/OPTIONS request to find the final URL after any redirects
-  // Then POST directly to that URL to avoid redirect stripping the body
-  const targetUrl = `${baseUrl}/api/v1/verifactu/create`
-  console.log('[Verifactu] POSTing to:', targetUrl)
-  console.log('[Verifactu] Using API key prefix:', process.env.VERIFACTU_API_KEY?.slice(0, 10))
-
-  const res = await fetch(targetUrl, {
-    method: 'POST',
-    redirect: 'manual', // don't auto-follow — capture redirect URL instead
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
-    },
-    body: JSON.stringify(body),
-  })
-
-  // If redirected, follow manually with POST to preserve body
-  let finalRes = res
-  if (res.status === 301 || res.status === 302 || res.status === 307 || res.status === 308) {
-    const redirectUrl = res.headers.get('location')
-    console.log('[Verifactu] Redirect detected → Final URL will be:', redirectUrl)
-    console.log('[Verifactu] Redirect status was:', res.status)
-    if (!redirectUrl) throw new Error('Verifactu redirected but no Location header found')
-    finalRes = await fetch(redirectUrl, {
-      method: 'POST',
-      redirect: 'follow',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
-      },
-      body: JSON.stringify(body),
-    })
-  }
-
-  // Log raw response for debugging before parsing
-  const rawText = await finalRes.text()
-  console.log('[Verifactu] Raw response status:', finalRes.status)
-  console.log('[Verifactu] Raw response body:', rawText.slice(0, 500))
-
-  let data: Record<string, unknown>
-  try {
-    data = JSON.parse(rawText) as Record<string, unknown>
-  } catch {
-    throw new Error(
-      `Verifactu returned non-JSON (status ${finalRes.status}): ${rawText.slice(0, 200)}`
-    )
-  }
-
-  if (!finalRes.ok) {
-    throw new Error(`Verifactu API error ${finalRes.status}: ${JSON.stringify(data)}`)
-  }
-
-  console.log('[Verifactu] ✓ Invoice registered:', invoiceNumber)
-  return data
-}
+// // ── Create Verifactu invoice ──────────────────────────────────────────────────
+// // Base URL: https://api.verifactu-api.com/v1
+// async function createVerifactuInvoice({
+//   invoiceNumber,
+//   issueDate,
+//   nombre,
+//   nif,
+//   languages,
+//   amountPerLanguage,
+//   ivaRate,
+//   sessionId,
+// }: {
+//   invoiceNumber: string
+//   issueDate: string
+//   nombre: string
+//   nif: string | null
+//   languages: string[]
+//   amountPerLanguage: number
+//   ivaRate: number
+//   sessionId: string
+// }) {
+//   const emisorNif = process.env.VERIFACTU_EMISOR_NIE!
+//   // Use verifacturapi.com — confirmed working from dashboard logs
+//   // Test mode is controlled by your API key (sk_dev_ = test, sk_live_ = production)
+//   const baseUrl = 'https://verifacturapi.com'  // https forces direct connection, no redirect
+//
+//   // One line item per language — field names from docs
+//   const lineas = languages.map((code) => {
+//     const { base } = splitPrice(amountPerLanguage, ivaRate)
+//     const langName = LANGUAGE_META[code]?.name ?? code
+//     return {
+//       description: `Salten — Pack ${langName} (descarga digital)${ivaRate === 0 ? ' — Art. 69 Ley 37/1992' : ''}`,
+//       quantity: 1,
+//       unit_price: base,
+//       tax_rate: ivaRate,
+//       aeat_code: '01',
+//       regime_key: null,
+//       operation_qualification: ivaRate === 0 ? 'S2' : 'S1',
+//     }
+//   })
+//
+//   // Field names exactly as per verifacturapi.com docs
+//   const body: Record<string, unknown> = {
+//     series: 'RESUENA',
+//     number: invoiceNumber,
+//     issue_date: issueDate,
+//     invoice_type: nif ? 'F1' : 'F2',
+//     description: `Salten — ${languages.length} pack${languages.length > 1 ? 's' : ''} de idioma${languages.length > 1 ? 's' : ''}${ivaRate === 0 ? ' — Operación no sujeta a IVA (Art. 69 Ley 37/1992)' : ''}`,
+//     currency: 'EUR',
+//     external_reference: sessionId.slice(-64), // max 64 chars
+//     customer: {
+//       name: nombre,
+//       ...(nif ? { nif } : {}),
+//     },
+//     items: lineas,
+//   }
+//
+//   console.log('[Verifactu] Sending invoice to', baseUrl, ':', JSON.stringify(body, null, 2))
+//
+//   // First make a HEAD/OPTIONS request to find the final URL after any redirects
+//   // Then POST directly to that URL to avoid redirect stripping the body
+//   const targetUrl = `${baseUrl}/api/v1/verifactu/create`
+//   console.log('[Verifactu] POSTing to:', targetUrl)
+//   console.log('[Verifactu] Using API key prefix:', process.env.VERIFACTU_API_KEY?.slice(0, 10))
+//
+//   const res = await fetch(targetUrl, {
+//     method: 'POST',
+//     redirect: 'manual', // don't auto-follow — capture redirect URL instead
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
+//     },
+//     body: JSON.stringify(body),
+//   })
+//
+//   // If redirected, follow manually with POST to preserve body
+//   let finalRes = res
+//   if (res.status === 301 || res.status === 302 || res.status === 307 || res.status === 308) {
+//     const redirectUrl = res.headers.get('location')
+//     console.log('[Verifactu] Redirect detected → Final URL will be:', redirectUrl)
+//     console.log('[Verifactu] Redirect status was:', res.status)
+//     if (!redirectUrl) throw new Error('Verifactu redirected but no Location header found')
+//     finalRes = await fetch(redirectUrl, {
+//       method: 'POST',
+//       redirect: 'follow',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${process.env.VERIFACTU_API_KEY}`,
+//       },
+//       body: JSON.stringify(body),
+//     })
+//   }
+//
+//   // Log raw response for debugging before parsing
+//   const rawText = await finalRes.text()
+//   console.log('[Verifactu] Raw response status:', finalRes.status)
+//   console.log('[Verifactu] Raw response body:', rawText.slice(0, 500))
+//
+//   let data: Record<string, unknown>
+//   try {
+//     data = JSON.parse(rawText) as Record<string, unknown>
+//   } catch {
+//     throw new Error(`Verifactu returned non-JSON (status ${finalRes.status}): ${rawText.slice(0, 200)}`)
+//   }
+//
+//   if (!finalRes.ok) {
+//     throw new Error(`Verifactu API error ${finalRes.status}: ${JSON.stringify(data)}`)
+//   }
+//
+//   console.log('[Verifactu] ✓ Invoice registered:', invoiceNumber)
+//   return data
+// }
 
 // ── Send download email via MailerSend ───────────────────────────────────────
 async function sendDownloadEmail({
@@ -639,27 +637,23 @@ export async function POST(req: NextRequest) {
     )
     console.log('[Webhook] ✓ Download links generated')
 
-    // 4. Register invoice with Verifactu / AEAT
-    let verifactuResponse: Record<string, unknown> | null = null
-    let verifactuQrUrl: string | null = null
-    try {
-      verifactuResponse = await createVerifactuInvoice({
-        invoiceNumber,
-        issueDate,
-        nombre: nombreEmpresa || nombre,
-        nif: nif || null,
-        languages,
-        amountPerLanguage,
-        ivaRate,
-        sessionId: session.id,
-      })
-      // Extract QR URL from response if available
-      verifactuQrUrl =
-        (verifactuResponse as { data?: { qr_code?: string } } | null)?.data?.qr_code ?? null
-      console.log('[Webhook] ✓ Verifactu invoice registered')
-    } catch (verifactuErr: unknown) {
-      console.error('[Webhook] Verifactu error (non-fatal):', verifactuErr)
-    }
+    // 4. Verifactu / AEAT — commented out until certificate is ready
+    // TODO: uncomment when registered as autónoma and certificate obtained
+    const verifactuResponse: Record<string, unknown> | null = null
+    const verifactuQrUrl: string | null = null
+    // try {
+    //   verifactuResponse = await createVerifactuInvoice({
+    //     invoiceNumber, issueDate,
+    //     nombre: nombreEmpresa || nombre,
+    //     nif: nif || null,
+    //     languages, amountPerLanguage, ivaRate,
+    //     sessionId: session.id,
+    //   })
+    //   verifactuQrUrl = (verifactuResponse as { data?: { qr_code?: string } } | null)?.data?.qr_code ?? null
+    //   console.log('[Webhook] ✓ Verifactu invoice registered')
+    // } catch (verifactuErr: unknown) {
+    //   console.error('[Webhook] Verifactu error (non-fatal):', verifactuErr)
+    // }
 
     // 5. Generate PDF invoice
     let pdfBytes: Uint8Array | null = null
@@ -778,8 +772,8 @@ export async function POST(req: NextRequest) {
           },
           {
             label: 'Verifactu / AEAT',
-            ok: verifactuResponse !== null,
-            detail: verifactuResponse !== null ? 'registrada' : 'error — revisar',
+            ok: true,
+            detail: 'pendiente — sin certificado (comentado)',
           },
           { label: 'PDF generado y guardado en R2', ok: pdfBytes !== null },
           { label: 'Email enviado al cliente', ok: true, detail: customerEmail },
@@ -789,7 +783,7 @@ export async function POST(req: NextRequest) {
             detail: newsletter === 'true' ? 'añadido a lista' : 'no solicitado',
           },
         ],
-        hasError: verifactuResponse === null || pdfBytes === null,
+        hasError: pdfBytes === null,
       })
     )
 
