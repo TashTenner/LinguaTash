@@ -594,7 +594,10 @@ export async function POST(req: NextRequest) {
   const createdAt = new Date(event.created * 1000)
   const issueDate = createdAt.toISOString().split('T')[0] // YYYY-MM-DD
   const invoiceNumber = generateInvoiceNumber(session.id, createdAt)
-  const amountPerLanguage = 3.0 // €3 IVA included per language
+  // const amountPerLanguage = 3.0 // €3 IVA included per language
+
+  const amountTotal = (session.amount_total ?? 0) / 100 // Convert cents to euros
+  const amountPerLanguage = Math.round((amountTotal / languages.length) * 100) / 100
 
   try {
     // 2. Fetch country evidence from Stripe PaymentIntent
@@ -658,6 +661,25 @@ export async function POST(req: NextRequest) {
     // 5. Generate PDF invoice
     let pdfBytes: Uint8Array | null = null
     try {
+      // const invoiceData: InvoiceData = {
+      //   invoiceNumber,
+      //   issueDate,
+      //   sessionId: session.id,
+      //   buyerNombre: nombre,
+      //   buyerEmail: customerEmail,
+      //   buyerNif: nif || null,
+      //   buyerNombreEmpresa: nombreEmpresa || null,
+      //   buyerDomicilio: domicilio || null,
+      //   buyerCodigoPostal: codigoPostal || null,
+      //   buyerCiudad: ciudad || null,
+      //   buyerPais: effectiveCountry,
+      //   languages,
+      //   languageNames: languages.map((code) => LANGUAGE_META[code]?.name ?? code),
+      //   amountPerLanguage,
+      //   ivaRate,
+      //   verifactuQrUrl,
+      // }
+
       const invoiceData: InvoiceData = {
         invoiceNumber,
         issueDate,
@@ -672,10 +694,11 @@ export async function POST(req: NextRequest) {
         buyerPais: effectiveCountry,
         languages,
         languageNames: languages.map((code) => LANGUAGE_META[code]?.name ?? code),
-        amountPerLanguage,
+        amountTotal, // ✅ CHANGED from amountPerLanguage
         ivaRate,
         verifactuQrUrl,
       }
+
       pdfBytes = await generateInvoicePdf(invoiceData)
 
       // Save PDF to R2: invoices/YYYY-MM-DD_RESUENA-YYYY-XXXXXX.pdf

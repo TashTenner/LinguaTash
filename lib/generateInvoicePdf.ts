@@ -2,6 +2,7 @@
 //
 // Generates a bilingual (Spanish + English) PDF invoice using pdf-lib.
 // Designed for Verifactu compliance — includes all required fiscal fields.
+// Now calculates price dynamically from Stripe amountTotal instead of hardcoding.
 //
 // ENV VARS REQUIRED:
 //   EMISOR_NOMBRE       — e.g. "Tash Tenner"
@@ -82,7 +83,7 @@ export interface InvoiceData {
   // Order
   languages: string[]
   languageNames: string[] // e.g. ["Español", "Inglés"]
-  amountPerLanguage: number // in euros e.g. 3.00
+  amountTotal: number // Total from Stripe in euros (e.g., 12.00 for 3 languages × €4)
   ivaRate: number // 0 or 21
   // Verifactu
   verifactuQrUrl?: string | null
@@ -158,12 +159,16 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
     email: process.env.EMISOR_EMAIL || 'resuena@linguatash.com',
   }
 
+  // DYNAMIC: Calculate price per language from amountTotal
+  const numLanguages = data.languages.length
+  const amountPerLanguage = Math.round((data.amountTotal / numLanguages) * 100) / 100
+
   // IVA calculations
-  const base = Math.round((data.amountPerLanguage / (1 + data.ivaRate / 100)) * 100) / 100
-  const tax = Math.round((data.amountPerLanguage - base) * 100) / 100
-  const totalBase = Math.round(base * data.languages.length * 100) / 100
-  const totalTax = Math.round(tax * data.languages.length * 100) / 100
-  const totalFinal = Math.round(data.amountPerLanguage * data.languages.length * 100) / 100
+  const base = Math.round((amountPerLanguage / (1 + data.ivaRate / 100)) * 100) / 100
+  const tax = Math.round((amountPerLanguage - base) * 100) / 100
+  const totalBase = Math.round(base * numLanguages * 100) / 100
+  const totalTax = Math.round(tax * numLanguages * 100) / 100
+  const totalFinal = Math.round(data.amountTotal * 100) / 100 // Use actual total from Stripe
 
   const isEU = EU_COUNTRIES.has(data.buyerPais || 'ES')
   const ivaNote =
@@ -288,7 +293,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
     drawText(page, '1', col.qty, curY + 3, fontRegular, 7.5)
     drawText(page, `${base.toFixed(2)} €`, col.base, curY + 3, fontRegular, 7.5)
     drawText(page, `${tax.toFixed(2)} €`, col.iva, curY + 3, fontRegular, 7.5)
-    drawText(page, `${data.amountPerLanguage.toFixed(2)} €`, col.total, curY + 3, fontRegular, 7.5)
+    drawText(page, `${amountPerLanguage.toFixed(2)} €`, col.total, curY + 3, fontRegular, 7.5)
     curY -= 16
   })
 
@@ -301,7 +306,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Uint8Array>
 
   const totals = [
     [`Base imponible / Taxable amount`, `${totalBase.toFixed(2)} €`],
-    [`IVA ${data.ivaRate}% / VAT ${data.ivaRate}%`, `${totalTax.toFixed(2)} €`], // ensure visible
+    [`IVA ${data.ivaRate}% / VAT ${data.ivaRate}%`, `${totalTax.toFixed(2)} €`],
   ]
 
   totals.forEach(([label, value]) => {
