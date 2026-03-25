@@ -13,7 +13,7 @@ const LANGUAGES = [
   { code: 'ru', name: 'Ruso', flag: '🇷🇺', note: 'Ruso estándar' },
 ]
 
-const PRICE_PER_LANGUAGE = 0.5
+const PRICE_PER_LANGUAGE = 4
 
 // ── Collapsible FAQ ──────────────────────────────────────────────────────────
 function FaqItem({ question, children }: { question: string; children: React.ReactNode }) {
