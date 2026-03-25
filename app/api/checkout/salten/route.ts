@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
 })
 
-const PRICE_PER_LANGUAGE = 4 // €4 IVA incluido
+const PRICE_PER_LANGUAGE = 0.5 // €4 IVA incluido
 
 const VALID_LANGUAGE_CODES = new Set(['es', 'ca', 'en', 'de', 'it', 'ru'])
 
