@@ -6,6 +6,7 @@ const headerNavLinks = [
   { href: '/resuena', title: 'Resuena' },
   { href: '/1p2l', title: '1P2L' },
   { href: '/perfil', title: 'Perfil' },
+  { href: '/russkiy', title: 'Русский' },
   { href: '/now', title: 'Now' },
   { href: '/blog', title: 'Blog' },
 ]
