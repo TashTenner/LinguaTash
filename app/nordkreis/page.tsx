@@ -36,6 +36,15 @@ export default function NordkreisPage() {
           Gemeinsam Deutsch leben, lernen und weitergeben.
         </p>
 
+        <div className="mt-8 flex justify-center">
+          <a
+            href="/nordkreis/enroll"
+            className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
+          >
+            Jetzt anmelden
+          </a>
+        </div>
+
         <div className="mx-auto my-10 h-px w-20 bg-[#9A8F85]" />
 
         <p className="text-xl font-semibold text-[#B3475A] md:text-2xl">
@@ -490,6 +499,7 @@ export default function NordkreisPage() {
           08024 Barcelona
         </p>
       </section>
+
       {/* FEES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
@@ -531,7 +541,17 @@ export default function NordkreisPage() {
             </p>
           </div>
         </div>
+
+        <div className="mt-8 flex justify-center">
+          <a
+            href="/nordkreis/enroll"
+            className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
+          >
+            Jetzt anmelden
+          </a>
+        </div>
       </section>
+
       {/* CONTACT */}
       <section className="rounded-2xl border border-[#9A8F85]/30 bg-[#081C3C] px-6 py-20 text-center text-[#F4EFE8]">
         <h2 className="mb-6 text-2xl font-semibold">Kontakt / Contacto</h2>

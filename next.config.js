@@ -6,13 +6,13 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app cloud.umami.is;
+ script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app cloud.umami.is js.stripe.com;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src 'self' *.s3.amazonaws.com *.r2.cloudflarestorage.com;
-  connect-src 'self' cloud.umami.is https://api-gateway.umami.dev;
+  connect-src 'self' cloud.umami.is https://api-gateway.umami.dev https://api.stripe.com;
   font-src 'self';
-  frame-src giscus.app;
+  frame-src giscus.app https://js.stripe.com;
 `
 
 const securityHeaders = [
