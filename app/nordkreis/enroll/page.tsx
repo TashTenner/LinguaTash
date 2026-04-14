@@ -489,6 +489,7 @@ function EnrollForm() {
             <Field label="Gruppe" sublabel="Grupo" required>
               <div className="space-y-2">
                 {GROUPS.map((g) => (
+                  // eslint-disable-next-line jsx-a11y/label-has-associated-control
                   <label
                     key={g.value}
                     className={`flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition-all ${form.childGroup === g.value ? 'border-[#B3475A] bg-[#B3475A]/5' : 'border-[#9A8F85]/40 hover:border-[#9A8F85]/70'}`}
@@ -496,6 +497,7 @@ function EnrollForm() {
                     <input
                       type="radio"
                       name="childGroup"
+                      aria-label={g.label}
                       className="mt-0.5 accent-[#B3475A]"
                       checked={form.childGroup === g.value}
                       onChange={() => setForm((f) => ({ ...f, childGroup: g.value }))}
@@ -519,6 +521,7 @@ function EnrollForm() {
             >
               <div className="grid grid-cols-2 gap-2">
                 {GERMAN_SPEAKER_OPTIONS.map((o) => (
+                  // eslint-disable-next-line jsx-a11y/label-has-associated-control
                   <label
                     key={o.value}
                     className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 transition-all ${form.germanSpeakingParent === o.value ? 'border-[#B3475A] bg-[#B3475A]/5' : 'border-[#9A8F85]/40 hover:border-[#9A8F85]/70'}`}
@@ -526,6 +529,7 @@ function EnrollForm() {
                     <input
                       type="radio"
                       name="germanSpeaker"
+                      aria-label={o.labelDE}
                       className="accent-[#B3475A]"
                       checked={form.germanSpeakingParent === o.value}
                       onChange={() => setForm((f) => ({ ...f, germanSpeakingParent: o.value }))}
@@ -948,6 +952,7 @@ function EnrollForm() {
             {form.signatureDataUrl && (
               <div>
                 <p className="mb-1 text-xs text-[#9A8F85]">Unterschrift / Firma</p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={form.signatureDataUrl}
                   alt="Unterschrift"
