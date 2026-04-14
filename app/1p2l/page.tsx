@@ -137,14 +137,18 @@ export default function OnePersonTwoLanguagesPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/1p2l-icon.png"
             alt="1P2L Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/1p2l-icon-dark.png"
             alt="1P2L Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>
@@ -303,14 +307,18 @@ export default function OnePersonTwoLanguagesPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/1p2l-icon.png"
             alt="1P2L Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/1p2l-icon-dark.png"
             alt="1P2L Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>

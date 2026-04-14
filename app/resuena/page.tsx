@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export default function ResuenaPage() {
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -5,14 +7,18 @@ export default function ResuenaPage() {
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
         {/* Resuena Logo */}
         <div className="mb-8 flex justify-center">
-          <img
+          <Image
             src="/static/images/resuena-icon.png"
             alt="Resuena Logo"
+            width={112}
+            height={112}
             className="block h-24 w-auto md:h-28 dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/resuena-icon-dark.png"
             alt="Resuena Dark Logo"
+            width={112}
+            height={112}
             className="hidden h-24 w-auto md:h-28 dark:block"
           />
         </div>
@@ -94,14 +100,18 @@ export default function ResuenaPage() {
 
           <section>
             <div className="my-20 flex justify-center">
-              <img
+              <Image
                 src="/static/images/resuena-icon.png"
                 alt="Resuena Logo"
+                width={32}
+                height={32}
                 className="block h-8 w-auto dark:hidden"
               />
-              <img
+              <Image
                 src="/static/images/resuena-icon-dark.png"
                 alt="Resuena Dark Logo"
+                width={32}
+                height={32}
                 className="hidden h-8 w-auto dark:block"
               />
             </div>

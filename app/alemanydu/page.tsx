@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from '../../components/Link'
 
 export default function AlemanYDuPage() {
@@ -7,14 +8,18 @@ export default function AlemanYDuPage() {
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
         {/* Aleman y Du Logo */}
         <div className="mb-8 flex justify-center">
-          <img
+          <Image
             src="/static/images/alemanydu-icon.png"
             alt="Aleman y Du Logo"
+            width={112}
+            height={112}
             className="block h-24 w-auto md:h-28 dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/alemanydu-icon-dark.png"
             alt="Aleman y Du Dark Logo"
+            width={112}
+            height={112}
             className="hidden h-24 w-auto md:h-28 dark:block"
           />
         </div>
@@ -67,14 +72,18 @@ export default function AlemanYDuPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/alemanydu-icon.png"
             alt="Alemán y Du Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/alemanydu-icon-dark.png"
             alt="Alemán y Du Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>
@@ -155,14 +164,18 @@ export default function AlemanYDuPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/alemanydu-icon.png"
             alt="Alemán y Du Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/alemanydu-icon-dark.png"
             alt="Alemán y Du Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>

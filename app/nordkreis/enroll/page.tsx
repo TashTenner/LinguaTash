@@ -608,18 +608,30 @@ function EnrollForm() {
           {step > 0
             ? <button onClick={back} className="rounded-xl border border-[#9A8F85]/50 px-5 py-2.5 text-sm text-[#9A8F85] transition-all hover:border-[#081C3C] hover:text-[#081C3C] dark:hover:border-[#F4EFE8] dark:hover:text-[#F4EFE8]">← Zurück</button>
             : <div />}
-          {step < 4
-            ? <button onClick={next} className="rounded-xl bg-[#081C3C] px-6 py-2.5 text-sm font-semibold text-[#F4EFE8] shadow-sm transition-all hover:bg-[#B3475A] dark:bg-[#F4EFE8] dark:text-[#081C3C] dark:hover:bg-[#B3475A] dark:hover:text-[#F4EFE8]">Weiter →</button>
-            : <button onClick={submit} disabled={submitting || !stripe}
-                className="rounded-xl bg-[#B3475A] px-6 py-2.5 text-sm font-semibold text-[#F4EFE8] shadow-sm transition-all hover:bg-[#9f3f50] disabled:opacity-60">
-                {submitting ? "Wird gesendet…" : "Absenden & Vertrag senden"}
-              </button>}
+          {step < 4 ? (
+            <button
+              onClick={next}
+              className="rounded-xl bg-[#081C3C] px-6 py-2.5 text-sm font-semibold text-[#F4EFE8] shadow-sm transition-all hover:bg-[#B3475A] dark:bg-[#F4EFE8] dark:text-[#081C3C] dark:hover:bg-[#B3475A] dark:hover:text-[#F4EFE8]"
+            >
+              Weiter →
+            </button>
+          ) : (
+            <button
+              onClick={submit}
+              disabled={submitting || !stripe}
+              className="rounded-xl bg-[#B3475A] px-6 py-2.5 text-sm font-semibold text-[#F4EFE8] shadow-sm transition-all hover:bg-[#9f3f50] disabled:opacity-60"
+            >
+              {submitting ? 'Wird gesendet…' : 'Absenden & Vertrag senden'}
+            </button>
+          )}
         </div>
       </SectionCard>
 
-      <p className="text-center text-xs text-[#9A8F85]">Nordkreis · Zahlungen gesichert durch Stripe</p>
+      <p className="text-center text-xs text-[#9A8F85]">
+        Nordkreis · Zahlungen gesichert durch Stripe
+      </p>
     </main>
-  );
+  )
 }
 
 export default function NordkreisEnrollPage() {
@@ -627,5 +639,5 @@ export default function NordkreisEnrollPage() {
     <Elements stripe={stripePromise}>
       <EnrollForm />
     </Elements>
-  );
+  )
 }

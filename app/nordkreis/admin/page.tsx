@@ -3,6 +3,7 @@
 // app/nordkreis/admin/page.tsx
 // LOCAL ONLY — localhost:3000/nordkreis/admin
 
+import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 
 interface Student {
@@ -470,9 +471,11 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#B3475A] p-1.5">
-              <img
+              <Image
                 src="/static/images/nordkreis-icon.png"
                 alt="Nordkreis"
+                width={40}
+                height={40}
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             </div>

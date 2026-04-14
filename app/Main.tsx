@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from '@/components/Link'
 
 export default function Home() {
@@ -48,14 +49,18 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="text-center">
               <div className="mb-6 flex justify-center">
-                <img
+                <Image
                   src="/static/images/fonetikas-icon.png"
                   alt="Fonetikas Logo"
+                  width={64}
+                  height={64}
                   className="block h-16 w-16 dark:hidden"
                 />
-                <img
+                <Image
                   src="/static/images/fonetikas-icon-dark.png"
                   alt="Fonetikas Dark Logo"
+                  width={64}
+                  height={64}
                   className="hidden h-16 w-16 dark:block"
                 />
               </div>
@@ -80,14 +85,18 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] p-8 dark:bg-[#081C3C]">
             <div className="text-center">
               <div className="mb-6 flex justify-center">
-                <img
+                <Image
                   src="/static/images/nordkreis-icon.png"
                   alt="Nordkreis Logo"
+                  width={64}
+                  height={64}
                   className="block h-16 w-16 dark:hidden"
                 />
-                <img
+                <Image
                   src="/static/images/nordkreis-icon-dark.png"
                   alt="Nordkreis Dark Logo"
+                  width={64}
+                  height={64}
                   className="hidden h-16 w-16 dark:block"
                 />
               </div>
@@ -112,14 +121,18 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="text-center">
               <div className="mb-6 flex justify-center">
-                <img
+                <Image
                   src="/static/images/alemanydu-icon.png"
                   alt="Alemán y Du Logo"
+                  width={64}
+                  height={64}
                   className="block h-16 w-16 dark:hidden"
                 />
-                <img
+                <Image
                   src="/static/images/alemanydu-icon-dark.png"
                   alt="Alemán y Du Dark Logo"
+                  width={64}
+                  height={64}
                   className="hidden h-16 w-16 dark:block"
                 />
               </div>
@@ -144,14 +157,18 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] p-8 dark:bg-[#081C3C]">
             <div className="text-center">
               <div className="mb-6 flex justify-center">
-                <img
+                <Image
                   src="/static/images/resuena-icon.png"
                   alt="Resuena Logo"
+                  width={64}
+                  height={64}
                   className="block h-16 w-16 dark:hidden"
                 />
-                <img
+                <Image
                   src="/static/images/resuena-icon-dark.png"
                   alt="Resuena Dark Logo"
+                  width={64}
+                  height={64}
                   className="hidden h-16 w-16 dark:block"
                 />
               </div>
@@ -176,14 +193,18 @@ export default function Home() {
           <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] p-8 dark:bg-[#081C3C]">
             <div className="text-center">
               <div className="mb-6 flex justify-center">
-                <img
+                <Image
                   src="/static/images/1p2l-icon.png"
                   alt="1P2L Logo"
+                  width={64}
+                  height={64}
                   className="block h-16 w-16 dark:hidden"
                 />
-                <img
+                <Image
                   src="/static/images/1p2l-icon-dark.png"
                   alt="1P2L Dark Logo"
+                  width={64}
+                  height={64}
                   className="hidden h-16 w-16 dark:block"
                 />
               </div>

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from '../../components/Link'
 
 export default function NordkreisPage() {
@@ -7,14 +8,18 @@ export default function NordkreisPage() {
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-20 text-center dark:bg-[#081C3C]">
         {/* Nordkreis Logo */}
         <div className="mb-8 flex justify-center">
-          <img
+          <Image
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
+            width={112}
+            height={112}
             className="block h-24 w-auto md:h-28 dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/nordkreis-icon-dark.png"
             alt="Nordkreis Dark Logo"
+            width={112}
+            height={112}
             className="hidden h-24 w-auto md:h-28 dark:block"
           />
         </div>
@@ -105,14 +110,18 @@ export default function NordkreisPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/nordkreis-icon-dark.png"
             alt="Nordkreis Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>
@@ -396,14 +405,18 @@ export default function NordkreisPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/nordkreis-icon-dark.png"
             alt="Nordkreis Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>
@@ -474,14 +487,18 @@ export default function NordkreisPage() {
 
       <section>
         <div className="my-20 flex justify-center">
-          <img
+          <Image
             src="/static/images/nordkreis-icon.png"
             alt="Nordkreis Logo"
+            width={32}
+            height={32}
             className="block h-8 w-auto dark:hidden"
           />
-          <img
+          <Image
             src="/static/images/nordkreis-icon-dark.png"
             alt="Nordkreis Dark Logo"
+            width={32}
+            height={32}
             className="hidden h-8 w-auto dark:block"
           />
         </div>
