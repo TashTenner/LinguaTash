@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from '@/components/Link'
+import WaitlistForm from '@/components/WaitlistForm'
 
 export default function Home() {
   return (
@@ -233,6 +234,15 @@ export default function Home() {
           "El idioma se adquiere primero en el oído y en la voz; la lectura y la escritura llegan
           después."
         </p>
+      </section>
+
+      {/* Waitlist */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-8 py-12 text-center dark:bg-[#081C3C]">
+        <h2 className="mb-2 text-2xl font-semibold">Mantente al día</h2>
+        <p className="mb-6 text-sm opacity-70">
+          Apúntate para recibir novedades sobre proyectos, recursos y fechas de inicio.
+        </p>
+        <WaitlistForm />
       </section>
     </main>
   )
