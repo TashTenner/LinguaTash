@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { formatDate } from '../../lib/formatDate'
 
 export default function NowPage() {
-  const lastUpdated = '2026-02-01'
+  const lastUpdated = '2026-04-30'
 
   return (
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -33,19 +33,10 @@ export default function NowPage() {
         <h2 className="text-2xl font-semibold">Enfoque profesional</h2>
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
-          <li>Mejorar y refinar la web de LinguaTash</li>
           <li>
-            Investigar la etimología de algunas palabras en español y ruso (por ejemplo:{' '}
-            <em>duro</em> en español y <em>дерево</em> (derevo) en ruso, que quiere decir árbol)
+            Aprender cómo funciona Instagram y subir las primeras publicaciones para LinguaTash
           </li>
-          <li>
-            Comparar palabras similares en inglés, español y ruso: <em>wind</em> (inglés),{' '}
-            <em>viento</em> (español), <em>ветер</em> (veter)
-          </li>
-          <li>
-            Profundizar en el debate entre Noam Chomsky y Daniel Everett sobre si el lenguaje humano
-            es innato y universal o principalmente moldeado por la cultura
-          </li>
+          <li>Volver a grabar las lecciones de Fonetikas con mejor calidad</li>
         </ul>
       </section>
 
@@ -55,14 +46,13 @@ export default function NowPage() {
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
           <li>
-            Reflexionar sobre las dificultades de la crianza desde el enfoque de la crianza
-            autoritativa (límites firmes con alta conexión emocional)
+            Cuánto pan es razonable para adultos y niños — es un alimento cómodo y rápido, pero no
+            el más nutritivo
           </li>
           <li>
-            Interés en el estudio del microbioma y su conexión con el cerebro, la regulación
-            emocional y la salud general
+            Cómo reducir el plástico de forma profunda y realista, sin pretender eliminarlo por
+            completo
           </li>
-          <li>Encontrar formas realistas de volver al deporte después del embarazo y el parto</li>
         </ul>
       </section>
 

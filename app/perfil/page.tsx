@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { genPageMetadata } from 'app/seo'
 
 export const metadata = genPageMetadata({ title: 'Sobre LinguaTash' })
@@ -5,70 +6,101 @@ export const metadata = genPageMetadata({ title: 'Sobre LinguaTash' })
 export default function Page() {
   return (
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
-      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
-        <h1 className="text-4xl font-semibold">Hola y bienvenida, bienvenido</h1>
+      {/* SPLIT 1: Hola box (left) + photo (right) */}
+      <section className="grid items-center gap-8 md:grid-cols-2">
+        <div className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+          <h1 className="text-4xl font-semibold">Hola y bienvenida, bienvenido</h1>
 
-        <p>Qué alegría que hayas llegado hasta aquí.</p>
+          <p>Qué alegría que hayas llegado hasta aquí.</p>
 
-        <p>
-          Mi nombre es Tash. Estudié Lingüística y Ciencias de la Educación en Jena, Alemania, y soy{' '}
-          <span className="font-semibold text-[#B3475A]">
-            Coach de adquisición natural del alemán
-          </span>{' '}
-          (German Language Acquisition Coach). Tras años de experiencia en la enseñanza de idiomas y
-          la creación de mi propio método, Fonetikas, acompaño procesos de adquisición tanto en la
-          infancia como en la edad adulta.
-        </p>
+          <p>
+            Mi nombre es Tash. Estudié Lingüística y Ciencias de la Educación en Jena, Alemania, y
+            soy{' '}
+            <span className="font-semibold text-[#B3475A]">
+              Coach de adquisición natural del alemán
+            </span>{' '}
+            (German Language Acquisition Coach). Tras años de experiencia en la enseñanza de idiomas
+            y la creación de mi propio método, Fonetikas, acompaño procesos de adquisición tanto en
+            la infancia como en la edad adulta.
+          </p>
 
-        <p>
-          Mi trabajo se apoya en la investigación sobre adquisición del lenguaje, la teoría del
-          apego y las ciencias del aprendizaje. A esto se suma una amplia experiencia práctica en la
-          enseñanza de lenguas en distintos contextos y países, desde Nueva Zelanda hasta París y
-          Barcelona, así como mi propia experiencia como madre en una familia multilingüe.
-        </p>
+          <p>
+            Mi trabajo se apoya en la investigación sobre adquisición del lenguaje, la teoría del
+            apego y las ciencias del aprendizaje. A esto se suma una amplia experiencia práctica en
+            la enseñanza de lenguas en distintos contextos y países, desde Nueva Zelanda hasta París
+            y Barcelona, así como mi propia experiencia como madre en una familia multilingüe.
+          </p>
 
-        <p>
-          Mis dos hijos crecen desde el nacimiento con alemán, ruso y español, y aprenden catalán e
-          inglés en la escuela. El italiano también forma parte de su entorno cotidiano, gracias a
-          una persona cercana que los cuida cuando ni mi pareja ni yo podemos hacerlo.
-        </p>
+          <p>
+            Mis dos hijos crecen desde el nacimiento con alemán, ruso y español, y aprenden catalán
+            e inglés en la escuela. El italiano también forma parte de su entorno cotidiano, gracias
+            a una persona cercana que los cuida cuando ni mi pareja ni yo podemos hacerlo.
+          </p>
+        </div>
+
+        <div>
+          <Image
+            src="/static/images/aboutMe1.jpeg"
+            alt="Tash con sus dos hijos en un parque de Barcelona"
+            width={600}
+            height={450}
+            className="rounded-2xl object-cover shadow-md"
+          />
+          <p className="mt-3 text-center text-sm text-[#9A8F85]">
+            Con mis dos hijos en un parque de Barcelona
+          </p>
+        </div>
       </section>
-
-      {/* IMAGE 1 */}
-      <div className="my-12">
-        {/* <img src="/images/about-portrait.jpg" alt="Retrato de Tash, fundadora de LinguaTash" /> */}
-      </div>
 
       {/* QUOTE 1 */}
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
-            „No solo hablo de adquisición natural del lenguaje: la vivo.“
+            „No solo hablo de adquisición natural del lenguaje: la vivo."
           </p>
         </div>
       </section>
 
+      {/* SPLIT 2: photo (left) + ¿Te reconoces? box (right) */}
+      <section className="grid items-center gap-8 md:grid-cols-2">
+        <div>
+          <Image
+            src="/static/images/aboutMe2.jpg"
+            alt="Tash con dos años, con su abuela y su primo en Ereván, Armenia"
+            width={600}
+            height={450}
+            className="rounded-2xl object-cover shadow-md"
+          />
+          <p className="mt-3 text-center text-sm text-[#9A8F85]">
+            Con dos años, con mi abuela y mi primo en Ereván, Armenia
+          </p>
+        </div>
+
+        <div className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+          <h2 className="text-2xl font-semibold">¿Te reconoces en alguna de estas situaciones?</h2>
+
+          <ul className="ml-6 list-disc space-y-2">
+            <li>
+              ¿Te gustaría aprender alemán desde cero y sonar lo más natural posible en tu
+              pronunciación?
+            </li>
+            <li>
+              ¿Deseas, por fin, que las personas germanohablantes te entiendan sin que tu origen se
+              note de inmediato en cada palabra?
+            </li>
+            <li>
+              ¿Eres germanohablante, vives en Barcelona y deseas acompañar el desarrollo del alemán
+              de tus hijos bilingües?
+            </li>
+            <li>
+              ¿Te interesan materiales descargables o juegos multilingües basados en la fonética?
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* MI CONVICCIÓN */}
       <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
-        <h2 className="text-2xl font-semibold">¿Te reconoces en alguna de estas situaciones?</h2>
-
-        <ul className="ml-6 list-disc space-y-2">
-          <li>
-            ¿Te gustaría aprender alemán desde cero y sonar lo más natural posible en tu
-            pronunciación?
-          </li>
-          <li>
-            ¿Deseas, por fin, que las personas germanohablantes te entiendan sin que tu origen se
-            note de inmediato en cada palabra?
-          </li>
-          <li>
-            ¿Eres germanohablante, vives en Barcelona y deseas acompañar el desarrollo del alemán de
-            tus hijos bilingües?
-          </li>
-          <li>
-            ¿Te interesan materiales descargables o juegos multilingües basados en la fonética?
-          </li>
-        </ul>
-
         <h2 className="text-2xl font-semibold">Mi convicción</h2>
 
         <p>
@@ -114,15 +146,12 @@ export default function Page() {
         </p>
       </section>
 
-      {/* IMAGE 2 */}
-      <div className="my-12">{/* <img src="/images/about-portrait2.jpg" alt="Foto Tash" /> */}</div>
-
       {/* QUOTE 2 */}
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
             „Cada idioma encontró su propia manera de hacerlo, y por eso el aprendizaje no debería
-            basarse primero en lo escrito.“
+            basarse primero en lo escrito."
           </p>
         </div>
       </section>
@@ -166,15 +195,29 @@ export default function Page() {
       </section>
 
       {/* IMAGE 3 */}
-      <div className="my-12">
-        {/* <img src="/images/about-life.jpg" alt="Vida cotidiana y valores detrás de LinguaTash" /> */}
+      <div className="grid items-center gap-8 md:grid-cols-2">
+        <Image
+          src="/static/images/aboutMe3.jpg"
+          alt="Tash en un grupo de teatro en portugués, Jena"
+          width={600}
+          height={450}
+          className="rounded-2xl object-cover shadow-md"
+        />
+        <p className="text-sm text-[#9A8F85]">
+          En un grupo de teatro en portugués durante mis estudios de lingüística en Jena.{' '}
+          <em>Auto da Índia</em> de Gil Vicente — yo hacía de la criada Moça. Una línea que no he
+          olvidado hasta hoy:{' '}
+          <em className="text-[#081C3C] dark:text-[#F4EFE8]">
+            &ldquo;Mas os gatos andam nelas.&rdquo;
+          </em>
+        </p>
       </div>
 
       {/* QUOTE 3 */}
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
-            „Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad.“
+            „Te muestro cómo puedes aprender alemán desde cero, empezando por la oralidad."
           </p>
         </div>
       </section>
@@ -224,7 +267,7 @@ export default function Page() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
             „Conmigo no encontrarás solo conocimiento, sino también motivación, claridad e
-            inspiración.“
+            inspiración."
           </p>
         </div>
       </section>
@@ -250,8 +293,8 @@ export default function Page() {
         </ul>
 
         <p>
-          Cuando trabajamos de forma individual, no hay recetas estándar ni soluciones “talla
-          única”. Lo que ofrezco es un acompañamiento personalizado, ajustado a tu punto de partida,
+          Cuando trabajamos de forma individual, no hay recetas estándar ni soluciones "talla
+          única". Lo que ofrezco es un acompañamiento personalizado, ajustado a tu punto de partida,
           a tus objetivos y a lo que necesitas ahora mismo. Solo así el aprendizaje puede ser
           profundo y sostenible en el tiempo.
         </p>

@@ -5,48 +5,47 @@ import WaitlistForm from '@/components/WaitlistForm'
 export default function Home() {
   return (
     <main className="mx-auto max-w-5xl space-y-24 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
+      {/* Hero */}
+      <section className="grid items-center gap-10 md:grid-cols-2">
+        {/* Left: intro + waitlist */}
+        <div className="space-y-6">
+          <p className="text-lg opacity-80">
+            LinguaTash es el espacio donde convergen mi trabajo y mi experiencia en adquisición del
+            lenguaje. A través de distintos proyectos, exploro cómo se adquieren las lenguas de
+            forma natural: en la infancia, en la edad adulta y a través del juego.
+          </p>
+          <p className="text-lg opacity-80">
+            De esta base nacen cinco proyectos complementarios: <strong>Fonetikas</strong> –{' '}
+            <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong> –{' '}
+            <strong>1P2L</strong>
+          </p>
+          <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-8 dark:bg-[#081C3C]">
+            <h2 className="mb-1 text-xl font-semibold">Mantente al día</h2>
+            <p className="mb-5 text-sm opacity-70">
+              Apúntate para recibir novedades sobre proyectos, recursos y fechas de inicio.
+            </p>
+            <WaitlistForm />
+          </div>
+        </div>
+
+        {/* Right: headshot */}
+        <div className="flex justify-center md:justify-end">
+          <Image
+            src="/static/images/headshot-png-format.png"
+            alt="Tash Tenner"
+            width={420}
+            height={520}
+            className="rounded-2xl object-cover shadow-md"
+            priority
+          />
+        </div>
+      </section>
+
       {/* First Quote */}
-      <section className="py-20 text-center">
+      <section className="py-10 text-center">
         <p className="font-[Caveat] text-3xl leading-relaxed md:text-4xl">
           "Una lengua se construye primero en el oído y en la voz. Leer y escribir solo tiene
           sentido cuando el idioma ya se siente natural."
-        </p>
-      </section>
-
-      {/* Intro */}
-      <section className="space-y-6 text-center md:text-left">
-        <p className="text-lg opacity-80">
-          LinguaTash es el espacio donde convergen mi trabajo y mi experiencia en adquisición del
-          lenguaje. A través de distintos proyectos, exploro cómo se adquieren las lenguas de forma
-          natural: en la infancia, en la edad adulta y a través del juego.
-        </p>
-
-        <p className="text-lg opacity-80">
-          De esta base nacen cinco proyectos complementarios: <strong>Fonetikas</strong> –{' '}
-          <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong> –{' '}
-          <strong>1P2L</strong>
-        </p>
-
-        <p className="text-lg opacity-80">
-          Todos parten del mismo principio: la lengua se adquiere primero en el oído y en la voz; la
-          lectura y la escritura vienen después.
-        </p>
-      </section>
-
-      {/* Waitlist */}
-      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-8 py-12 text-center dark:bg-[#081C3C]">
-        <h2 className="mb-2 text-2xl font-semibold">Mantente al día</h2>
-        <p className="mb-6 opacity-70">
-          Apúntate para recibir novedades sobre proyectos, recursos y fechas de inicio.
-        </p>
-        <WaitlistForm />
-      </section>
-
-      {/* Second Quote */}
-      <section className="py-20 text-center">
-        <p className="font-[Caveat] text-3xl leading-relaxed md:text-4xl">
-          "La capacidad de adquirir lenguas no se pierde con la edad. Lo que a menudo falta es un
-          enfoque adecuado, basado en la lengua materna del aprendiz."
         </p>
       </section>
 
@@ -240,8 +239,8 @@ export default function Home() {
       {/* Closing Quote */}
       <section className="py-20 text-center">
         <p className="font-[Caveat] text-3xl leading-relaxed md:text-4xl">
-          "El idioma se adquiere primero en el oído y en la voz; la lectura y la escritura llegan
-          después."
+          "La capacidad de adquirir lenguas no se pierde con la edad. Lo que a menudo falta es un
+          enfoque adecuado, basado en la lengua materna del aprendiz."
         </p>
       </section>
     </main>
