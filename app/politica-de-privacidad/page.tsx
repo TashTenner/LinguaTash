@@ -42,13 +42,9 @@ export default function PoliticaPrivacidadPage() {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             3. Datos que recopilamos
           </h2>
-          <p>
-            Recopilamos dos tipos de datos:
-          </p>
+          <p>Recopilamos dos tipos de datos:</p>
           <p className="font-medium">Datos anónimos (analíticas)</p>
-          <p>
-            A través de Umami Cloud Analytics, sin cookies ni identificadores personales:
-          </p>
+          <p>A través de Umami Cloud Analytics, sin cookies ni identificadores personales:</p>
           <ul className="list-disc space-y-1 pl-6">
             <li>Visitas a páginas (número de visitas, páginas visitadas)</li>
             <li>Tipo y versión del navegador</li>
@@ -57,9 +53,7 @@ export default function PoliticaPrivacidadPage() {
             <li>Fecha y hora de acceso</li>
           </ul>
           <p className="font-medium">Datos personales (formulario de lista de espera)</p>
-          <p>
-            Cuando se suscribe a nuestra lista de espera o boletín, recopilamos:
-          </p>
+          <p>Cuando se suscribe a nuestra lista de espera o boletín, recopilamos:</p>
           <ul className="list-disc space-y-1 pl-6">
             <li>Dirección de correo electrónico</li>
             <li>Proyectos de interés seleccionados (opcional)</li>
@@ -102,9 +96,9 @@ export default function PoliticaPrivacidadPage() {
           </p>
           <p>
             Kit actúa como encargado del tratamiento de datos en nuestro nombre. La transferencia de
-            datos a Estados Unidos se realiza al amparo de las Cláusulas Contractuales Tipo aprobadas
-            por la Comisión Europea, lo que garantiza un nivel de protección adecuado conforme al
-            GDPR.
+            datos a Estados Unidos se realiza al amparo de las Cláusulas Contractuales Tipo
+            aprobadas por la Comisión Europea, lo que garantiza un nivel de protección adecuado
+            conforme al GDPR.
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>
@@ -117,8 +111,8 @@ export default function PoliticaPrivacidadPage() {
             </li>
             <li>
               <span className="font-medium">Retirada del consentimiento:</span> puede darse de baja
-              en cualquier momento haciendo clic en el enlace de cancelación incluido en cada correo,
-              o escribiendo a info@linguatash.com
+              en cualquier momento haciendo clic en el enlace de cancelación incluido en cada
+              correo, o escribiendo a info@linguatash.com
             </li>
           </ul>
           <p>
@@ -139,13 +133,11 @@ export default function PoliticaPrivacidadPage() {
             7. Pagos — Stripe
           </h2>
           <p>
-            Los pagos realizados a través de este sitio web son procesados por Stripe, Inc., proveedor
-            externo de servicios de pago con sede en Estados Unidos. LinguaTash no almacena ni tiene
-            acceso a los datos completos de su tarjeta bancaria o cuenta.
+            Los pagos realizados a través de este sitio web son procesados por Stripe, Inc.,
+            proveedor externo de servicios de pago con sede en Estados Unidos. LinguaTash no
+            almacena ni tiene acceso a los datos completos de su tarjeta bancaria o cuenta.
           </p>
-          <p>
-            En el proceso de pago, Stripe puede recopilar y tratar datos como:
-          </p>
+          <p>En el proceso de pago, Stripe puede recopilar y tratar datos como:</p>
           <ul className="list-disc space-y-1 pl-6">
             <li>Nombre del titular de la cuenta</li>
             <li>Datos bancarios (IBAN, tarjeta) — gestionados directamente por Stripe</li>
@@ -202,7 +194,9 @@ export default function PoliticaPrivacidadPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">11. Alojamiento</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            11. Alojamiento
+          </h2>
           <p>
             El sitio web está alojado en Vercel, que puede registrar datos técnicos de acceso con
             fines de seguridad y mantenimiento.
