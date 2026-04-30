@@ -4,7 +4,7 @@ export default function PoliticaPrivacidadPage() {
       <header className="mb-12">
         <h1 className="text-3xl font-semibold tracking-tight">Política de Privacidad</h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Última actualización: 28.02.2026
+          Última actualización: 30.04.2026
         </p>
       </header>
 
@@ -43,8 +43,11 @@ export default function PoliticaPrivacidadPage() {
             3. Datos que recopilamos
           </h2>
           <p>
-            Actualmente, solo recopilamos datos anónimos y no personales a través de Umami Cloud
-            Analytics. No se establecen cookies ni identificadores personales.
+            Recopilamos dos tipos de datos:
+          </p>
+          <p className="font-medium">Datos anónimos (analíticas)</p>
+          <p>
+            A través de Umami Cloud Analytics, sin cookies ni identificadores personales:
           </p>
           <ul className="list-disc space-y-1 pl-6">
             <li>Visitas a páginas (número de visitas, páginas visitadas)</li>
@@ -53,10 +56,14 @@ export default function PoliticaPrivacidadPage() {
             <li>URL de referencia</li>
             <li>Fecha y hora de acceso</li>
           </ul>
+          <p className="font-medium">Datos personales (formulario de lista de espera)</p>
           <p>
-            Estos datos son anónimos y agregados para mejorar el rendimiento del sitio web y la
-            experiencia del usuario.
+            Cuando se suscribe a nuestra lista de espera o boletín, recopilamos:
           </p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>Dirección de correo electrónico</li>
+            <li>Proyectos de interés seleccionados (opcional)</li>
+          </ul>
         </section>
 
         <section className="space-y-3">
@@ -67,6 +74,10 @@ export default function PoliticaPrivacidadPage() {
             <li>Monitorizar y mejorar el rendimiento del sitio web</li>
             <li>Garantizar que el sitio web sea seguro y funcional</li>
             <li>Proporcionar información sobre crianza multilingüe y aprendizaje de idiomas</li>
+            <li>
+              Enviar comunicaciones, novedades y actualizaciones sobre los proyectos y servicios de
+              LinguaTash a quienes se hayan suscrito voluntariamente
+            </li>
           </ul>
         </section>
 
@@ -82,18 +93,96 @@ export default function PoliticaPrivacidadPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            6. Boletines / Servicios futuros
+            6. Boletín y lista de espera — Kit (ConvertKit)
           </h2>
           <p>
-            Cuando se suscriba a un boletín o utilice algún servicio interactivo en el futuro, se
-            podrán recopilar datos personales como su nombre y correo electrónico. Siempre se
-            solicitará su consentimiento explícito.
+            Si se suscribe a nuestra lista de espera o boletín, su dirección de correo electrónico y
+            los proyectos de interés seleccionados se transmiten a Kit (ConvertKit, Inc.), proveedor
+            externo de servicios de email marketing con sede en Estados Unidos.
+          </p>
+          <p>
+            Kit actúa como encargado del tratamiento de datos en nuestro nombre. La transferencia de
+            datos a Estados Unidos se realiza al amparo de las Cláusulas Contractuales Tipo aprobadas
+            por la Comisión Europea, lo que garantiza un nivel de protección adecuado conforme al
+            GDPR.
+          </p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>
+              <span className="font-medium">Base legal:</span> consentimiento explícito del usuario
+              (Art. 6(1)(a) GDPR)
+            </li>
+            <li>
+              <span className="font-medium">Finalidad:</span> envío de novedades, actualizaciones y
+              comunicaciones relacionadas con los proyectos de LinguaTash
+            </li>
+            <li>
+              <span className="font-medium">Retirada del consentimiento:</span> puede darse de baja
+              en cualquier momento haciendo clic en el enlace de cancelación incluido en cada correo,
+              o escribiendo a info@linguatash.com
+            </li>
+          </ul>
+          <p>
+            Más información sobre la política de privacidad de Kit en:{' '}
+            <a
+              href="https://kit.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 transition-colors hover:text-[#B3475A]"
+            >
+              kit.com/privacy
+            </a>
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            7. Contacto por correo electrónico
+            7. Pagos — Stripe
+          </h2>
+          <p>
+            Los pagos realizados a través de este sitio web son procesados por Stripe, Inc., proveedor
+            externo de servicios de pago con sede en Estados Unidos. LinguaTash no almacena ni tiene
+            acceso a los datos completos de su tarjeta bancaria o cuenta.
+          </p>
+          <p>
+            En el proceso de pago, Stripe puede recopilar y tratar datos como:
+          </p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>Nombre del titular de la cuenta</li>
+            <li>Datos bancarios (IBAN, tarjeta) — gestionados directamente por Stripe</li>
+            <li>Dirección de correo electrónico</li>
+            <li>Dirección de facturación</li>
+          </ul>
+          <p>
+            La transferencia de datos a Estados Unidos se realiza al amparo de las Cláusulas
+            Contractuales Tipo aprobadas por la Comisión Europea. Stripe cumple con el estándar PCI
+            DSS para la seguridad de datos de pago.
+          </p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>
+              <span className="font-medium">Base legal:</span> ejecución de un contrato (Art.
+              6(1)(b) GDPR)
+            </li>
+            <li>
+              <span className="font-medium">Finalidad:</span> procesamiento seguro de pagos y
+              gestión de mandatos de domiciliación SEPA
+            </li>
+          </ul>
+          <p>
+            Más información sobre la política de privacidad de Stripe en:{' '}
+            <a
+              href="https://stripe.com/es/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 transition-colors hover:text-[#B3475A]"
+            >
+              stripe.com/es/privacy
+            </a>
+          </p>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            9. Contacto por correo electrónico
           </h2>
           <p>
             Si nos contacta por correo electrónico, los datos personales proporcionados se
@@ -104,7 +193,7 @@ export default function PoliticaPrivacidadPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            8. Cookies y analíticas
+            10. Cookies y analíticas
           </h2>
           <p>
             Este sitio web utiliza Umami Cloud Analytics, que es sin cookies y anónimo. No se
@@ -113,7 +202,7 @@ export default function PoliticaPrivacidadPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">9. Alojamiento</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">11. Alojamiento</h2>
           <p>
             El sitio web está alojado en Vercel, que puede registrar datos técnicos de acceso con
             fines de seguridad y mantenimiento.
@@ -122,7 +211,7 @@ export default function PoliticaPrivacidadPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            10. Derechos de los usuarios
+            12. Derechos de los usuarios
           </h2>
           <ul className="list-disc space-y-1 pl-6">
             <li>Acceder a sus datos personales</li>
@@ -142,7 +231,7 @@ export default function PoliticaPrivacidadPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            11. Seguridad de los datos
+            13. Seguridad de los datos
           </h2>
           <p>
             Implementamos medidas técnicas y organizativas para proteger los datos contra accesos no
@@ -152,7 +241,7 @@ export default function PoliticaPrivacidadPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            12. Cambios en esta Política
+            14. Cambios en esta Política
           </h2>
           <p>
             Esta Política de Privacidad puede actualizarse para reflejar cambios legales o en los
