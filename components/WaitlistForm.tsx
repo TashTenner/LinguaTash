@@ -15,7 +15,8 @@ export default function WaitlistForm() {
   function toggle(project: string) {
     setSelected((prev) => {
       const next = new Set(prev)
-      next.has(project) ? next.delete(project) : next.add(project)
+      if (next.has(project)) next.delete(project)
+      else next.add(project)
       return next
     })
   }
@@ -72,7 +73,7 @@ export default function WaitlistForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="tu@email.com"
           disabled={status === 'loading'}
-          className="min-w-0 flex-1 rounded-xl border border-[#9A8F85]/40 bg-white px-4 py-2.5 text-sm text-[#081C3C] placeholder:text-[#9A8F85] focus:border-[#B3475A] focus:outline-none focus:ring-2 focus:ring-[#B3475A]/20 disabled:opacity-60 dark:bg-[#081C3C] dark:text-[#F4EFE8]"
+          className="min-w-0 flex-1 rounded-xl border border-[#9A8F85]/40 bg-white px-4 py-2.5 text-sm text-[#081C3C] placeholder:text-[#9A8F85] focus:border-[#B3475A] focus:ring-2 focus:ring-[#B3475A]/20 focus:outline-none disabled:opacity-60 dark:bg-[#081C3C] dark:text-[#F4EFE8]"
         />
         <button
           type="submit"
@@ -109,9 +110,7 @@ export default function WaitlistForm() {
         </div>
       </div>
 
-      {status === 'error' && (
-        <p className="text-center text-xs text-[#B3475A]">{errorMsg}</p>
-      )}
+      {status === 'error' && <p className="text-center text-xs text-[#B3475A]">{errorMsg}</p>}
     </form>
   )
 }
