@@ -24,7 +24,10 @@ export async function GET() {
           amountEur: (inv.amount_due ?? 0) / 100,
           finalizeAfter,
           daysLeft,
-          customerId: typeof inv.customer === 'string' ? inv.customer : (inv.customer as { id: string })?.id ?? '',
+          customerId:
+            typeof inv.customer === 'string'
+              ? inv.customer
+              : ((inv.customer as { id: string })?.id ?? ''),
         }
       })
       .sort((a, b) => (a.daysLeft ?? 99) - (b.daysLeft ?? 99))

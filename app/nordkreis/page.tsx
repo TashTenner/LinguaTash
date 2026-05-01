@@ -565,17 +565,17 @@ export default function NordkreisPage() {
                 Bestätigungs-E-Mail mit dem unterzeichneten Vertrag als PDF.
               </li>
               <li>
-                <strong>Kursbestätigung</strong> — Sobald die Mindestteilnehmerzahl für deine
-                Gruppe erreicht ist, erhältst du eine zweite E-Mail mit der offiziellen
-                Kursbestätigung und den genauen Zahlungsterminen.
+                <strong>Kursbestätigung</strong> — Sobald die Mindestteilnehmerzahl für deine Gruppe
+                erreicht ist, erhältst du eine zweite E-Mail mit der offiziellen Kursbestätigung und
+                den genauen Zahlungsterminen.
               </li>
               <li>
                 <strong>Einschreibegebühr</strong> — 8 Tage nach der Bestätigung wird die
                 Einschreibegebühr von 60 € per SEPA-Lastschrift eingezogen.
               </li>
               <li>
-                <strong>Monatsbeiträge</strong> — Die monatlichen Beiträge (45 €) werden jeweils
-                am 3. des Monats abgebucht, beginnend ab September.
+                <strong>Monatsbeiträge</strong> — Die monatlichen Beiträge (45 €) werden jeweils am
+                3. des Monats abgebucht, beginnend ab September.
               </li>
             </ol>
           </div>
@@ -584,8 +584,8 @@ export default function NordkreisPage() {
             <h2 className="mb-6 text-2xl font-semibold">¿Qué ocurre después de inscribirse?</h2>
             <ol className="ml-6 list-decimal space-y-4 opacity-90">
               <li>
-                <strong>Inscripción en lista de espera</strong> — Recibirás inmediatamente un
-                correo de confirmación con el contrato firmado en PDF.
+                <strong>Inscripción en lista de espera</strong> — Recibirás inmediatamente un correo
+                de confirmación con el contrato firmado en PDF.
               </li>
               <li>
                 <strong>Confirmación del curso</strong> — En cuanto se alcance el número mínimo de
@@ -593,8 +593,8 @@ export default function NordkreisPage() {
                 fechas exactas de pago.
               </li>
               <li>
-                <strong>Matrícula</strong> — 8 días después de la confirmación se realizará el
-                cobro de la matrícula de 60 € por domiciliación SEPA.
+                <strong>Matrícula</strong> — 8 días después de la confirmación se realizará el cobro
+                de la matrícula de 60 € por domiciliación SEPA.
               </li>
               <li>
                 <strong>Cuotas mensuales</strong> — Las cuotas mensuales (45 €) se cobran el día 3

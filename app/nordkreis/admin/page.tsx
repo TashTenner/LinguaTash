@@ -291,7 +291,13 @@ export default function AdminPage() {
   const [editingNotes, setEditingNotes] = useState<Record<string, string>>({})
   const [savingNotes, setSavingNotes] = useState<Record<string, boolean>>({})
   const [pendingFees, setPendingFees] = useState<
-    { invoiceId: string; childName: string; amountEur: number; finalizeAfter: string; daysLeft: number | null }[]
+    {
+      invoiceId: string
+      childName: string
+      amountEur: number
+      finalizeAfter: string
+      daysLeft: number | null
+    }[]
   >([])
 
   const fetchStudents = useCallback(async () => {
@@ -430,10 +436,16 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         }),
       })
       if (!res.ok) throw new Error('Fehler')
-      setMessages((m) => ({ ...m, [student.contractNo]: { type: 'success', text: 'Notiz gespeichert' } }))
+      setMessages((m) => ({
+        ...m,
+        [student.contractNo]: { type: 'success', text: 'Notiz gespeichert' },
+      }))
       setTimeout(fetchStudents, 500)
     } catch {
-      setMessages((m) => ({ ...m, [student.contractNo]: { type: 'error', text: 'Fehler beim Speichern' } }))
+      setMessages((m) => ({
+        ...m,
+        [student.contractNo]: { type: 'error', text: 'Fehler beim Speichern' },
+      }))
     } finally {
       setSavingNotes((m) => ({ ...m, [student.contractNo]: false }))
     }
@@ -569,8 +581,12 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
                 key={group}
                 className="rounded-xl border border-[#9A8F85]/40 bg-white px-4 py-3 dark:bg-[#081C3C]/60"
               >
-                <div className="text-xs font-semibold text-[#081C3C] dark:text-[#F4EFE8]">{group}</div>
-                <div className="mt-1 text-lg font-bold text-[#081C3C] dark:text-[#F4EFE8]">{total}</div>
+                <div className="text-xs font-semibold text-[#081C3C] dark:text-[#F4EFE8]">
+                  {group}
+                </div>
+                <div className="mt-1 text-lg font-bold text-[#081C3C] dark:text-[#F4EFE8]">
+                  {total}
+                </div>
                 <div className="mt-0.5 text-[11px] text-[#9A8F85]">
                   {act} aktiv · {wait} Warteliste
                 </div>
@@ -587,7 +603,10 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
             </p>
             <div className="space-y-1">
               {pendingFees.map((fee) => (
-                <div key={fee.invoiceId} className="flex items-center justify-between text-xs text-amber-800 dark:text-amber-300">
+                <div
+                  key={fee.invoiceId}
+                  className="flex items-center justify-between text-xs text-amber-800 dark:text-amber-300"
+                >
                   <span>{fee.childName || '—'}</span>
                   <span>
                     {fee.amountEur} € ·{' '}
@@ -800,12 +819,17 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
                               ))}
                               {/* Editable internal notes */}
                               <div className="col-span-full mt-2">
-                                <div className="mb-1 text-xs font-medium text-[#9A8F85]">Interne Notizen</div>
+                                <div className="mb-1 text-xs font-medium text-[#9A8F85]">
+                                  Interne Notizen
+                                </div>
                                 <textarea
                                   rows={2}
                                   value={editingNotes[s.contractNo] ?? s.internalNotes ?? ''}
                                   onChange={(e) =>
-                                    setEditingNotes((n) => ({ ...n, [s.contractNo]: e.target.value }))
+                                    setEditingNotes((n) => ({
+                                      ...n,
+                                      [s.contractNo]: e.target.value,
+                                    }))
                                   }
                                   className="w-full rounded-lg border border-[#9A8F85]/40 bg-white px-3 py-2 text-xs text-[#081C3C] focus:border-[#B3475A] focus:outline-none dark:bg-[#081C3C] dark:text-[#F4EFE8]"
                                   placeholder="Notiz hinzufügen…"

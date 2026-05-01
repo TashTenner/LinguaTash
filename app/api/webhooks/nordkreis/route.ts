@@ -359,7 +359,9 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
     }).catch(console.error)
   }
 
-  console.log(`Nordkreis: payment failed for ${parentEmail}, invoice ${invoice.id}, attempt ${attemptCount}`)
+  console.log(
+    `Nordkreis: payment failed for ${parentEmail}, invoice ${invoice.id}, attempt ${attemptCount}`
+  )
 }
 
 // ── Get student data from Google Sheets ───────────────────────────────────────

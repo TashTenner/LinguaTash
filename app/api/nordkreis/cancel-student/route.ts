@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Send cancellation confirmation email to parent
     const parentName = rows[rowIndex][12] ?? '' // col M: parent1FullName
-    const childName = rows[rowIndex][5] ?? ''   // col F: childFullName
+    const childName = rows[rowIndex][5] ?? '' // col F: childFullName
     await fetch('https://api.mailersend.com/v1/email', {
       method: 'POST',
       headers: {
