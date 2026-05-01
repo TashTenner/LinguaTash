@@ -363,6 +363,8 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         body: JSON.stringify({
           parentEmail: student.parent1Email,
           contractNo: student.contractNo,
+          stripeCustomerId: student.stripeCustomerId,
+          enrollmentStatus: student.enrollmentStatus,
         }),
       })
       const data = await res.json()
@@ -386,6 +388,8 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         body: JSON.stringify({
           parentEmail: student.parent1Email,
           contractNo: student.contractNo,
+          stripeCustomerId: student.stripeCustomerId,
+          enrollmentStatus: student.enrollmentStatus,
           enrollmentStatus: student.enrollmentStatus,
           stripeCustomerId: student.stripeCustomerId,
         }),

@@ -1,28 +1,63 @@
 // app/api/nordkreis/cancel-student/route.ts
 //
-// Soft-deletes a student by setting Enrollment Status to "Storniert / Cancelled"
-// in Google Sheets column AD. Does NOT delete the row or touch Stripe.
-// If there is an active Stripe subscription, you should cancel it manually
-// in the Stripe dashboard.
+// Cancels a student:
+// 1. Voids the draft €60 enrollment fee invoice (if still unpaid)
+// 2. Cancels the Stripe subscription (if active)
+// 3. Soft-deletes in Google Sheets (sets Enrollment Status to "Storniert")
 
 import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
-    const { parentEmail, contractNo } = await req.json()
+    const { parentEmail, contractNo, stripeCustomerId, enrollmentStatus } = await req.json()
 
     if (!parentEmail) {
       return NextResponse.json({ error: 'Missing parentEmail' }, { status: 400 })
     }
 
+    // 1. Void draft enrollment fee invoice (if it exists and is still a draft)
+    if (stripeCustomerId) {
+      try {
+        const invoices = await stripe.invoices.list({
+          customer: stripeCustomerId,
+          status: 'draft',
+          limit: 10,
+        })
+        for (const invoice of invoices.data) {
+          if (invoice.metadata?.nordkreis === 'enrollment_fee') {
+            await stripe.invoices.voidInvoice(invoice.id)
+            console.log(`Nordkreis: voided enrollment fee invoice ${invoice.id}`)
+          }
+        }
+      } catch (err) {
+        console.error('Nordkreis: failed to void enrollment fee invoice', err)
+        // Non-fatal — continue with cancellation
+      }
+    }
+
+    // 2. Cancel Stripe subscription (extract ID from enrollmentStatus "Aktiviert — sub_xxx")
+    const subscriptionMatch = enrollmentStatus?.match(/sub_\w+/)
+    if (subscriptionMatch) {
+      try {
+        await stripe.subscriptions.cancel(subscriptionMatch[0])
+        console.log(`Nordkreis: cancelled subscription ${subscriptionMatch[0]}`)
+      } catch (err) {
+        console.error('Nordkreis: failed to cancel subscription', err)
+        // Non-fatal — continue with sheet update
+      }
+    }
+
+    // 3. Soft-delete in Google Sheets
     if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON || !SHEET_ID) {
       return NextResponse.json({ error: 'Google Sheets not configured' }, { status: 500 })
     }
 
     const token = await getSheetsToken()
 
-    // Find row by Parent 1 Email — col O (index 14)
     const res = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -37,7 +72,6 @@ export async function POST(req: NextRequest) {
 
     const sheetRow = rowIndex + 1
 
-    // Update col AD (Enrollment Status) only
     await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!AD${sheetRow}`)}?valueInputOption=USER_ENTERED`,
       {

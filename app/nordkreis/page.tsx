@@ -41,14 +41,14 @@ export default function NordkreisPage() {
           Gemeinsam Deutsch leben, lernen und weitergeben.
         </p>
 
-        {/* <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <a
             href="/nordkreis/enroll"
             className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
           >
             Jetzt anmelden
           </a>
-        </div> */}
+        </div>
 
         <div className="mx-auto my-10 h-px w-20 bg-[#9A8F85]" />
 
@@ -559,14 +559,14 @@ export default function NordkreisPage() {
           </div>
         </div>
 
-        {/* <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <a
             href="/nordkreis/enroll"
             className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
           >
             Jetzt anmelden
           </a>
-        </div> */}
+        </div>
       </section>
 
       {/* CONTACT */}

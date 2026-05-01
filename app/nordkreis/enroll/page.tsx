@@ -232,6 +232,28 @@ function ConsentBox({
 function EnrollForm() {
   const stripe = useStripe()
   const elements = useElements()
+
+  // April lockout — no enrollments this month
+  const currentMonth = new Date().getMonth() // 0 = Jan, 3 = April
+  if (currentMonth === 3) {
+    return (
+      <main className="mx-auto max-w-2xl space-y-8 px-4 py-12 font-['Noto_Sans'] text-[#081C3C] sm:px-6 dark:text-[#F4EFE8]">
+        <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-8 py-16 text-center dark:bg-[#081C3C]">
+          <p className="mb-2 text-2xl font-semibold">
+            Die Anmeldungen sind geschlossen · Las inscripciones están cerradas
+          </p>
+          <p className="mt-4 text-[#9A8F85]">
+            Im April finden keine Anmeldungen statt. Ab dem 1. Mai öffnet das Anmeldefenster für den
+            Kurs, der im September beginnt. Bis dann!
+          </p>
+          <p className="mt-3 text-[#9A8F85]">
+            Durante el mes de abril no se realizan inscripciones. A partir del 1 de mayo se abre el
+            plazo para el curso que comienza en septiembre. ¡Vuelve entonces!
+          </p>
+        </div>
+      </main>
+    )
+  }
   const router = useRouter()
   const sigRef = useRef<SignaturePad>(null)
   const topRef = useRef<HTMLDivElement>(null)

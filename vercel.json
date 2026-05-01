@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/nordkreis/finalize-enrollment-fees",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
