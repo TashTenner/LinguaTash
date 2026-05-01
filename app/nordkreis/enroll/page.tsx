@@ -444,6 +444,10 @@ function EnrollForm() {
         <p className="mt-2 text-sm text-[#081C3C]/70 dark:text-[#F4EFE8]/70">
           Nordkreis · Deutsche Gemeinschaft & Samstagsschule · Barcelona
         </p>
+        <p className="mt-4 text-xs text-[#9A8F85]">
+          Für zwei Kinder bitte das Formular zweimal ausfüllen. ·{' '}
+          Para dos niños, rellena el formulario dos veces.
+        </p>
       </div>
 
       {/* Step indicators */}

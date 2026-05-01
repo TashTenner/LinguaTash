@@ -288,6 +288,11 @@ export default function AdminPage() {
   const [expandedRow, setExpandedRow] = useState<string | null>(null)
   const [deleteStudent, setDeleteStudent] = useState<Student | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [editingNotes, setEditingNotes] = useState<Record<string, string>>({})
+  const [savingNotes, setSavingNotes] = useState<Record<string, boolean>>({})
+  const [pendingFees, setPendingFees] = useState<
+    { invoiceId: string; childName: string; amountEur: number; finalizeAfter: string; daysLeft: number | null }[]
+  >([])
 
   const fetchStudents = useCallback(async () => {
     setLoading(true)
@@ -304,6 +309,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchStudents()
+    fetch('/api/nordkreis/pending-fees')
+      .then((r) => r.json())
+      .then((d) => setPendingFees(d.pending ?? []))
+      .catch(console.error)
   }, [fetchStudents])
 
   const handleActivate = async (student: Student) => {
@@ -390,8 +399,6 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
           contractNo: student.contractNo,
           stripeCustomerId: student.stripeCustomerId,
           enrollmentStatus: student.enrollmentStatus,
-          enrollmentStatus: student.enrollmentStatus,
-          stripeCustomerId: student.stripeCustomerId,
         }),
       })
       const data = await res.json()
@@ -408,6 +415,27 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
     } finally {
       setDeleting(false)
       setDeleteStudent(null)
+    }
+  }
+
+  const saveNotes = async (student: Student) => {
+    setSavingNotes((m) => ({ ...m, [student.contractNo]: true }))
+    try {
+      const res = await fetch('/api/nordkreis/update-notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          parentEmail: student.parent1Email,
+          notes: editingNotes[student.contractNo] ?? student.internalNotes,
+        }),
+      })
+      if (!res.ok) throw new Error('Fehler')
+      setMessages((m) => ({ ...m, [student.contractNo]: { type: 'success', text: 'Notiz gespeichert' } }))
+      setTimeout(fetchStudents, 500)
+    } catch {
+      setMessages((m) => ({ ...m, [student.contractNo]: { type: 'error', text: 'Fehler beim Speichern' } }))
+    } finally {
+      setSavingNotes((m) => ({ ...m, [student.contractNo]: false }))
     }
   }
 
@@ -499,7 +527,7 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
 
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
         {/* Stats */}
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {(
             [
               [
@@ -523,6 +551,57 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
             </div>
           ))}
         </div>
+
+        {/* Group summary */}
+        <div className="flex flex-wrap gap-3">
+          {(['Spielkreis', 'Entdeckerkreis', 'Kompasskreis'] as const).map((group) => {
+            const total = students.filter(
+              (s) => s.childGroup === group && !s.enrollmentStatus.startsWith('Gelöscht')
+            ).length
+            const act = students.filter(
+              (s) => s.childGroup === group && s.enrollmentStatus.startsWith('Aktiviert')
+            ).length
+            const wait = students.filter(
+              (s) => s.childGroup === group && s.enrollmentStatus.startsWith('Warteliste')
+            ).length
+            return (
+              <div
+                key={group}
+                className="rounded-xl border border-[#9A8F85]/40 bg-white px-4 py-3 dark:bg-[#081C3C]/60"
+              >
+                <div className="text-xs font-semibold text-[#081C3C] dark:text-[#F4EFE8]">{group}</div>
+                <div className="mt-1 text-lg font-bold text-[#081C3C] dark:text-[#F4EFE8]">{total}</div>
+                <div className="mt-0.5 text-[11px] text-[#9A8F85]">
+                  {act} aktiv · {wait} Warteliste
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Pending enrollment fees */}
+        {pendingFees.length > 0 && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-900/20">
+            <p className="mb-2 text-xs font-semibold text-amber-700 dark:text-amber-400">
+              ⏳ Einschreibegebühren ausstehend ({pendingFees.length})
+            </p>
+            <div className="space-y-1">
+              {pendingFees.map((fee) => (
+                <div key={fee.invoiceId} className="flex items-center justify-between text-xs text-amber-800 dark:text-amber-300">
+                  <span>{fee.childName || '—'}</span>
+                  <span>
+                    {fee.amountEur} € ·{' '}
+                    {fee.daysLeft !== null && fee.daysLeft > 0
+                      ? `in ${fee.daysLeft} Tag${fee.daysLeft === 1 ? '' : 'en'}`
+                      : fee.daysLeft !== null && fee.daysLeft <= 0
+                        ? 'fällig heute'
+                        : '—'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Filters + Search */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -710,7 +789,6 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
                                       ? new Date(s.activationDate).toLocaleDateString('de-DE')
                                       : '—',
                                   ],
-                                  ['Interne Notizen', s.internalNotes || '—'],
                                 ] as [string, string][]
                               ).map(([label, value]) => (
                                 <div key={label}>
@@ -720,6 +798,26 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
                                   </div>
                                 </div>
                               ))}
+                              {/* Editable internal notes */}
+                              <div className="col-span-full mt-2">
+                                <div className="mb-1 text-xs font-medium text-[#9A8F85]">Interne Notizen</div>
+                                <textarea
+                                  rows={2}
+                                  value={editingNotes[s.contractNo] ?? s.internalNotes ?? ''}
+                                  onChange={(e) =>
+                                    setEditingNotes((n) => ({ ...n, [s.contractNo]: e.target.value }))
+                                  }
+                                  className="w-full rounded-lg border border-[#9A8F85]/40 bg-white px-3 py-2 text-xs text-[#081C3C] focus:border-[#B3475A] focus:outline-none dark:bg-[#081C3C] dark:text-[#F4EFE8]"
+                                  placeholder="Notiz hinzufügen…"
+                                />
+                                <button
+                                  onClick={() => saveNotes(s)}
+                                  disabled={savingNotes[s.contractNo]}
+                                  className="mt-1 rounded-lg bg-[#081C3C] px-3 py-1 text-[11px] text-[#F4EFE8] transition-opacity hover:opacity-80 disabled:opacity-50"
+                                >
+                                  {savingNotes[s.contractNo] ? 'Speichern…' : 'Speichern'}
+                                </button>
+                              </div>
                               {s.pdfUrl && (
                                 <div className="col-span-full mt-1">
                                   <a

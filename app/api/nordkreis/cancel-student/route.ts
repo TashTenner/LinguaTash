@@ -8,6 +8,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
+import {
+  buildCancellationEmailHtml,
+  buildCancellationEmailText,
+} from '@/lib/nordkreis/cancellationEmail'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -66,7 +70,7 @@ export async function POST(req: NextRequest) {
     const rows: string[][] = data.values ?? []
     const rowIndex = rows.findIndex((r) => r[14] === parentEmail)
 
-    if (rowIndex < 1) {
+    if (rowIndex === -1) {
       return NextResponse.json({ error: 'Student not found in sheet' }, { status: 404 })
     }
 
@@ -82,6 +86,28 @@ export async function POST(req: NextRequest) {
         }),
       }
     )
+
+    // 4. Send cancellation confirmation email to parent
+    const parentName = rows[rowIndex][12] ?? '' // col M: parent1FullName
+    const childName = rows[rowIndex][5] ?? ''   // col F: childFullName
+    await fetch('https://api.mailersend.com/v1/email', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.MAILERSEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: {
+          email: process.env.MAILERSEND_FROM_EMAIL,
+          name: process.env.MAILERSEND_FROM_NAME ?? 'Nordkreis',
+        },
+        to: [{ email: parentEmail, name: parentName }],
+        reply_to: { email: 'nordkreis@linguatash.com', name: 'Nordkreis' },
+        subject: `Abmeldung bestätigt · Baja confirmada · Nordkreis${contractNo ? ` · ${contractNo}` : ''}`,
+        html: buildCancellationEmailHtml({ parentName, childName, contractNo }),
+        text: buildCancellationEmailText({ parentName, childName, contractNo }),
+      }),
+    }).catch(console.error)
 
     console.log(`Nordkreis: cancelled student ${contractNo} (${parentEmail})`)
 

@@ -328,7 +328,7 @@ async function updateSheetStatus(
   const data = await res.json()
   const rows: string[][] = data.values ?? []
   const rowIndex = rows.findIndex((r) => r[14] === parentEmail)
-  if (rowIndex < 1) return
+  if (rowIndex === -1) return
 
   const sheetRow = rowIndex + 1
 

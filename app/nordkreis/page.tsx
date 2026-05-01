@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from '../../components/Link'
+import EnrollButton from '@/components/nordkreis/EnrollButton'
 
 export default function NordkreisPage() {
   return (
@@ -42,12 +43,7 @@ export default function NordkreisPage() {
         </p>
 
         <div className="mt-8 flex justify-center">
-          <a
-            href="/nordkreis/enroll"
-            className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
-          >
-            Jetzt anmelden
-          </a>
+          <EnrollButton />
         </div>
 
         <div className="mx-auto my-10 h-px w-20 bg-[#9A8F85]" />
@@ -524,12 +520,9 @@ export default function NordkreisPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Beiträge pro Monat</h2>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
-              <li>1 Kind im Spielkreis (0–3): 30 €</li>
-              <li>2 Kinder im Spielkreis (0–3): 50 €</li>
-              <li>1 Kind ab 3 Jahren (Entdeckerkreis oder Kompasskreis): 50 €</li>
-              <li>1 Kind ab 3 + 1 Kind im Spielkreis: 70 €</li>
-              <li>2 Kinder ab 3 Jahren: 90 €</li>
-              <li>Einschreibegebühr (Pilotphase): 60 € einmalig</li>
+              <li>1 Kind (jede Gruppe): 45 €</li>
+              <li>2 Kinder: 90 €</li>
+              <li>Einschreibegebühr: 60 € einmalig pro Kind</li>
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
@@ -543,12 +536,9 @@ export default function NordkreisPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Cuotas mensuales</h2>
             <ul className="ml-6 list-disc space-y-2 opacity-90">
-              <li>1 niño en Spielkreis (0–3): 30 €</li>
-              <li>2 niños en Spielkreis (0–3): 50 €</li>
-              <li>1 niño a partir de 3 años (Entdeckerkreis o Kompasskreis): 50 €</li>
-              <li>1 niño a partir de 3 + 1 niño en Spielkreis: 70 €</li>
-              <li>2 niños a partir de 3 años: 90 €</li>
-              <li>Matrícula (fase piloto): 60 € pago único</li>
+              <li>1 niño (cualquier grupo): 45 €</li>
+              <li>2 niños: 90 €</li>
+              <li>Matrícula: 60 € pago único por niño</li>
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
@@ -560,12 +550,58 @@ export default function NordkreisPage() {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <a
-            href="/nordkreis/enroll"
-            className="w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:text-sm"
-          >
-            Jetzt anmelden
-          </a>
+          <EnrollButton />
+        </div>
+      </section>
+
+      {/* WHAT HAPPENS NEXT */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">Was passiert nach der Anmeldung?</h2>
+            <ol className="ml-6 list-decimal space-y-4 opacity-90">
+              <li>
+                <strong>Anmeldung auf der Warteliste</strong> — Du erhältst sofort eine
+                Bestätigungs-E-Mail mit dem unterzeichneten Vertrag als PDF.
+              </li>
+              <li>
+                <strong>Kursbestätigung</strong> — Sobald die Mindestteilnehmerzahl für deine
+                Gruppe erreicht ist, erhältst du eine zweite E-Mail mit der offiziellen
+                Kursbestätigung und den genauen Zahlungsterminen.
+              </li>
+              <li>
+                <strong>Einschreibegebühr</strong> — 8 Tage nach der Bestätigung wird die
+                Einschreibegebühr von 60 € per SEPA-Lastschrift eingezogen.
+              </li>
+              <li>
+                <strong>Monatsbeiträge</strong> — Die monatlichen Beiträge (45 €) werden jeweils
+                am 3. des Monats abgebucht, beginnend ab September.
+              </li>
+            </ol>
+          </div>
+
+          <div>
+            <h2 className="mb-6 text-2xl font-semibold">¿Qué ocurre después de inscribirse?</h2>
+            <ol className="ml-6 list-decimal space-y-4 opacity-90">
+              <li>
+                <strong>Inscripción en lista de espera</strong> — Recibirás inmediatamente un
+                correo de confirmación con el contrato firmado en PDF.
+              </li>
+              <li>
+                <strong>Confirmación del curso</strong> — En cuanto se alcance el número mínimo de
+                alumnos para tu grupo, recibirás un segundo correo con la confirmación oficial y las
+                fechas exactas de pago.
+              </li>
+              <li>
+                <strong>Matrícula</strong> — 8 días después de la confirmación se realizará el
+                cobro de la matrícula de 60 € por domiciliación SEPA.
+              </li>
+              <li>
+                <strong>Cuotas mensuales</strong> — Las cuotas mensuales (45 €) se cobran el día 3
+                de cada mes, a partir de septiembre.
+              </li>
+            </ol>
+          </div>
         </div>
       </section>
 

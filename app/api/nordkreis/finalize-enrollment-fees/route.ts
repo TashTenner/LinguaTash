@@ -56,5 +56,17 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Slack summary so you know the cron is alive
+  if (process.env.SLACK_WEBHOOK_URL) {
+    const emoji = errors.length > 0 ? '⚠️' : finalized.length > 0 ? '✅' : '🔄'
+    fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: `${emoji} *Nordkreis Cron — Einschreibegebühren*\nFinalisiert: ${finalized.length} · Übersprungen: ${skipped.length} · Fehler: ${errors.length}${errors.length > 0 ? `\nFehler-IDs: ${errors.join(', ')}` : ''}`,
+      }),
+    }).catch(console.error)
+  }
+
   return NextResponse.json({ finalized, skipped: skipped.length, errors })
 }

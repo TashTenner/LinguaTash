@@ -8,6 +8,7 @@
 //   URL: https://linguatash.com/api/webhooks/nordkreis
 //   Events to listen for:
 //     - invoice.payment_succeeded
+//     - invoice.payment_failed
 //
 // Add to .env.local:
 //   STRIPE_NORDKREIS_WEBHOOK_SECRET=whsec_...
@@ -22,6 +23,10 @@ import {
   generateNordkreisInvoiceNumber,
 } from '@/lib/nordkreis/generateInvoicePdf'
 import { buildPaymentEmailHtml, buildPaymentEmailText } from '@/lib/nordkreis/paymentEmail'
+import {
+  buildPaymentFailureEmailHtml,
+  buildPaymentFailureEmailText,
+} from '@/lib/nordkreis/paymentFailureEmail'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
@@ -54,6 +59,11 @@ export async function POST(req: NextRequest) {
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice
     await handlePaymentSucceeded(invoice).catch(console.error)
+  }
+
+  if (event.type === 'invoice.payment_failed') {
+    const invoice = event.data.object as Stripe.Invoice
+    await handlePaymentFailed(invoice).catch(console.error)
   }
 
   return NextResponse.json({ received: true })
@@ -277,6 +287,79 @@ async function sendPaymentEmail({
   if (!res.ok) {
     console.error('Payment email failed:', await res.text())
   }
+}
+
+// ── Handle failed payment ─────────────────────────────────────────────────────
+
+async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const invoice = rawInvoice as any
+  const customerId: string =
+    typeof invoice.customer === 'string' ? invoice.customer : (invoice.customer?.id ?? '')
+
+  if (!customerId) return
+
+  const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer
+  if (customer.deleted) return
+
+  const parentEmail = customer.email ?? ''
+  const parentName = customer.name ?? ''
+  if (!parentEmail) return
+
+  const amountEur = (invoice.amount_due ?? 0) / 100
+  const attemptCount: number = invoice.attempt_count ?? 1
+
+  // Get child name from subscription metadata or Sheets
+  let childName = ''
+  const subscriptionId: string =
+    typeof invoice.subscription === 'string'
+      ? invoice.subscription
+      : (invoice.subscription?.id ?? '')
+  if (subscriptionId) {
+    try {
+      const sub = await stripe.subscriptions.retrieve(subscriptionId)
+      childName = sub.metadata?.childName ?? ''
+    } catch {
+      // ignore
+    }
+  }
+  if (!childName) {
+    const sheetData = await getStudentFromSheets(parentEmail)
+    childName = sheetData?.childFullName ?? ''
+  }
+
+  // 1. Email to parent
+  await fetch('https://api.mailersend.com/v1/email', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.MAILERSEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: {
+        email: process.env.MAILERSEND_FROM_EMAIL,
+        name: process.env.MAILERSEND_FROM_NAME ?? 'Nordkreis',
+      },
+      to: [{ email: parentEmail, name: parentName }],
+      reply_to: { email: 'nordkreis@linguatash.com', name: 'Nordkreis' },
+      subject: `Zahlungsfehler Nordkreis · Pago fallido Nordkreis`,
+      html: buildPaymentFailureEmailHtml({ parentName, childName, amountEur, attemptCount }),
+      text: buildPaymentFailureEmailText({ parentName, childName, amountEur, attemptCount }),
+    }),
+  }).catch(console.error)
+
+  // 2. Slack alert to admin
+  if (process.env.SLACK_WEBHOOK_URL) {
+    fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: `⚠️ *Nordkreis Zahlung fehlgeschlagen*\nBetrag: ${amountEur} €\nKind: ${childName} · ${parentEmail}\nVersuch: ${attemptCount}\nStripe Invoice: \`${invoice.id}\``,
+      }),
+    }).catch(console.error)
+  }
+
+  console.log(`Nordkreis: payment failed for ${parentEmail}, invoice ${invoice.id}, attempt ${attemptCount}`)
 }
 
 // ── Get student data from Google Sheets ───────────────────────────────────────
