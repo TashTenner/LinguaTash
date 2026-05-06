@@ -137,27 +137,26 @@ export async function POST(req: NextRequest) {
 
     // 4. Create one-time €60 enrollment fee.
     //    Strategy: create a draft invoice, do NOT auto-advance it.
-    //    A separate cron/scheduled job should finalize it on day 8.
-    //    For now we finalize immediately in test mode; in production
-    //    set NORDKREIS_CHARGE_ENROLLMENT_NOW=true to also charge immediately,
-    //    or leave it as draft and finalize manually / via cron on day 8.
-    await stripe.invoiceItems.create({
-      customer: stripeCustomerId,
-      amount: ENROLLMENT_FEE_CENTS,
-      currency: 'eur',
-      description: `Nordkreis Einschreibegebühr — ${childName ?? studentName}`,
-    })
-
+    // Create the invoice FIRST (empty draft), then attach the item to it explicitly.
+    // This prevents the subscription creation from grabbing the pending item.
     const enrollmentInvoice = await stripe.invoices.create({
       customer: stripeCustomerId,
       default_payment_method: stripePaymentMethodId,
       collection_method: 'charge_automatically',
-      auto_advance: false, // keep as draft — finalize manually or via cron on day 8
+      auto_advance: false, // stays as draft — cron finalizes after 8 days
       metadata: {
         nordkreis: 'enrollment_fee',
         childName: childName ?? studentName,
         finalizeAfter: new Date(enrollmentFeeTimestamp * 1000).toISOString(),
       },
+    })
+
+    await stripe.invoiceItems.create({
+      customer: stripeCustomerId,
+      amount: ENROLLMENT_FEE_CENTS,
+      currency: 'eur',
+      description: `Nordkreis Einschreibegebühr — ${childName ?? studentName}`,
+      invoice: enrollmentInvoice.id, // explicitly attach — subscription cannot grab this
     })
 
     // Invoice stays as draft. The daily Vercel cron at
