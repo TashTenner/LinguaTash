@@ -529,12 +529,12 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
           </div>
           <button
             onClick={() => {
-                fetchStudents()
-                fetch('/api/nordkreis/pending-fees')
-                  .then((r) => r.json())
-                  .then((d) => setPendingFees(d.pending ?? []))
-                  .catch(console.error)
-              }}
+              fetchStudents()
+              fetch('/api/nordkreis/pending-fees')
+                .then((r) => r.json())
+                .then((d) => setPendingFees(d.pending ?? []))
+                .catch(console.error)
+            }}
             className="rounded-xl border border-[#9A8F85]/40 px-4 py-2 text-sm text-[#9A8F85] transition-all hover:border-[#F4EFE8] hover:text-[#F4EFE8]"
           >
             ↻ Aktualisieren
