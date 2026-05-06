@@ -21,38 +21,27 @@ const ENROLLMENT_FEE_DELAY_DAYS = 8
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
-/** Returns Unix timestamp for today + N days (uses test date in development) */
+/** Returns the base date: NORDKREIS_TEST_DATE if set, otherwise today. */
+function baseDate(): Date {
+  const testDate = process.env.NORDKREIS_TEST_DATE
+  return testDate ? new Date(testDate + 'T12:00:00') : new Date()
+}
+
+/** Returns Unix timestamp for today + N days. Set NORDKREIS_TEST_DATE to simulate a different date. */
 function daysFromNow(days: number): number {
-  let base: Date
-  if (process.env.NODE_ENV === 'development') {
-    const testDate = process.env.NORDKREIS_TEST_DATE ?? '2026-09-01'
-    base = new Date(testDate + 'T12:00:00')
-  } else {
-    base = new Date()
-  }
+  const base = baseDate()
   base.setDate(base.getDate() + days)
   return Math.floor(base.getTime() / 1000)
 }
 
 /**
  * Returns the first monthly charge date.
- * Rules:
  * - Next upcoming 3rd of the month
- * - Skip May/June/July/August — jump to September 3rd
- *   (school year runs Sep–Jun; parents enroll from May for September)
- *
- * In development, use NORDKREIS_TEST_DATE env var to simulate a date,
- * e.g. NORDKREIS_TEST_DATE=2026-09-01 to test September activation.
- * Defaults to 2026-09-01 in development so tests are predictable.
+ * - Skips May/June/July/August → September 3rd
+ * Set NORDKREIS_TEST_DATE to simulate activation on a different date.
  */
 function firstMonthlyChargeDate(): Date {
-  let now: Date
-  if (process.env.NODE_ENV === 'development') {
-    const testDate = process.env.NORDKREIS_TEST_DATE ?? '2026-09-01'
-    now = new Date(testDate + 'T12:00:00')
-  } else {
-    now = new Date()
-  }
+  const now = baseDate()
   const d = new Date(now.getFullYear(), now.getMonth(), 3, 12, 0, 0)
   if (d <= now) d.setMonth(d.getMonth() + 1)
   // Summer months (May, June, July, August) → first charge is September
