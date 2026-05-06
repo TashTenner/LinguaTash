@@ -75,6 +75,10 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
   // Cast to any to access fields the current SDK types don't expose (e.g. subscription)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const invoice = rawInvoice as any
+
+  // Skip €0 invoices — these are Stripe trial period invoices fired on subscription creation
+  if ((invoice.amount_paid ?? 0) === 0) return
+
   const customerId: string =
     typeof invoice.customer === 'string' ? invoice.customer : (invoice.customer?.id ?? '')
 
