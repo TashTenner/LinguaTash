@@ -160,12 +160,9 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // In development, finalize immediately for testing
-    if (process.env.NODE_ENV === 'development') {
-      await stripe.invoices.finalizeInvoice(enrollmentInvoice.id, { auto_advance: true })
-    }
-    // In production the invoice stays as draft — the daily cron at
+    // Invoice stays as draft. The daily Vercel cron at
     // /api/nordkreis/finalize-enrollment-fees finalizes it after 8 days.
+    // To test immediately: manually finalize the invoice in the Stripe dashboard.
 
     const enrollmentSchedule = { id: enrollmentInvoice.id }
 
