@@ -38,10 +38,6 @@ export default function ResuenaPage() {
           Juegos, audiolibros y recursos digitales para disfrutar mientras se aprenden idiomas,
           tanto para principiantes como para quienes buscan fortalecer su bilingüismo.
         </p>
-
-        <div className="mt-10 inline-block rounded-xl border border-[#B3475A] px-6 py-2 text-sm font-medium text-[#B3475A] opacity-80">
-          Próximamente disponible
-        </div>
       </section>
 
       {/* VISIÓN */}
@@ -158,14 +154,6 @@ export default function ResuenaPage() {
             </p>
           </div>
         </div>
-      </section>
-
-      {/* ESTADO ACTUAL */}
-      <section className="space-y-6">
-        <p className="text-sm leading-relaxed opacity-80">
-          Las descargas aún no están disponibles. Esta página irá evolucionando conforme los
-          proyectos avancen.
-        </p>
       </section>
 
       {/* CONTACTO */}

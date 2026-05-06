@@ -483,8 +483,7 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
 
   const waiting = students.filter((s) => s.enrollmentStatus.startsWith('Warteliste'))
   const active = students.filter((s) => s.enrollmentStatus.startsWith('Aktiviert'))
-  const cancelled = students.filter((s) => s.enrollmentStatus.startsWith('Storniert'))
-  const deleted = students.filter((s) => s.enrollmentStatus.startsWith('Gelöscht'))
+const deleted = students.filter((s) => s.enrollmentStatus.startsWith('Gelöscht'))
 
   const SortIcon = ({ k }: { k: SortKey }) => (
     <span className="ml-1 text-[#9A8F85]">{sortKey === k ? (sortAsc ? '↑' : '↓') : '↕'}</span>
@@ -568,13 +567,13 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         <div className="flex flex-wrap gap-3">
           {(['Spielkreis', 'Entdeckerkreis', 'Kompasskreis'] as const).map((group) => {
             const total = students.filter(
-              (s) => s.childGroup === group && !s.enrollmentStatus.startsWith('Gelöscht')
+              (s) => s.childGroup.startsWith(group) && !s.enrollmentStatus.startsWith('Gelöscht')
             ).length
             const act = students.filter(
-              (s) => s.childGroup === group && s.enrollmentStatus.startsWith('Aktiviert')
+              (s) => s.childGroup.startsWith(group) && s.enrollmentStatus.startsWith('Aktiviert')
             ).length
             const wait = students.filter(
-              (s) => s.childGroup === group && s.enrollmentStatus.startsWith('Warteliste')
+              (s) => s.childGroup.startsWith(group) && s.enrollmentStatus.startsWith('Warteliste')
             ).length
             return (
               <div
