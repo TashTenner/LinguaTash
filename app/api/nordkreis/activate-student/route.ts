@@ -315,27 +315,26 @@ async function updateSheetStatus(
 
   const sheetRow = rowIndex + 1
 
-  // Update AD→AJ (cols 30–36, sheet cols AD–AJ)
-  // AD: Enrollment Status, AE: Payment Status, AF: (unchanged), AG: (unchanged),
-  // AH: (unchanged), AI: (unchanged), AJ: Activation Date
+  // Update only the columns that change on activation — leave AG/AH/AI untouched
+  const batchBody = {
+    valueInputOption: 'USER_ENTERED',
+    data: [
+      {
+        range: `${SHEET_NAME}!AD${sheetRow}:AE${sheetRow}`,
+        values: [[`Aktiviert — ${subscriptionId}`, 'Aktiv / Active']],
+      },
+      {
+        range: `${SHEET_NAME}!AJ${sheetRow}`,
+        values: [[new Date().toISOString()]],
+      },
+    ],
+  }
   await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!AD${sheetRow}:AJ${sheetRow}`)}?valueInputOption=USER_ENTERED`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values:batchUpdate`,
     {
-      method: 'PUT',
+      method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        values: [
-          [
-            `Aktiviert — ${subscriptionId}`, // AD: Enrollment Status
-            'Aktiv / Active', // AE: Payment Status
-            'Ja / Yes', // AF: Contract Signed (keep)
-            '', // AG: PDF URL (keep, skip)
-            '', // AH: Stripe Customer ID (keep)
-            '', // AI: Stripe Payment Method ID (keep)
-            new Date().toISOString(), // AJ: Activation Date
-          ],
-        ],
-      }),
+      body: JSON.stringify(batchBody),
     }
   )
 }

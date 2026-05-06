@@ -78,7 +78,7 @@ export function buildPaymentEmailHtml({
 
           <!-- Logo row -->
           <tr>
-            <td style="background:#081C3C;padding:16px 32px;border-bottom:1px solid #e3ded7;">
+            <td style="background:#f4efe8;padding:16px 32px;border-bottom:1px solid #e3ded7;">
               <img src="${logoCombined}" alt="LinguaTash Nordkreis" height="72"
                 style="height:72px;width:auto;display:block;"/>
             </td>
