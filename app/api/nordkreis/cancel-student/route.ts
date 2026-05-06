@@ -63,12 +63,12 @@ export async function POST(req: NextRequest) {
     const token = await getSheetsToken()
 
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:M`)}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     const data = await res.json()
     const rows: string[][] = data.values ?? []
-    const rowIndex = rows.findIndex((r) => r[14] === parentEmail)
+    const rowIndex = rows.findIndex((r) => r[1] === contractNo)
 
     if (rowIndex === -1) {
       return NextResponse.json({ error: 'Student not found in sheet' }, { status: 404 })

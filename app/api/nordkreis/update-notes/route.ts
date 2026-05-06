@@ -6,10 +6,10 @@ import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth
 
 export async function POST(req: NextRequest) {
   try {
-    const { parentEmail, notes } = await req.json()
+    const { contractNo, notes } = await req.json()
 
-    if (!parentEmail) {
-      return NextResponse.json({ error: 'Missing parentEmail' }, { status: 400 })
+    if (!contractNo) {
+      return NextResponse.json({ error: 'Missing contractNo' }, { status: 400 })
     }
 
     if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON || !SHEET_ID) {
@@ -19,12 +19,12 @@ export async function POST(req: NextRequest) {
     const token = await getSheetsToken()
 
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:B`)}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     const data = await res.json()
     const rows: string[][] = data.values ?? []
-    const rowIndex = rows.findIndex((r) => r[14] === parentEmail)
+    const rowIndex = rows.findIndex((r) => r[1] === contractNo)
 
     if (rowIndex === -1) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 })

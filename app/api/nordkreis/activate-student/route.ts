@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
     })
 
     // 7. Update Google Sheets
-    await updateSheetStatus(parentEmail, subscription.id, enrollmentSchedule.id).catch(
+    await updateSheetStatus(contractNo, subscription.id, enrollmentSchedule.id).catch(
       console.error
     )
 
@@ -301,7 +301,7 @@ async function sendConfirmationEmail({
 // ── Update Google Sheets ──────────────────────────────────────────────────────
 
 async function updateSheetStatus(
-  parentEmail: string,
+  contractNo: string,
   subscriptionId: string,
   enrollmentScheduleId: string
 ) {
@@ -309,14 +309,14 @@ async function updateSheetStatus(
 
   const token = await getSheetsToken()
 
-  // Find row by Parent 1 Email — col O (index 14)
+  // Find row by Contract No — col B (index 1), always unique
   const res = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:B`)}`,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   const data = await res.json()
   const rows: string[][] = data.values ?? []
-  const rowIndex = rows.findIndex((r) => r[14] === parentEmail)
+  const rowIndex = rows.findIndex((r) => r[1] === contractNo)
   if (rowIndex === -1) return
 
   const sheetRow = rowIndex + 1
