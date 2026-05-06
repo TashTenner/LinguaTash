@@ -29,6 +29,7 @@ import {
 } from '@/lib/nordkreis/paymentFailureEmail'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { registerVerifactuInvoice } from '@/lib/verifactu'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -182,7 +183,36 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     })
   )
 
-  // 3. Send email with PDF attached
+  // 3. Register with Verifactu / AEAT (non-fatal)
+  try {
+    const exemptDesc = isEnrollment
+      ? `Matrícula Nordkreis — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
+      : `Cuota mensual Nordkreis ${monthNumber ?? ''}/${totalMonths} — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
+    await registerVerifactuInvoice({
+      series: 'NORDKREIS',
+      invoiceNumber,
+      issueDate,
+      invoiceType: 'F2',
+      description: exemptDesc,
+      externalReference: invoice.id,
+      customerName: parentName,
+      items: [
+        {
+          description: exemptDesc,
+          quantity: 1,
+          unit_price: amountEur,
+          tax_rate: 0,
+          aeat_code: '01',
+          operation_qualification: 'E1',
+        },
+      ],
+    })
+    console.log('[Nordkreis webhook] ✓ Verifactu registered:', invoiceNumber)
+  } catch (err) {
+    console.error('[Nordkreis webhook] Verifactu error (non-fatal):', err)
+  }
+
+  // 4. Send email with PDF attached
   await sendPaymentEmail({
     to: parentEmail,
     parentName,
@@ -197,7 +227,7 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     pdfBytes,
   })
 
-  // 4. Notify Slack
+  // 5. Notify Slack
   if (process.env.SLACK_WEBHOOK_URL) {
     fetch(process.env.SLACK_WEBHOOK_URL, {
       method: 'POST',
