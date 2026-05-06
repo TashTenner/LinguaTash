@@ -641,7 +641,7 @@ export async function POST(req: NextRequest) {
               last4: countryEvidence.cardLast4,
               funding: countryEvidence.cardFunding,
             },
-            verifactuResponse,
+            verifactuQrUrl,
           },
           null,
           2
