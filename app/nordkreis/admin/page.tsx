@@ -431,7 +431,7 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          parentEmail: student.parent1Email,
+          contractNo: student.contractNo,
           notes: editingNotes[student.contractNo] ?? student.internalNotes,
         }),
       })
