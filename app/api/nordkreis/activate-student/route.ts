@@ -215,9 +215,7 @@ export async function POST(req: NextRequest) {
     })
 
     // 7. Update Google Sheets
-    await updateSheetStatus(contractNo, subscription.id, enrollmentSchedule.id).catch(
-      console.error
-    )
+    await updateSheetStatus(contractNo, subscription.id, enrollmentSchedule.id).catch(console.error)
 
     return NextResponse.json({
       success: true,
