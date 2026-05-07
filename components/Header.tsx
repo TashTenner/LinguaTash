@@ -44,14 +44,29 @@ const Header = () => {
         {/* Social icons */}
         <div className="hidden items-center gap-x-2 sm:flex">
           {siteMetadata.youtube && (
-            <SocialIcon kind="youtube" href={siteMetadata.youtube} size={4} hoverColor="hover:text-[#FF0000]" />
+            <SocialIcon
+              kind="youtube"
+              href={siteMetadata.youtube}
+              size={4}
+              hoverColor="hover:text-[#FF0000]"
+            />
           )}
           {siteMetadata.linkedin && (
-            <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={4} hoverColor="hover:text-[#0A66C2]" />
+            <SocialIcon
+              kind="linkedin"
+              href={siteMetadata.linkedin}
+              size={4}
+              hoverColor="hover:text-[#0A66C2]"
+            />
           )}
           {siteMetadata.x && <SocialIcon kind="x" href={siteMetadata.x} size={6} />}
           {siteMetadata.instagram && (
-            <SocialIcon kind="instagram" href={siteMetadata.instagram} size={4} hoverColor="hover:text-[#E1306C]" />
+            <SocialIcon
+              kind="instagram"
+              href={siteMetadata.instagram}
+              size={4}
+              hoverColor="hover:text-[#E1306C]"
+            />
           )}
           <a
             href="https://wa.me/34602656578"

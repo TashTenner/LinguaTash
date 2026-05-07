@@ -151,9 +151,9 @@ export default function AlemanYDuPage() {
 
             <p className="mt-6 leading-relaxed opacity-90">
               Todavía no tenemos confirmado el horario. Si te interesa, escríbeme por WhatsApp
-              indicando qué días y horarios te vendrían mejor y en qué curso está tu hijo o hija.
-              No puedo garantizar que coincida con tu disponibilidad, pero nos ayuda mucho a
-              coordinar el horario con el colegio.
+              indicando qué días y horarios te vendrían mejor y en qué curso está tu hijo o hija. No
+              puedo garantizar que coincida con tu disponibilidad, pero nos ayuda mucho a coordinar
+              el horario con el colegio.
             </p>
 
             <a

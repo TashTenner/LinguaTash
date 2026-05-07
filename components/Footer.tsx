@@ -66,9 +66,24 @@ export default function Footer() {
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Redes sociales</p>
 
               <div className="flex flex-wrap gap-4">
-                <SocialIcon kind="youtube" href={siteMetadata.youtube} size={6} hoverColor="hover:text-[#FF0000]" />
-                <SocialIcon kind="linkedin" href={siteMetadata.linkedin} size={6} hoverColor="hover:text-[#0A66C2]" />
-                <SocialIcon kind="instagram" href={siteMetadata.instagram} size={6} hoverColor="hover:text-[#E1306C]" />
+                <SocialIcon
+                  kind="youtube"
+                  href={siteMetadata.youtube}
+                  size={6}
+                  hoverColor="hover:text-[#FF0000]"
+                />
+                <SocialIcon
+                  kind="linkedin"
+                  href={siteMetadata.linkedin}
+                  size={6}
+                  hoverColor="hover:text-[#0A66C2]"
+                />
+                <SocialIcon
+                  kind="instagram"
+                  href={siteMetadata.instagram}
+                  size={6}
+                  hoverColor="hover:text-[#E1306C]"
+                />
                 <a
                   href="https://wa.me/34602656578"
                   target="_blank"
