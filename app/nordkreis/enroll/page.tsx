@@ -696,7 +696,7 @@ function EnrollForm() {
               </p>
               <Field label="Straße und Hausnummer / Calle y número" required>
                 <Input
-                  placeholder="Carrer de la Providència 47"
+                  placeholder="Carrer de Balmes 100"
                   value={form.addressStreet}
                   onChange={set('addressStreet')}
                 />
