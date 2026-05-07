@@ -521,6 +521,73 @@ export default function NordkreisPage() {
         </a>
       </section>
 
+      {/* DATES */}
+      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* GERMAN */}
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">Termine 2026 / 2027</h2>
+            <p className="mb-6 text-sm opacity-70">
+              Vorläufige Termine — angefragte Samstage an der Schule. Bestätigung voraussichtlich im
+              Juli 2026. Es kann vorkommen, dass die Schule einzelne Samstage aus eigenen Gründen
+              verlegt.
+            </p>
+
+            <div className="space-y-4 text-sm opacity-90">
+              {[
+                ['September 2026', ['19. September']],
+                ['Oktober 2026', ['3. Oktober', '17. Oktober', '31. Oktober']],
+                ['November 2026', ['7. November', '14. November', '28. November']],
+                ['Dezember 2026', ['12. Dezember']],
+                ['Januar 2027', ['16. Januar', '30. Januar']],
+                ['Februar 2027', ['13. Februar', '27. Februar']],
+                ['März 2027', ['6. März', '13. März']],
+                ['April 2027', ['3. April', '17. April']],
+                ['Mai 2027', ['8. Mai', '22. Mai']],
+                ['Juni 2027', ['5. Juni', '19. Juni']],
+              ].map(([month, days]) => (
+                <div key={month as string}>
+                  <p className="font-semibold">{month as string}</p>
+                  <p className="text-[#9A8F85]">{(days as string[]).join(' · ')}</p>
+                </div>
+              ))}
+              <p className="pt-2 font-semibold text-[#B3475A]">Total: 20 Samstage</p>
+            </div>
+          </div>
+
+          {/* SPANISH */}
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">Fechas 2026 / 2027</h2>
+            <p className="mb-6 text-sm opacity-70">
+              Fechas provisionales — sábados solicitados al colegio. Confirmación prevista para
+              julio de 2026. Es posible que el colegio tenga que mover algún sábado por sus propias
+              necesidades.
+            </p>
+
+            <div className="space-y-4 text-sm opacity-90">
+              {[
+                ['Septiembre 2026', ['19 de septiembre']],
+                ['Octubre 2026', ['3 de octubre', '17 de octubre', '31 de octubre']],
+                ['Noviembre 2026', ['7 de noviembre', '14 de noviembre', '28 de noviembre']],
+                ['Diciembre 2026', ['12 de diciembre']],
+                ['Enero 2027', ['16 de enero', '30 de enero']],
+                ['Febrero 2027', ['13 de febrero', '27 de febrero']],
+                ['Marzo 2027', ['6 de marzo', '13 de marzo']],
+                ['Abril 2027', ['3 de abril', '17 de abril']],
+                ['Mayo 2027', ['8 de mayo', '22 de mayo']],
+                ['Junio 2027', ['5 de junio', '19 de junio']],
+              ].map(([month, days]) => (
+                <div key={month as string}>
+                  <p className="font-semibold">{month as string}</p>
+                  <p className="text-[#9A8F85]">{(days as string[]).join(' · ')}</p>
+                </div>
+              ))}
+              <p className="pt-2 font-semibold text-[#B3475A]">Total: 20 sábados</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FEES */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <div className="grid gap-12 md:grid-cols-2">
