@@ -27,7 +27,7 @@ export default function FonetikasPage() {
         </div>
 
         <h1 className="text-5xl leading-none md:text-6xl">
-          <span className="opcity-95 font-[100]" style={{ letterSpacing: '-0.1em' }}>
+          <span className="opacity-95 font-[100]" style={{ letterSpacing: '-0.1em' }}>
             Foneti
           </span>
           <span className="font-[400]">k</span>

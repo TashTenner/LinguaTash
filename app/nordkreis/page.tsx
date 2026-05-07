@@ -511,6 +511,14 @@ export default function NordkreisPage() {
           <br />
           08024 Barcelona
         </p>
+        <a
+          href="https://maps.google.com/?q=La+Salle+Gràcia,+Plaça+del+Nord+14,+08024+Barcelona"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block text-sm text-[#B3475A] underline underline-offset-4 transition-colors hover:text-[#9f3f50]"
+        >
+          Ver en Google Maps →
+        </a>
       </section>
 
       {/* FEES */}

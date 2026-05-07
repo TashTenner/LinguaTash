@@ -160,11 +160,6 @@ export default function ResuenaPage() {
       <section className="rounded-2xl border border-[#9A8F85]/30 bg-[#081C3C] px-6 py-16 text-center text-[#F4EFE8]">
         <h2 className="mb-6 text-2xl font-semibold">Contacto</h2>
 
-        <p className="mb-6 opacity-80">
-          Si quieres recibir noticias cuando los proyectos estén listos, puedes escribirme
-          directamente.
-        </p>
-
         <a
           href="mailto:resuena@linguatash.com"
           className="mt-6 w-fit max-w-full truncate overflow-hidden rounded-xl bg-[#B3475A] px-6 py-3 text-base font-medium whitespace-nowrap transition-transform duration-300 hover:scale-105 sm:text-sm"
