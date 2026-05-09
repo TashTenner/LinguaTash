@@ -230,7 +230,7 @@ export async function POST(req: NextRequest) {
     await saveToSheets(form, contractNo, pdfKey)
 
     if (process.env.SLACK_WEBHOOK_URL) {
-      fetch(process.env.SLACK_WEBHOOK_URL, {
+      await fetch(process.env.SLACK_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

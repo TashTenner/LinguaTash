@@ -229,7 +229,7 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
 
   // 5. Notify Slack
   if (process.env.SLACK_WEBHOOK_URL) {
-    fetch(process.env.SLACK_WEBHOOK_URL, {
+    await fetch(process.env.SLACK_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -384,7 +384,7 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
 
   // 2. Slack alert to admin
   if (process.env.SLACK_WEBHOOK_URL) {
-    fetch(process.env.SLACK_WEBHOOK_URL, {
+    await fetch(process.env.SLACK_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
