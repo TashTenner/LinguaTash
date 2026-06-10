@@ -10,7 +10,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src 'self' *.s3.amazonaws.com *.r2.cloudflarestorage.com;
-  connect-src 'self' cloud.umami.is https://api-gateway.umami.dev https://api.stripe.com;
+  connect-src 'self' cloud.umami.is gateway.umami.is https://api-gateway.umami.dev https://api.stripe.com;
   font-src 'self';
   frame-src giscus.app https://js.stripe.com;
 `
