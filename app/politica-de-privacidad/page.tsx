@@ -4,7 +4,7 @@ export default function PoliticaPrivacidadPage() {
       <header className="mb-12">
         <h1 className="text-3xl font-semibold tracking-tight">Política de Privacidad</h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Última actualización: 30.04.2026
+          Última actualización: 12.06.2026
         </p>
       </header>
 
@@ -19,7 +19,8 @@ export default function PoliticaPrivacidadPage() {
             sitio web.
           </p>
           <p>
-            Este sitio web es operado por: Tash Tenner, Barcelona, España. Correo electrónico:
+            {/* TODO: Add NIF once available (expected July 2026) — required under Spanish law */}
+          Este sitio web es operado por: Tash Tenner, Barcelona, España. Correo electrónico:
             info@linguatash.com
           </p>
         </section>
@@ -169,6 +170,64 @@ export default function PoliticaPrivacidadPage() {
             >
               stripe.com/es/privacy
             </a>
+          </p>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            8. Flujos automatizados de mensajería en redes sociales
+          </h2>
+          <p>
+            LinguaTash opera flujos automatizados en Instagram, Facebook y WhatsApp. Cuando ustedes
+            comentan o envían una palabra clave específica (por ejemplo, HAFEN o AUDIO), el sistema
+            reconoce esa palabra, les envía el recurso gratuito correspondiente y registra la
+            interacción.
+          </p>
+          <p className="font-medium">Datos que procesamos</p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>Identificador de usuario y nombre de usuario en la plataforma donde interactúan.</li>
+            <li>Contenido del comentario o mensaje que activó el flujo.</li>
+            <li>
+              Fecha y hora de la interacción, necesaria para cumplir las ventanas de mensajería de
+              cada plataforma.
+            </li>
+            <li>
+              Registro de la palabra clave activada y si el recurso fue enviado correctamente.
+            </li>
+            <li>Si optan por recibir correos electrónicos: su dirección de correo electrónico.</li>
+          </ul>
+          <p>
+            No procesamos datos de ubicación, cookies ni ninguna otra categoría no mencionada aquí.
+          </p>
+          <p className="font-medium">Base jurídica</p>
+          <p>
+            El envío del recurso y el registro de la interacción se basan en nuestro interés
+            legítimo (Art. 6(1)(f) GDPR) en responder a una solicitud que ustedes iniciaron
+            voluntariamente. Si optan por suscribirse a nuestra lista de correo, el tratamiento de
+            su dirección de correo se basa en su consentimiento expreso (Art. 6(1)(a) GDPR), que
+            pueden retirar en cualquier momento.
+          </p>
+          <p className="font-medium">Proveedores de servicios</p>
+          <ul className="list-disc space-y-1 pl-6">
+            <li>
+              <span className="font-medium">Meta Platforms Ireland Ltd.</span> (Instagram, Facebook,
+              WhatsApp): plataformas a través de las cuales se produce la interacción.
+            </li>
+            <li>
+              <span className="font-medium">MongoDB Atlas:</span> almacenamiento de los registros de
+              interacción en una región de la Unión Europea.
+            </li>
+            <li>
+              <span className="font-medium">Kit (ConvertKit):</span> gestión del correo electrónico
+              si optan por suscribirse. La transferencia de datos se realiza conforme a lo indicado
+              en el apartado 6.
+            </li>
+          </ul>
+          <p className="font-medium">Plazo de conservación</p>
+          <p>
+            Los registros de interacción se conservan durante 12 meses desde la fecha de la
+            interacción. Si optan por suscribirse a la lista de correo, su dirección de correo se
+            gestiona conforme a lo indicado en el apartado 6.
           </p>
         </section>
 
