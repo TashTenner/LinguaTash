@@ -221,7 +221,7 @@ async function handleDmText(userId: string, text: string) {
 
 interface CommentValue {
   from: { id: string; username?: string }
-  id: string    // comment ID — used to post a reply
+  id: string // comment ID — used to post a reply
   text: string
   media?: { id: string }
 }

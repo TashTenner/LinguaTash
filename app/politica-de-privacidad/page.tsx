@@ -20,7 +20,7 @@ export default function PoliticaPrivacidadPage() {
           </p>
           <p>
             {/* TODO: Add NIF once available (expected July 2026) — required under Spanish law */}
-          Este sitio web es operado por: Tash Tenner, Barcelona, España. Correo electrónico:
+            Este sitio web es operado por: Tash Tenner, Barcelona, España. Correo electrónico:
             info@linguatash.com
           </p>
         </section>
@@ -185,7 +185,9 @@ export default function PoliticaPrivacidadPage() {
           </p>
           <p className="font-medium">Datos que procesamos</p>
           <ul className="list-disc space-y-1 pl-6">
-            <li>Identificador de usuario y nombre de usuario en la plataforma donde interactúan.</li>
+            <li>
+              Identificador de usuario y nombre de usuario en la plataforma donde interactúan.
+            </li>
             <li>Contenido del comentario o mensaje que activó el flujo.</li>
             <li>
               Fecha y hora de la interacción, necesaria para cumplir las ventanas de mensajería de
