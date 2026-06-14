@@ -18,9 +18,8 @@ import crypto from 'crypto'
 import { connectToDatabase } from '@/lib/mongodb'
 import { MetaInteraction } from '@/lib/models/MetaInteraction'
 import { Follower } from '@/lib/models/Follower'
-import { getKeywordAction, getCommentReply, resolveDmText } from '@/lib/metatrigger/keywords'
+import { getKeywordAction, resolveDmText } from '@/lib/metatrigger/keywords'
 import {
-  replyToComment,
   sendDmWithFollowButton,
   sendDmFreebie,
   sendDmFollowFirst,
@@ -96,7 +95,6 @@ async function handleComment(value: CommentValue) {
   if (!action) return
 
   const { id: userId } = value.from
-  const commentId = value.id
 
   // Dedupe: only trigger once per user/keyword combination.
   const existing = await MetaInteraction.findOne({
@@ -120,19 +118,30 @@ async function handleComment(value: CommentValue) {
     throw err
   }
 
-  // Post a public comment reply.
-  const commentText = getCommentReply(action)
-  if (commentText) await replyToComment(commentId, commentText)
+  // No public comment reply — DM only (ManyChat-style flow).
 
   if (action.followGate) {
-    // Send DM with "I'm following" button — freebie delivered after button tap + follow check.
-    await sendDmWithFollowButton(
-      userId,
-      action.keyword,
-      '¡Hola! Para recibir tu regalo, sígueme primero en Instagram y luego pulsa el botón ⬇️'
-    )
+    // Check follower cache first. If they already follow, deliver freebie immediately.
+    const isFollower = await Follower.exists({ platform: 'instagram', userId })
+    if (isFollower) {
+      const dmText = resolveDmText(action)
+      if (dmText) {
+        await sendDmFreebie(userId, dmText)
+        await MetaInteraction.updateOne(
+          { platform: 'instagram', userId, keyword: action.keyword },
+          { status: 'fulfilled', fulfilledAt: new Date() }
+        )
+      }
+    } else {
+      // Not yet confirmed as follower — send DM with button to tap after following.
+      await sendDmWithFollowButton(
+        userId,
+        action.keyword,
+        '¡Hola! Para recibir tu regalo, sígueme primero en Instagram y luego pulsa el botón ⬇️'
+      )
+    }
   } else {
-    // No gate — send freebie link immediately in DM.
+    // No gate — send freebie immediately.
     const dmText = resolveDmText(action)
     if (dmText) {
       await sendDmFreebie(userId, dmText)
