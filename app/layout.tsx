@@ -5,6 +5,7 @@ import 'remark-github-blockquote-alert/alert.css'
 import { Noto_Sans, Noto_Sans_Hebrew, Caveat } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
+import ChatWidget from '@/components/ChatWidget'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
@@ -120,6 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </SearchProvider>
             <Footer />
           </SectionContainer>
+          <ChatWidget />
         </ThemeProviders>
       </body>
     </html>
