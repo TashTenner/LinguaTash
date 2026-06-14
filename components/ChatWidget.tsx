@@ -133,7 +133,7 @@ export default function ChatWidget() {
       {open && (
         <div
           ref={panelRef}
-          className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10"
+          className="flex flex-col overflow-hidden rounded-2xl bg-white ring-1 shadow-2xl ring-black/5 dark:bg-gray-900 dark:ring-white/10"
           style={{
             width: 'min(320px, calc(100vw - 1.5rem))',
             height: 'min(420px, calc(100dvh - 6rem))',
@@ -152,7 +152,7 @@ export default function ChatWidget() {
               <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#B3475A]" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold leading-tight text-white">Tash</p>
+              <p className="text-sm leading-tight font-semibold text-white">Tash</p>
               <p className="text-xs leading-tight text-white/65">Activa hace un momento</p>
             </div>
             <button
@@ -208,9 +208,18 @@ export default function ChatWidget() {
                 />
                 <div className="rounded-2xl rounded-bl-sm bg-gray-100 px-4 py-3 dark:bg-gray-700">
                   <span className="flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]" style={{ animationDelay: '0ms' }} />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]" style={{ animationDelay: '150ms' }} />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]" style={{ animationDelay: '300ms' }} />
+                    <span
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]"
+                      style={{ animationDelay: '0ms' }}
+                    />
+                    <span
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]"
+                      style={{ animationDelay: '150ms' }}
+                    />
+                    <span
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#9A8F85]"
+                      style={{ animationDelay: '300ms' }}
+                    />
                   </span>
                 </div>
               </div>
@@ -234,9 +243,7 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {step === 'error' && (
-              <p className="text-center text-xs text-[#B3475A]">{errorMsg}</p>
-            )}
+            {step === 'error' && <p className="text-center text-xs text-[#B3475A]">{errorMsg}</p>}
 
             <div ref={chatEndRef} />
           </div>
@@ -302,7 +309,12 @@ export default function ChatWidget() {
       >
         {open ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
+            <path
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         ) : (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
