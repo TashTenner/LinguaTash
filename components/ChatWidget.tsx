@@ -42,10 +42,6 @@ export default function ChatWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [bubbles, isTyping])
 
-  useEffect(() => {
-    if (open) inputRef.current?.focus()
-  }, [open, step])
-
   function pushBubble(bubble: Bubble) {
     setBubbles((prev) => [...prev, bubble])
   }
