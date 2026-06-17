@@ -142,7 +142,7 @@ export default function AlemanYDuPage() {
 
             <ul className="ml-6 list-disc space-y-3 opacity-90">
               <li>1 sesión semanal de 60 minutos</li>
-              <li>Grupos de 5 a 10 alumnos</li>
+              <li>Grupos de 6 a 10 alumnos</li>
               <li>Inicio: septiembre 2026</li>
               <li>
                 Día y horario: <strong>por confirmar</strong>
