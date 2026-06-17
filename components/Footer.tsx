@@ -85,7 +85,7 @@ export default function Footer() {
                   hoverColor="hover:text-[#E1306C]"
                 />
                 <a
-                  href="https://wa.me/34602656578"
+                  href="https://wa.me/34644886723"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"

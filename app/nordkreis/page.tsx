@@ -602,7 +602,7 @@ export default function NordkreisPage() {
 
             <p className="mt-4 text-justify opacity-90">
               Der Start erfolgt bei Erreichen der Mindestteilnehmerzahl (Spielkreis: 6–10 Kinder;
-              Entdeckerkreis: 5–10 Kinder). Die Beiträge decken Raumkosten, Organisation,
+              Entdeckerkreis: 6–10 Kinder). Die Beiträge decken Raumkosten, Organisation,
               Materialien sowie die Platzreservierung.
             </p>
           </div>
@@ -618,7 +618,7 @@ export default function NordkreisPage() {
 
             <p className="mt-4 text-justify opacity-90">
               El proyecto comenzará al alcanzarse el número mínimo de alumnos (Spielkreis: 6–10
-              niños; Entdeckerkreis: 5–10 niños). Las cuotas cubren el alquiler del espacio, la
+              niños; Entdeckerkreis: 6–10 niños). Las cuotas cubren el alquiler del espacio, la
               organización, los materiales y la reserva de plaza.
             </p>
           </div>

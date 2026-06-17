@@ -105,7 +105,7 @@ export default function AlemanYDuPage() {
             </ul>
 
             <p className="leading-relaxed opacity-90">
-              Los grupos serán reducidos (mínimo 5, máximo 10 alumnos) para asegurar participación
+              Los grupos serán reducidos (mínimo 6, máximo 10 alumnos) para asegurar participación
               real y acompañamiento individual.
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function AlemanYDuPage() {
             </p>
 
             <a
-              href="https://wa.me/34602656578"
+              href="https://wa.me/34644886723"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-medium text-white transition-transform duration-200 hover:scale-105"
@@ -173,8 +173,8 @@ export default function AlemanYDuPage() {
             <h2 className="mb-6 text-2xl font-semibold">Cuotas mensuales</h2>
 
             <ul className="ml-6 list-disc space-y-3 opacity-90">
-              <li>45 € — Alumnos de La Salle Gràcia</li>
-              <li>50 € — Alumnos externos</li>
+              <li>40 € — Alumnos de La Salle Gràcia</li>
+              <li>45 € — Alumnos externos</li>
             </ul>
 
             <p className="mt-4 text-justify opacity-90">
