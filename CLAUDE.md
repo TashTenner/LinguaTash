@@ -18,6 +18,17 @@ The CI build (`yarn build`) enforces Prettier via ESLint and will fail if format
 
 ---
 
+## Starting the dev server locally
+
+Always run this first in PowerShell, then start the dev server:
+
+```powershell
+$env:PWD = $(Get-Location).Path
+yarn dev
+```
+
+---
+
 ## Instagram Keyword Automation (ManyChat alternative)
 
 **Status as of 2026-06-15: PAUSED — waiting for autónoma registration in Spain**
