@@ -524,21 +524,32 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
             </div>
             <div>
               <h1 className="text-lg font-semibold text-[#F4EFE8]">Nordkreis Admin</h1>
-              <p className="text-xs text-[#9A8F85]">🔒 localhost only</p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              fetchStudents()
-              fetch('/api/nordkreis/pending-fees')
-                .then((r) => r.json())
-                .then((d) => setPendingFees(d.pending ?? []))
-                .catch(console.error)
-            }}
-            className="rounded-xl border border-[#9A8F85]/40 px-4 py-2 text-sm text-[#9A8F85] transition-all hover:border-[#F4EFE8] hover:text-[#F4EFE8]"
-          >
-            ↻ Aktualisieren
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                fetchStudents()
+                fetch('/api/nordkreis/pending-fees')
+                  .then((r) => r.json())
+                  .then((d) => setPendingFees(d.pending ?? []))
+                  .catch(console.error)
+              }}
+              className="rounded-xl border border-[#9A8F85]/40 px-4 py-2 text-sm text-[#9A8F85] transition-all hover:border-[#F4EFE8] hover:text-[#F4EFE8]"
+            >
+              ↻ Aktualisieren
+            </button>
+            <button
+              onClick={() => {
+                fetch('/api/nordkreis/admin-logout', { method: 'POST' }).finally(() => {
+                  window.location.href = '/nordkreis/admin/login'
+                })
+              }}
+              className="rounded-xl border border-[#9A8F85]/40 px-4 py-2 text-sm text-[#9A8F85] transition-all hover:border-[#F4EFE8] hover:text-[#F4EFE8]"
+            >
+              Abmelden
+            </button>
+          </div>
         </div>
       </div>
 
