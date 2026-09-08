@@ -68,29 +68,31 @@ export function buildCancellationEmailHtml({
                 Hallo ${parentName},
               </p>
               <p style="font-size:13px;color:#9a8f85;margin:0 0 24px;">
-                Hola ${parentName},
+                Hola ${parentName}:
               </p>
 
               <!-- DE content -->
               <p style="font-size:14px;line-height:1.7;margin:0 0 8px;color:#081C3C;">
-                Deine Abmeldung für <strong>${childName}</strong> bei Nordkreis wurde bestätigt.
-                Es werden keine weiteren Zahlungen eingezogen${contractNo ? ` (Vertrag ${contractNo})` : ''}.
-                Falls eine Zahlung noch ausstehend war, wurde sie storniert.
+                Die Abmeldung von <strong>${childName}</strong> bei Nordkreis ist bestätigt.
+                Ab jetzt buchen wir nichts mehr ab${contractNo ? ` (Vertrag ${contractNo})` : ''};
+                eine noch offene Zahlung haben wir storniert.
               </p>
               <p style="font-size:14px;line-height:1.7;margin:0 0 28px;color:#081C3C;">
-                Wir wünschen euch alles Gute und hoffen, euch vielleicht in einer anderen Saison wiederzusehen.
+                Wir wünschen Euch alles Gute und würden uns freuen, Euch in einem
+                der nächsten Kurse wiederzusehen.
               </p>
 
               <hr style="border:none;border-top:1px solid #e3ded7;margin:0 0 24px;"/>
 
               <!-- ES content -->
               <p style="font-size:14px;line-height:1.7;margin:0 0 8px;color:#081C3C;">
-                La baja de <strong>${childName}</strong> en Nordkreis ha sido confirmada.
-                No se realizarán más cobros${contractNo ? ` (contrato ${contractNo})` : ''}.
-                Si había algún pago pendiente, ha sido cancelado.
+                La baja de <strong>${childName}</strong> en Nordkreis está confirmada.
+                A partir de ahora no habrá más cobros${contractNo ? ` (contrato ${contractNo})` : ''};
+                si quedaba alguna factura pendiente, la hemos anulado.
               </p>
               <p style="font-size:14px;line-height:1.7;margin:0 0 28px;color:#081C3C;">
-                Os deseamos lo mejor y esperamos veros en otra temporada.
+                Os deseamos lo mejor y nos encantaría volver a veros en algún curso
+                más adelante.
               </p>
 
               <hr style="border:none;border-top:1px solid #e3ded7;margin:0 0 28px;"/>
@@ -102,7 +104,7 @@ export function buildCancellationEmailHtml({
                   style="color:#b3475a;text-decoration:none;font-weight:600;">nordkreis@linguatash.com</a>
               </p>
               <p style="font-size:12px;color:#9a8f85;margin:0 0 28px;">
-                ¿Preguntas?
+                ¿Alguna duda?
                 <a href="mailto:nordkreis@linguatash.com"
                   style="color:#b3475a;text-decoration:none;">nordkreis@linguatash.com</a>
               </p>
@@ -148,19 +150,23 @@ export function buildCancellationEmailText({
 }): string {
   return `Hallo ${parentName},
 
-Deine Abmeldung für ${childName} bei Nordkreis wurde bestätigt.
-Es werden keine weiteren Zahlungen eingezogen${contractNo ? ` (Vertrag ${contractNo})` : ''}.
+die Abmeldung von ${childName} bei Nordkreis ist bestätigt.
+Ab jetzt buchen wir nichts mehr ab${contractNo ? ` (Vertrag ${contractNo})` : ''};
+eine noch offene Zahlung haben wir storniert.
 
-Wir wünschen euch alles Gute.
+Wir wünschen Euch alles Gute und würden uns freuen, Euch in einem
+der nächsten Kurse wiederzusehen.
 
 ---
 
-Hola ${parentName},
+Hola ${parentName}:
 
-La baja de ${childName} en Nordkreis ha sido confirmada.
-No se realizarán más cobros${contractNo ? ` (contrato ${contractNo})` : ''}.
+La baja de ${childName} en Nordkreis está confirmada.
+A partir de ahora no habrá más cobros${contractNo ? ` (contrato ${contractNo})` : ''};
+si quedaba alguna factura pendiente, la hemos anulado.
 
-Os deseamos lo mejor.
+Os deseamos lo mejor y nos encantaría volver a veros en algún curso
+más adelante.
 
 nordkreis@linguatash.com
 `
