@@ -66,7 +66,7 @@ export function buildEnrollmentEmailHtml({
                 Herzlich willkommen, ${parentName}!
               </p>
               <p style="font-size:13px;color:#9a8f85;margin:0 0 28px;">
-                Bienvenido/a, ${parentName}!
+                ¡Bienvenido/a, ${parentName}!
               </p>
 
               <!-- Main message DE -->
@@ -81,9 +81,9 @@ export function buildEnrollmentEmailHtml({
 
               <!-- Main message ES -->
               <p style="font-size:13px;line-height:1.7;margin:0 0 28px;color:#9a8f85;">
-                Gracias por inscribirse en Nordkreis. Adjunto a este correo encontrará
-                su copia del contrato firmado (referencia: <strong>${contractNo}</strong>).
-                Le rogamos que la guarde en un lugar seguro.
+                Gracias por inscribirte en Nordkreis. Adjunto a este correo encontrarás
+                tu copia del contrato firmado (referencia: <strong>${contractNo}</strong>).
+                Guárdala en un lugar seguro.
               </p>
 
               <!-- No charge notice -->
@@ -102,7 +102,7 @@ export function buildEnrollmentEmailHtml({
                     </p>
                     <p style="font-size:12px;line-height:1.6;margin:0;color:#9a8f85;">
                       Hoy no se realiza ningún cargo. Una vez alcanzado el número mínimo de
-                      participantes, le avisaremos por correo electrónico antes de activar
+                      participantes, te avisaremos por correo electrónico antes de activar
                       el adeudo SEPA (${monthlyAmount}&nbsp;&euro;/mes &times; 10 meses${enrollmentFee ? ` + 60&nbsp;&euro; matrícula` : ''}).
                       Importe total: <strong>${total}&nbsp;&euro;</strong>.
                     </p>
@@ -152,8 +152,8 @@ export function buildEnrollmentEmailHtml({
               <p style="font-size:12px;line-height:1.6;color:#9a8f85;margin:0 0 28px;">
                 <strong>¿Qué ocurre a continuación?</strong><br/>
                 1. Revisaremos las inscripciones y formaremos los grupos.<br/>
-                2. Cuando un curso esté listo para comenzar, recibirá un correo de confirmación con todos los detalles.<br/>
-                3. Antes del primer cargo recibirá una factura separada por la matrícula. A partir de entonces, recibirá una factura en PDF por correo electrónico cada mes.
+                2. Cuando un curso esté listo para comenzar, recibirás un correo de confirmación con todos los detalles.<br/>
+                3. Antes del primer cargo recibirás una factura separada por la matrícula. A partir de entonces, recibirás una factura en PDF por correo electrónico cada mes.
               </p>
 
               <!-- Divider -->
@@ -237,11 +237,11 @@ Nordkreis Team
 
 ---
 
-Bienvenido/a, ${parentName}!
+¡Bienvenido/a, ${parentName}!
 
-Gracias por inscribirse en Nordkreis. Su contrato firmado está adjunto a este correo (referencia: ${contractNo}).
+Gracias por inscribirte en Nordkreis. Tu contrato firmado está adjunto a este correo (referencia: ${contractNo}).
 
-Hoy no se realiza ningún cargo. Le avisaremos por correo cuando el curso esté confirmado.
+Hoy no se realiza ningún cargo. Te avisaremos por correo cuando el curso esté confirmado.
 
-¿Alguna duda? Escríbanos a nordkreis@linguatash.com.`
+¿Tienes alguna pregunta? Escríbenos a nordkreis@linguatash.com.`
 }
