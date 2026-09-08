@@ -256,5 +256,5 @@ Plan de pagos:
 1. Matrícula 60 Euro — cargo el ${enrollmentFeeDate}
 2. Cuota mensual ${monthlyAmount} Euro x ${numMonths} meses — primer cargo el ${firstMonthlyDate}, luego siempre el día 3
 
-¿Preguntas? Escríbenos a nordkreis@linguatash.com`
+¿Tienes alguna pregunta? Escríbenos a nordkreis@linguatash.com`
 }

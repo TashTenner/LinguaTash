@@ -243,5 +243,5 @@ Gracias por inscribirse en Nordkreis. Su contrato firmado está adjunto a este c
 
 Hoy no se realiza ningún cargo. Le avisaremos por correo cuando el curso esté confirmado.
 
-¿Preguntas? Escríbanos a nordkreis@linguatash.com.`
+¿Alguna duda? Escríbanos a nordkreis@linguatash.com.`
 }

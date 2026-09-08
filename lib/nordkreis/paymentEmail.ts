@@ -162,7 +162,7 @@ export function buildPaymentEmailHtml({
                   style="color:#b3475a;text-decoration:none;font-weight:600;">nordkreis@linguatash.com</a>.
               </p>
               <p style="font-size:12px;color:#9a8f85;margin:0 0 28px;">
-                ¿Preguntas? Escríbenos a
+                ¿Tienes alguna pregunta? Escríbenos a
                 <a href="mailto:nordkreis@linguatash.com"
                   style="color:#b3475a;text-decoration:none;">nordkreis@linguatash.com</a>.
               </p>
