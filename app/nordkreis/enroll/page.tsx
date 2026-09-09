@@ -241,6 +241,9 @@ function EnrollForm() {
   const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  // Persists across a failed-then-retried submit so we don't create a fresh
+  // orphaned Stripe customer on every retry within the same page session.
+  const stripeCustomerIdRef = useRef<string | null>(null)
 
   const [form, setForm] = useState<FormState>({
     childFirstName: '',
@@ -348,10 +351,12 @@ function EnrollForm() {
         body: JSON.stringify({
           name: `${form.parent1FirstName} ${form.parent1Surname1}`.trim(),
           email: form.parent1Email,
+          customerId: stripeCustomerIdRef.current,
         }),
       })
       const { clientSecret, customerId } = await setupRes.json()
       if (!clientSecret) throw new Error('Setup konnte nicht initialisiert werden.')
+      stripeCustomerIdRef.current = customerId
 
       const { setupIntent, error: stripeError } = await stripe.confirmSepaDebitSetup(clientSecret, {
         payment_method: {

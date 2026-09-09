@@ -7,13 +7,22 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email } = await req.json()
+    const { name, email, customerId } = await req.json()
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Name and email required' }, { status: 400 })
     }
 
-    const customer = await stripe.customers.create({ name, email })
+    // Reuse the customer from an earlier attempt in this session (a retry
+    // after a failed SEPA confirmation or enrollment save) instead of
+    // creating a new, orphaned Stripe customer every time.
+    const customer = customerId
+      ? await stripe.customers.retrieve(customerId)
+      : await stripe.customers.create({ name, email })
+
+    if (customer.deleted) {
+      return NextResponse.json({ error: 'Customer no longer exists' }, { status: 400 })
+    }
 
     // mandate_data is collected on the frontend via confirmSepaDebitSetup —
     // it cannot be passed here unless confirm: true is also set
