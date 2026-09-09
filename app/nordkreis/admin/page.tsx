@@ -313,13 +313,20 @@ export default function AdminPage() {
     }
   }, [])
 
+  const fetchPendingFees = useCallback(async () => {
+    try {
+      const res = await fetch('/api/nordkreis/pending-fees')
+      const data = await res.json()
+      setPendingFees(data.pending ?? [])
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
+
   useEffect(() => {
     fetchStudents()
-    fetch('/api/nordkreis/pending-fees')
-      .then((r) => r.json())
-      .then((d) => setPendingFees(d.pending ?? []))
-      .catch(console.error)
-  }, [fetchStudents])
+    fetchPendingFees()
+  }, [fetchStudents, fetchPendingFees])
 
   const handleActivate = async (student: Student) => {
     setActivating(true)
@@ -347,7 +354,10 @@ export default function AdminPage() {
           text: `Aktiviert · Einschreibegebühr: ${data.enrollmentFeeDate} · 1. Monatsbeitrag: ${data.firstMonthlyDate}`,
         },
       }))
-      setTimeout(fetchStudents, 2000)
+      setTimeout(() => {
+        fetchStudents()
+        fetchPendingFees()
+      }, 2000)
     } catch (e: unknown) {
       setMessages((m) => ({
         ...m,
@@ -385,7 +395,10 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       setMessages((m) => ({ ...m, [student.contractNo]: { type: 'success', text: 'Storniert' } }))
-      setTimeout(fetchStudents, 1000)
+      setTimeout(() => {
+        fetchStudents()
+        fetchPendingFees()
+      }, 1000)
     } catch (e: unknown) {
       setMessages((m) => ({
         ...m,
@@ -409,7 +422,10 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-      setTimeout(fetchStudents, 500)
+      setTimeout(() => {
+        fetchStudents()
+        fetchPendingFees()
+      }, 500)
     } catch (e: unknown) {
       setMessages((m) => ({
         ...m,
@@ -530,10 +546,7 @@ Dies setzt den Status auf "Storniert" in Google Sheets.`)
             <button
               onClick={() => {
                 fetchStudents()
-                fetch('/api/nordkreis/pending-fees')
-                  .then((r) => r.json())
-                  .then((d) => setPendingFees(d.pending ?? []))
-                  .catch(console.error)
+                fetchPendingFees()
               }}
               className="rounded-xl border border-[#9A8F85]/40 px-4 py-2 text-sm text-[#9A8F85] transition-all hover:border-[#F4EFE8] hover:text-[#F4EFE8]"
             >

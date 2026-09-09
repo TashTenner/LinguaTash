@@ -23,7 +23,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing parentEmail' }, { status: 400 })
     }
 
-    // 1. Void draft enrollment fee invoice (if it exists and is still a draft)
+    // 1. Remove the draft enrollment fee invoice, if one still exists.
+    //    Stripe only allows voidInvoice() on finalized ("open") invoices —
+    //    a still-draft invoice must be deleted instead, or the daily
+    //    finalize-enrollment-fees cron will finalize (and charge) it anyway.
     if (stripeCustomerId) {
       try {
         const invoices = await stripe.invoices.list({
@@ -33,12 +36,12 @@ export async function POST(req: NextRequest) {
         })
         for (const invoice of invoices.data) {
           if (invoice.metadata?.nordkreis === 'enrollment_fee') {
-            await stripe.invoices.voidInvoice(invoice.id)
-            console.log(`Nordkreis: voided enrollment fee invoice ${invoice.id}`)
+            await stripe.invoices.del(invoice.id)
+            console.log(`Nordkreis: deleted draft enrollment fee invoice ${invoice.id}`)
           }
         }
       } catch (err) {
-        console.error('Nordkreis: failed to void enrollment fee invoice', err)
+        console.error('Nordkreis: failed to delete enrollment fee invoice', err)
         // Non-fatal — continue with cancellation
       }
     }
