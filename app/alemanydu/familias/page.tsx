@@ -73,8 +73,8 @@ export default function AlemanYDuFamiliasPage() {
           </p>
           <p>
             Fuera de eso, el castellano o el catalán quedan como válvula en dos casos: si hay un
-            problema de seguridad física, o si un niño se está bloqueando. Breve, sin ceremonia, y
-            nunca para explicar contenido lingüístico.
+            problema de seguridad física, o si un niño se está bloqueando. Breve, y nunca para
+            explicar contenido lingüístico.
           </p>
           <p>
             Yo me encargo de que siempre sepan qué hay que hacer. Uso gestos, objetos, canciones y
@@ -149,7 +149,7 @@ export default function AlemanYDuFamiliasPage() {
 
         <div className="mt-6 rounded-2xl border-2 border-[#B3475A] bg-[#B3475A]/10 px-5 py-10 sm:px-8">
           <p className="leading-relaxed opacity-90">
-            Escuchá esta frase, decísela a tu hijo o hija una sola vez, sin traducirla, y mirá qué
+            Escucha esta frase, dísela a tu hijo o hija una sola vez, sin traducirla, y mira qué
             hace.
           </p>
 
@@ -254,13 +254,13 @@ export default function AlemanYDuFamiliasPage() {
           La última clase prevista es el lunes 14 de junio de 2027. El curso escolar termina el 21
           de junio, que también cae en lunes. Todavía no sé si ese día habrá clase: otros años el
           colegio cerró a las 13:00 el último día, así que lo más probable es que no. En cuanto lo
-          confirme, te aviso.
+          confirmen, te aviso.
         </p>
       </section>
 
       {/* CONTACTO */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-5 py-10 sm:px-8 dark:bg-[#081C3C]">
-        <p className="leading-relaxed opacity-90">Cualquier cosa, escribime.</p>
+        <p className="leading-relaxed opacity-90">Cualquier cosa, escríbeme.</p>
 
         <div className="mt-6 flex flex-col items-start gap-4">
           <a

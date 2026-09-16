@@ -28,7 +28,7 @@ const sinClase: { fecha: string; motivo: string }[] = [
 /** The last day of school. Whether there is a class that day is still open. */
 const ultimoDia: DiaDelCurso = {
   fecha: '2027-06-21',
-  etiqueta: 'Último día de colegio. Sin confirmar',
+  etiqueta: 'Último día de colegio',
   hayClase: false,
 }
 
