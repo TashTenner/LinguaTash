@@ -27,6 +27,20 @@ $env:PWD = $(Get-Location).Path
 yarn dev
 ```
 
+**Never run `yarn build` while the dev server is running.** Both write to
+`.next`. The build wins the race, the dev server is left with a corrupted
+`.next`, and from then on _every_ route returns 500, including pages that were
+never touched. The first symptom is
+`EPERM: operation not permitted, open '.next	race'` during the build; by the
+time it appears the damage is done.
+
+To recover: kill the whole `yarn dev` / `next dev` process tree,
+`Remove-Item -Recurse -Force .next`, then start the dev server again.
+
+When debugging site-wide 500s, check a route you did not touch (`/` or
+`/la-juntada`) before suspecting the code you just wrote. That single request
+separates "my page is broken" from "the dev server is broken".
+
 ---
 
 ## Instagram Keyword Automation (ManyChat alternative)
@@ -71,6 +85,7 @@ a follow-gate and a freebie link.
    - Not in cache → send: "¡Aún no te veo como seguidor/a! Sígueme primero en Instagram y luego pulsa el botón 🙏" + button (loop repeats)
 
 Freebie DM for HAFEN:
+
 > ¡Hola! Aquí tienes tu regalo de LinguaTash — Die Beziehung ist die Methode:
 > https://linguatash.com/resuena/hafen
 > ¡Espero que te sea útil! 🌊
@@ -80,6 +95,7 @@ Freebie DM for HAFEN:
 **`instagram_manage_messages` permission is blocked.**
 
 The DM sending fails with:
+
 ```
 (#200) App does not have Advanced Access to instagram_manage_messages permission
 and recipient user does not have role on app.
@@ -97,16 +113,16 @@ it just always asks first.
 
 ### Key IDs and values (look these up in Vercel env / Meta dashboard)
 
-| What | Where to find it |
-|------|-----------------|
-| `META_APP_ID` | Meta App Dashboard → App Settings → Basic → App ID |
-| `META_APP_SECRET` | Meta App Dashboard → App Settings → Basic → App Secret (reset after Jun 2026 exposure) |
-| `META_PAGE_ACCESS_TOKEN` | Vercel env — permanent Page token (obtained Jun 15 2026) |
-| `META_VERIFY_TOKEN` | Vercel env — any string, used only for webhook verification |
-| `META_INSTAGRAM_ACCOUNT_ID` | `17841404322043409` (LinguaTash IG Business Account ID) |
-| Facebook Page ID | `1189096167613513` |
-| MongoDB URI | Vercel env — Atlas M0 cluster, EU region |
-| `CRON_SECRET` | Vercel env — protects sync-followers endpoint |
+| What                        | Where to find it                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| `META_APP_ID`               | Meta App Dashboard → App Settings → Basic → App ID                                     |
+| `META_APP_SECRET`           | Meta App Dashboard → App Settings → Basic → App Secret (reset after Jun 2026 exposure) |
+| `META_PAGE_ACCESS_TOKEN`    | Vercel env — permanent Page token (obtained Jun 15 2026)                               |
+| `META_VERIFY_TOKEN`         | Vercel env — any string, used only for webhook verification                            |
+| `META_INSTAGRAM_ACCOUNT_ID` | `17841404322043409` (LinguaTash IG Business Account ID)                                |
+| Facebook Page ID            | `1189096167613513`                                                                     |
+| MongoDB URI                 | Vercel env — Atlas M0 cluster, EU region                                               |
+| `CRON_SECRET`               | Vercel env — protects sync-followers endpoint                                          |
 
 ### Page Access Token — how to renew when it expires
 
@@ -118,6 +134,7 @@ Token are permanent, but if it ever stops working, re-generate with these steps:
 `instagram_manage_comments`, `instagram_manage_messages`
 
 **Step 2** — Exchange for long-lived User Token (PowerShell):
+
 ```powershell
 $APP_ID = "YOUR_APP_ID"
 $APP_SECRET = "YOUR_APP_SECRET"
@@ -130,6 +147,7 @@ $r.Content
 ```
 
 **Step 3** — Get permanent Page Token by querying the Page ID directly:
+
 ```powershell
 $LONG = "LONG_LIVED_USER_TOKEN"
 $r = Invoke-WebRequest -UseBasicParsing -Method GET `
@@ -137,6 +155,7 @@ $r = Invoke-WebRequest -UseBasicParsing -Method GET `
 $r.Content
 # Copy the access_token from the response → this is the permanent Page Token
 ```
+
 Note: `/me/accounts` returns empty because the Page is under a Business Portfolio.
 Always use the direct Page ID query (Step 3) instead.
 
@@ -148,6 +167,7 @@ The Facebook Page (`1189096167613513`) is subscribed to:
 `feed`, `messages`, `messaging_postbacks`
 
 If subscriptions are ever lost, re-run (PowerShell):
+
 ```powershell
 $PAGE_TOKEN = "YOUR_PAGE_ACCESS_TOKEN"
 $r = Invoke-WebRequest -UseBasicParsing -Method POST `
@@ -171,6 +191,7 @@ Meta App Dashboard → App Review → Permissions and Features → `instagram_ma
 → Edit App Review request.
 
 Fill in:
+
 - Access level: Standard Access (no business verification needed for this level,
   but try it — if Meta rejects and requires Advanced Access, then Step 2 is needed first)
 - Platform: Instagram
@@ -182,21 +203,26 @@ Fill in:
   webhook fires → show the mock DM conversation (Scenario B: follow-gate flow)
 
 Mock DM conversation for the screen recording:
+
 > LinguaTash → User: "¡Hola! Para recibir tu regalo, sígueme primero en Instagram
->   y luego pulsa el botón ⬇️" [✅ Ya te sigo]
+> y luego pulsa el botón ⬇️" [✅ Ya te sigo]
+>
 > [User follows, taps button]
+>
 > LinguaTash → User: "¡Hola! Aquí tienes tu regalo de LinguaTash —
->   Die Beziehung ist die Methode: https://linguatash.com/resuena/hafen
->   ¡Espero que te sea útil! 🌊"
+> Die Beziehung ist die Methode: https://linguatash.com/resuena/hafen
+> ¡Espero que te sea útil! 🌊"
 
 **Step 4 — Seed the Follower cache (after `instagram_manage_followers` is approved)**
 Call the sync endpoint once:
+
 ```powershell
 $CRON = "YOUR_CRON_SECRET"
 Invoke-WebRequest -UseBasicParsing -Method POST `
   -Headers @{ Authorization = "Bearer $CRON" } `
   "https://linguatash.com/api/metatrigger/sync-followers"
 ```
+
 Then add to `vercel.json` as a cron job (hourly) to keep it current.
 
 **Step 5 — Test end-to-end with a real (non-tester) account**
@@ -209,3 +235,139 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 - **Phase 4**: Kit (ConvertKit) integration — tag users after freebie delivered
 - **Phase 5**: Admin dashboard (mirror Nordkreis pattern) — view all MetaInteractions,
   filter by keyword/status, see follower sync status
+
+---
+
+## Alemán·y·Du — familias and audios pages
+
+**Status as of 2026-09-16: live, waiting only on recordings.**
+
+Two unlisted pages for the families of the Primaria group. Both are `noindex`,
+absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
+Parents reach them by a QR card handed out in class and by WhatsApp.
+
+- `/alemanydu/familias` — the method, what is normal, what helps at home, the
+  four phases of the year, the pre-A1 level, the Monday by Monday calendar
+- `/alemanydu/audios` — three tracks per class, play and download
+
+All 32 classes are seeded as pending. The pages render correct empty states
+with nothing uploaded, so there is never a broken link or a dead player.
+
+### How the audio is served, and what must not be "simplified"
+
+Audio lives in a **private** R2 bucket, `linguatash-alemanydu-audio`, and is
+streamed through our own route handlers. There is deliberately **no public
+bucket and no custom domain**.
+
+The reason is that every audio URL is then same origin, so `media-src 'self'`
+covers it and there is no CSP entry that can drift out of sync. Audio that
+plays in local development and fails silently on the deployed site is a failure
+this project has already hit once; this design removes the possibility rather
+than documenting it.
+
+Three changes that look like cleanups and will break playback:
+
+1. **Do not add `export const runtime = 'edge'`** to
+   `app/api/alemanydu/audio/route.ts`. The AWS SDK streaming and the Range
+   passthrough need the Node runtime. iOS breaks first and loudest.
+2. **Do not remove the Range forwarding.** Safari and iOS refuse to play media
+   unless a range request is answered with `206`. Without it, a parent on an
+   iPhone gets a player that does nothing when pressed, and no error appears
+   anywhere.
+3. **Do not widen the allowlist regex** in `lib/alemanydu/audioStorage.ts`. It
+   is the only thing stopping these handlers from becoming a generic fetch
+   proxy or an open redirect.
+
+`jsx-a11y/media-has-caption` is disabled on the `<audio>` element in
+`components/alemanydu/AudioPlayer.tsx` on purpose. There is no public
+transcript: the script is internal, and German text beside the audio is exactly
+the interference the course exists to prevent. The audios page says so in its
+footer note and offers a written version on request.
+
+### Environment
+
+| Variable                               | Value                        |
+| -------------------------------------- | ---------------------------- |
+| `CLOUDFLARE_R2_ALEMANYDU_AUDIO_BUCKET` | `linguatash-alemanydu-audio` |
+
+Reuses the existing `CLOUDFLARE_R2_ACCOUNT_ID`, `CLOUDFLARE_R2_ACCESS_KEY_ID`
+and `CLOUDFLARE_R2_SECRET_ACCESS_KEY`. The R2 API token must list the bucket in
+its scope, otherwise every request returns `AccessDenied`.
+
+### Publishing a week
+
+**House format, never vary it: mono, 44.1 kHz, MP3.** The `alles` track is built
+by concatenation, and ffmpeg's concat demuxer requires an identical sample rate
+and channel count across every input. One accidentally stereo or 48 kHz file
+breaks the concat, and finding which of twenty files is the odd one is slow.
+
+```bash
+ffmpeg -i clase01.wav \
+  -ac 1 -ar 44100 \
+  -af "highpass=f=80,loudnorm=I=-16:TP=-1.5:LRA=11" \
+  -codec:a libmp3lame -b:a 96k \
+  -metadata title="Clase 1. Hallo" \
+  -metadata artist="LinguaTash" \
+  -metadata album="Alemán·y·Du 2026/2027" \
+  ayd_2627_c01_neu.mp3
+```
+
+- **Do not downsample to 22 kHz** to save space. It caps the audio near 11 kHz
+  and dulls the sibilants, the ich-Laut and the ach-Laut, which are precisely
+  what the course teaches. This is the one setting where the whole point of the
+  course is at stake.
+- `loudnorm` matters: without it one week is quiet and the next is loud, and a
+  parent driving has to reach for the volume every time.
+- Songs track: `-b:a 128k`. Music needs more than speech.
+- ID3 tags show on CarPlay, Android Auto and the lock screen. Without them the
+  dashboard shows `ayd_2627_c01_neu`.
+- Record and archive masters in WAV, publish MP3. WAV is about 10 MB per minute,
+  so the June cumulative track would be roughly 200 MB. The route also rejects
+  anything that is not `.mp3`.
+
+Object names, at the **bucket root, never in a folder** (the allowlist contains
+no slashes):
+
+```
+ayd_2627_cNN_neu.mp3      weekly track for class NN
+ayd_2627_cNN_alles.mp3    cumulative snapshot, never contains songs
+ayd_2627_lieder_vNN.mp3   songs track, versioned
+ayd_2627_frase_vNN.mp3    the phrase on the familias page, versioned
+```
+
+The versioned files are **bumped, never overwritten**. The cache header is one
+year immutable, so replacing a key serves the stale file to some parents and the
+new one to others, which is close to undebuggable from a WhatsApp message.
+
+Then, every week:
+
+1. Upload the two files.
+2. In `data/alemanydu-audios.ts`, fill both basenames and both durations, write
+   `titulo` and `resumen`, and flip `disponible` to `true`. Durations are in
+   seconds: `ffprobe -v error -show_entries format=duration -of csv=p=0 FILE`.
+3. Commit and push. **No other code changes, ever.**
+
+### Copy rules for these two pages
+
+- Register is **tú** for the singular, throughout. No vos, no vosotros, no
+  ustedes. Every reader is one parent on a phone, and `tu hijo o hija` is the
+  warmest thing on the page.
+- **No hyphens, en dashes or em dashes** anywhere in copy. The single exception
+  is the level name `pre-A1`. Ranges use "a" or "hasta".
+- **No emoji** in body text.
+- `skript` in `data/alemanydu-audios.ts` is internal, for planning the
+  cumulative track. It must never be rendered, never returned by an API route,
+  and never imported into a client component, which would serialise it into the
+  page payload. Everything under `components/alemanydu/` is a server component,
+  and the cards take narrowed props rather than whole track objects. Keep it
+  that way.
+
+### R2 buckets, and a preview trap
+
+`CLOUDFLARE_R2_BUCKET_NAME` (the salten downloads) is **`linguatash-resuena` in
+Production** and **`test-downloads` in Preview**. That split is intentional, so
+that preview does not serve a gigabyte of real game files.
+
+The preview fixtures are small stand-ins, and `salten/salten-es-ES.zip` there is
+a **228 byte stub**. Testing a Spanish purchase in Preview will therefore appear
+to succeed and hand over a near empty zip. It is not a bug in the checkout.
