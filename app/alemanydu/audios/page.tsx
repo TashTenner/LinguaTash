@@ -58,6 +58,11 @@ export default function AlemanYDuAudiosPage() {
             de canciones aparte.
           </p>
           <p>No hace falta prestar atención. Con que suene de fondo alcanza.</p>
+          <p>
+            Son solo mi voz, en alemán. No hay traducción ni texto, y es a propósito. Si tu hijo o
+            hija escucha y no entiende todo, está haciendo justo lo que tiene que hacer. Si
+            necesitas algo por escrito, escríbeme.
+          </p>
         </div>
       </section>
 
@@ -82,25 +87,9 @@ export default function AlemanYDuAudiosPage() {
               resumen={c.resumen}
               archivo={c.archivo}
               duracion={c.duracion}
-              cancion={c.cancion}
               disponible={c.disponible}
             />
           ))}
-        </div>
-      </section>
-
-      {/* NOTA FINAL */}
-      <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-5 py-10 sm:px-8 dark:bg-[#081C3C]">
-        <div className="space-y-5 leading-relaxed opacity-90">
-          <p>
-            Los audios son solo mi voz, en alemán. No hay traducción y es a propósito. Si tu hijo o
-            hija escucha y no entiende todo, está haciendo exactamente lo que tiene que hacer.
-          </p>
-          <p>
-            Tampoco llevan transcripción ni subtítulos, por la misma razón: ver la palabra escrita
-            cambia la forma de pronunciarla. Si necesitas una versión escrita por cualquier motivo,
-            escríbeme y te la paso.
-          </p>
         </div>
       </section>
     </main>

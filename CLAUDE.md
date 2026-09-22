@@ -253,8 +253,12 @@ Parents reach them by a QR card handed out in class and by WhatsApp.
 
 **One audio per class, and that is the whole model.** There is no cumulative
 track and no separate songs track. When a class teaches a song, the song is
-inside that class's own audio, and the song title goes in the `cancion` field
-so the card can name it.
+inside that class's own audio and is not named anywhere on the page.
+
+**No German on the audios page.** Not in a title, not in a summary, not as a
+song name. A parent who reads a German word says it with Spanish vowels, and
+that is the interference this whole course is built to avoid. Titles are
+`Clase N`, summaries describe the class in Spanish.
 
 ### How the audio is served, and what must not be "simplified"
 
@@ -359,8 +363,7 @@ Then, every week:
    for all 32 classes, because the name follows from the class number. Set
    `duracion` in seconds
    (`ffprobe -v error -show_entries format=duration -of csv=p=0 FILE`), write
-   `titulo` and `resumen`, add `cancion` if the class taught a song, and flip
-   `disponible` to `true`.
+   `titulo` and `resumen`, and flip `disponible` to `true`.
 3. Commit and push. **No other code changes, ever.**
 
 ### Copy rules for these two pages

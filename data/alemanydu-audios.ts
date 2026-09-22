@@ -24,8 +24,6 @@ export type AudioTrack = {
   archivo: string
   /** Duration in seconds. 0 when not recorded. */
   duracion: number
-  /** Title of the song taught in this class, if any. Shown on the card. */
-  cancion?: string
   /** Controls playable vs pending state. */
   disponible: boolean
 }
@@ -56,26 +54,24 @@ export const downloadUrl = (basename: string) =>
  *
  * `archivo` is already filled for every class, because the name follows from
  * the class number. Publishing a week is therefore: upload `ayd_cNN.mp3`, then
- * fill `duracion`, write `titulo` and `resumen`, add `cancion` if the class
- * taught one, and flip `disponible` to true.
+ * fill `duracion`, write `titulo` and `resumen`, and flip `disponible` to true.
  */
 export const clases: AudioTrack[] = [
   {
     clase: 1,
     fecha: '2026-09-14',
-    titulo: 'Clase 1. Hallo',
+    titulo: 'Clase 1',
     resumen:
       'Saludos, el sonido de la hache, el tiempo que hace, las partes del cuerpo y las órdenes de movimiento.',
     archivo: 'ayd_c01.mp3',
     duracion: 279,
-    cancion: 'Kopf, Schulter, Knie und Fuß',
     disponible: true,
   },
   {
     clase: 2,
     fecha: '2026-09-21',
-    titulo: 'Clase 2. Du bist dran',
-    resumen: 'El sonido sch, la mano, y las órdenes en grupo con wir.',
+    titulo: 'Clase 2',
+    resumen: 'Un sonido nuevo, la mano, y las órdenes en grupo.',
     archivo: 'ayd_c02.mp3',
     duracion: 191,
     disponible: true,

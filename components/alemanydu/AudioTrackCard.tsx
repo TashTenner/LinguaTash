@@ -14,8 +14,6 @@ type AudioTrackCardProps = {
   resumen: string
   archivo: string
   duracion: number
-  /** Song taught in this class, if any. It lives inside this same audio. */
-  cancion?: string
   disponible: boolean
 }
 
@@ -26,7 +24,6 @@ export default function AudioTrackCard({
   resumen,
   archivo,
   duracion,
-  cancion,
   disponible,
 }: AudioTrackCardProps) {
   const listo = disponible && Boolean(archivo)
@@ -47,12 +44,6 @@ export default function AudioTrackCard({
 
       {resumen ? (
         <p className={`mt-2 leading-relaxed ${listo ? 'opacity-90' : 'opacity-60'}`}>{resumen}</p>
-      ) : null}
-
-      {cancion ? (
-        <p className={`mt-2 text-sm ${listo ? 'text-[#B3475A]' : 'text-[#9A8F85]'}`}>
-          Canción: {cancion}
-        </p>
       ) : null}
 
       {listo ? (
