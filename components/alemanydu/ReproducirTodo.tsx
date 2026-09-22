@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { registrar } from './track'
 
 /**
  * One entry in the queue. Deliberately narrow: this is a client component, so
@@ -50,7 +51,10 @@ export default function ReproducirTodo({ pistas }: { pistas: PistaEnCola[] }) {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button
           type="button"
-          onClick={() => setIndice(sonando ? null : 0)}
+          onClick={() => {
+            if (!sonando) registrar('audio-todo')
+            setIndice(sonando ? null : 0)
+          }}
           className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#B3475A] px-5 py-2.5 text-sm font-medium text-[#F4EFE8] transition-transform duration-200 hover:scale-105"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">

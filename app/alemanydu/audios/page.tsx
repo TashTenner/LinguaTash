@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Metadata } from 'next'
+import AudioStats from '@/components/alemanydu/AudioStats'
 import AudioTrackCard from '@/components/alemanydu/AudioTrackCard'
 import ReproducirTodo from '@/components/alemanydu/ReproducirTodo'
 import { audioUrl, clases } from '@/data/alemanydu-audios'
@@ -26,6 +27,8 @@ export default function AlemanYDuAudiosPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
+      <AudioStats />
+
       {/* CABECERA */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-5 py-14 sm:px-8 dark:bg-[#081C3C]">
         <div className="mb-8 flex justify-center">

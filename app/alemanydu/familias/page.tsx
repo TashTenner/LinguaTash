@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from '@/components/Link'
 import AudioPlayer from '@/components/alemanydu/AudioPlayer'
+import AudioStats from '@/components/alemanydu/AudioStats'
 import CalendarTable from '@/components/alemanydu/CalendarTable'
 import PhaseBlock from '@/components/alemanydu/PhaseBlock'
 import { frasePrueba } from '@/data/alemanydu-audios'
@@ -43,6 +44,8 @@ const fases = [
 export default function AlemanYDuFamiliasPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
+      <AudioStats />
+
       {/* HERO */}
       <section className="pt-10">
         <h1 className="text-4xl font-[400] md:text-5xl">Para las familias</h1>

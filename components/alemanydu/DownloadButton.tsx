@@ -17,6 +17,8 @@ export default function DownloadButton({ archivo, ariaLabel }: DownloadButtonPro
     <a
       href={downloadUrl(archivo)}
       aria-label={ariaLabel}
+      data-umami-event="audio-descarga"
+      data-umami-event-archivo={archivo}
       className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#B3475A] px-5 py-2.5 text-sm font-medium text-[#B3475A] transition-colors hover:bg-[#B3475A] hover:text-[#F4EFE8]"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">

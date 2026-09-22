@@ -52,6 +52,9 @@ export default function PoliticaPrivacidadPage() {
             <li>Sistema operativo</li>
             <li>URL de referencia</li>
             <li>Fecha y hora de acceso</li>
+            <li>
+              Acciones anónimas dentro de la página, como qué audio se reproduce o se descarga
+            </li>
           </ul>
           <p className="font-medium">Datos personales (formulario de lista de espera)</p>
           <p>Cuando se suscribe a nuestra lista de espera o boletín, recopilamos:</p>
