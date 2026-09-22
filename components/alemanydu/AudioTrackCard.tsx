@@ -12,10 +12,10 @@ type AudioTrackCardProps = {
   fecha: string
   titulo: string
   resumen: string
-  neu: string
-  neuDuracion: number
-  alles: string
-  allesDuracion: number
+  archivo: string
+  duracion: number
+  /** Song taught in this class, if any. It lives inside this same audio. */
+  cancion?: string
   disponible: boolean
 }
 
@@ -24,16 +24,17 @@ export default function AudioTrackCard({
   fecha,
   titulo,
   resumen,
-  neu,
-  neuDuracion,
-  alles,
-  allesDuracion,
+  archivo,
+  duracion,
+  cancion,
   disponible,
 }: AudioTrackCardProps) {
+  const listo = disponible && Boolean(archivo)
+
   return (
     <article
       className={`rounded-2xl border px-5 py-6 sm:px-8 sm:py-8 ${
-        disponible
+        listo
           ? 'border-[#9A8F85]/40 bg-[#F4EFE8] dark:bg-[#081C3C]'
           : 'border-[#9A8F85]/25 bg-[#F4EFE8]/50 dark:bg-[#081C3C]/50'
       }`}
@@ -42,45 +43,27 @@ export default function AudioTrackCard({
         Clase {clase} · {formatFecha(fecha)}
       </p>
 
-      <h3 className={`mt-1 text-xl font-semibold ${disponible ? '' : 'opacity-70'}`}>{titulo}</h3>
+      <h3 className={`mt-1 text-xl font-semibold ${listo ? '' : 'opacity-70'}`}>{titulo}</h3>
 
       {resumen ? (
-        <p className={`mt-2 leading-relaxed ${disponible ? 'opacity-90' : 'opacity-60'}`}>
-          {resumen}
+        <p className={`mt-2 leading-relaxed ${listo ? 'opacity-90' : 'opacity-60'}`}>{resumen}</p>
+      ) : null}
+
+      {cancion ? (
+        <p className={`mt-2 text-sm ${listo ? 'text-[#B3475A]' : 'text-[#9A8F85]'}`}>
+          Canción: {cancion}
         </p>
       ) : null}
 
-      {disponible ? (
-        <div className="mt-6 flex flex-col gap-8">
-          {neu ? (
-            <div>
-              <AudioPlayer
-                archivo={neu}
-                etiqueta="La pista de la semana"
-                duracion={neuDuracion}
-                ariaLabel={`La pista de la semana de la clase ${clase}`}
-              />
-              <DownloadButton
-                archivo={neu}
-                ariaLabel={`Descargar la pista de la semana de la clase ${clase}`}
-              />
-            </div>
-          ) : null}
-
-          {alles ? (
-            <div>
-              <AudioPlayer
-                archivo={alles}
-                etiqueta="Todo hasta ahora"
-                duracion={allesDuracion}
-                ariaLabel={`Todo hasta ahora, hasta la clase ${clase}`}
-              />
-              <DownloadButton
-                archivo={alles}
-                ariaLabel={`Descargar Todo hasta ahora, hasta la clase ${clase}`}
-              />
-            </div>
-          ) : null}
+      {listo ? (
+        <div className="mt-6">
+          <AudioPlayer
+            archivo={archivo}
+            etiqueta="El audio de la clase"
+            duracion={duracion}
+            ariaLabel={`Audio de la clase ${clase}`}
+          />
+          <DownloadButton archivo={archivo} ariaLabel={`Descargar el audio de la clase ${clase}`} />
         </div>
       ) : (
         <p className="mt-6 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">Todavía no disponible</p>

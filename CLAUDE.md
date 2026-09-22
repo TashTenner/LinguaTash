@@ -240,7 +240,7 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 
 ## Alemán·y·Du — familias and audios pages
 
-**Status as of 2026-09-16: live, waiting only on recordings.**
+**Status as of 2026-09-22: live. Classes 1 and 2 published.**
 
 Two unlisted pages for the families of the Primaria group. Both are `noindex`,
 absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
@@ -248,10 +248,13 @@ Parents reach them by a QR card handed out in class and by WhatsApp.
 
 - `/alemanydu/familias` — the method, what is normal, what helps at home, the
   four phases of the year, the pre-A1 level, the Monday by Monday calendar
-- `/alemanydu/audios` — three tracks per class, play and download
+- `/alemanydu/audios` — one audio per class, play and download, plus a
+  **Reproducir todo** button that plays every published class in order
 
-All 32 classes are seeded as pending. The pages render correct empty states
-with nothing uploaded, so there is never a broken link or a dead player.
+**One audio per class, and that is the whole model.** There is no cumulative
+track and no separate songs track. When a class teaches a song, the song is
+inside that class's own audio, and the song title goes in the `cancion` field
+so the card can name it.
 
 ### How the audio is served, and what must not be "simplified"
 
@@ -278,11 +281,28 @@ Three changes that look like cleanups and will break playback:
    is the only thing stopping these handlers from becoming a generic fetch
    proxy or an open redirect.
 
-`jsx-a11y/media-has-caption` is disabled on the `<audio>` element in
-`components/alemanydu/AudioPlayer.tsx` on purpose. There is no public
-transcript: the script is internal, and German text beside the audio is exactly
-the interference the course exists to prevent. The audios page says so in its
+`jsx-a11y/media-has-caption` is disabled on the `<audio>` elements in
+`components/alemanydu/AudioPlayer.tsx` and `ReproducirTodo.tsx` on purpose.
+There is no public transcript, and German text beside the audio is exactly the
+interference the course exists to prevent. The audios page says so in its
 footer note and offers a written version on request.
+
+`ReproducirTodo.tsx` is the only client component here. It receives a narrowed
+`{clase, titulo, src}` list built in the page, never whole track objects,
+because anything a client component receives is serialised into the page
+payload. Keep it that way if internal fields are ever added back.
+
+### Caching
+
+Set per file in `cacheControlPara`, not globally:
+
+| File                   | Cache             | Why                                                                            |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| `ayd_cNN.mp3`          | 1 year, immutable | written once, never replaced; a parent replaying it all week downloads it once |
+| `ayd_frase_prueba.mp3` | 1 day             | the only file that gets re-recorded under the same name                        |
+
+If class audios ever do get replaced in place, this is wrong and the name needs
+a version suffix instead.
 
 ### Environment
 
@@ -296,20 +316,17 @@ its scope, otherwise every request returns `AccessDenied`.
 
 ### Publishing a week
 
-**House format, never vary it: mono, 44.1 kHz, MP3.** The `alles` track is built
-by concatenation, and ffmpeg's concat demuxer requires an identical sample rate
-and channel count across every input. One accidentally stereo or 48 kHz file
-breaks the concat, and finding which of twenty files is the odd one is slow.
+**House format: mono, 44.1 kHz, 96 kbps MP3.**
 
 ```bash
-ffmpeg -i clase01.wav \
+ffmpeg -i clase03.wav \
   -ac 1 -ar 44100 \
   -af "highpass=f=80,loudnorm=I=-16:TP=-1.5:LRA=11" \
   -codec:a libmp3lame -b:a 96k \
-  -metadata title="Clase 1. Hallo" \
+  -metadata title="Clase 3" \
   -metadata artist="LinguaTash" \
-  -metadata album="Alemán·y·Du 2026/2027" \
-  ayd_2627_c01_neu.mp3
+  -metadata album="Alemán y Du · Primaria" \
+  ayd_c03.mp3
 ```
 
 - **Do not downsample to 22 kHz** to save space. It caps the audio near 11 kHz
@@ -318,33 +335,32 @@ ffmpeg -i clase01.wav \
   course is at stake.
 - `loudnorm` matters: without it one week is quiet and the next is loud, and a
   parent driving has to reach for the volume every time.
-- Songs track: `-b:a 128k`. Music needs more than speech.
 - ID3 tags show on CarPlay, Android Auto and the lock screen. Without them the
-  dashboard shows `ayd_2627_c01_neu`.
-- Record and archive masters in WAV, publish MP3. WAV is about 10 MB per minute,
-  so the June cumulative track would be roughly 200 MB. The route also rejects
-  anything that is not `.mp3`.
+  dashboard shows `ayd_c03`.
+- Record and archive masters in WAV, publish MP3. The route rejects anything
+  that is not `.mp3`.
 
 Object names, at the **bucket root, never in a folder** (the allowlist contains
 no slashes):
 
 ```
-ayd_2627_cNN_neu.mp3      weekly track for class NN
-ayd_2627_cNN_alles.mp3    cumulative snapshot, never contains songs
-ayd_2627_lieder_vNN.mp3   songs track, versioned
-ayd_2627_frase_vNN.mp3    the phrase on the familias page, versioned
+ayd_cNN.mp3            the audio for class NN, two digits
+ayd_frase_prueba.mp3   the phrase on the familias page
 ```
 
-The versioned files are **bumped, never overwritten**. The cache header is one
-year immutable, so replacing a key serves the stale file to some parents and the
-new one to others, which is close to undebuggable from a WhatsApp message.
+**Note for a future course.** The names carry no year, so `ayd_c01.mp3` for
+2027/28 would collide with this year's. Before next September, either add a
+year segment back or give the new course its own bucket.
 
 Then, every week:
 
-1. Upload the two files.
-2. In `data/alemanydu-audios.ts`, fill both basenames and both durations, write
-   `titulo` and `resumen`, and flip `disponible` to `true`. Durations are in
-   seconds: `ffprobe -v error -show_entries format=duration -of csv=p=0 FILE`.
+1. Upload `ayd_cNN.mp3`.
+2. In `data/alemanydu-audios.ts` find that class. `archivo` is already filled
+   for all 32 classes, because the name follows from the class number. Set
+   `duracion` in seconds
+   (`ffprobe -v error -show_entries format=duration -of csv=p=0 FILE`), write
+   `titulo` and `resumen`, add `cancion` if the class taught a song, and flip
+   `disponible` to `true`.
 3. Commit and push. **No other code changes, ever.**
 
 ### Copy rules for these two pages
@@ -355,12 +371,9 @@ Then, every week:
 - **No hyphens, en dashes or em dashes** anywhere in copy. The single exception
   is the level name `pre-A1`. Ranges use "a" or "hasta".
 - **No emoji** in body text.
-- `skript` in `data/alemanydu-audios.ts` is internal, for planning the
-  cumulative track. It must never be rendered, never returned by an API route,
-  and never imported into a client component, which would serialise it into the
-  page payload. Everything under `components/alemanydu/` is a server component,
-  and the cards take narrowed props rather than whole track objects. Keep it
-  that way.
+- The familias page never asks a parent to say German aloud. The phrase box
+  plays the recording instead, so the child hears it in Tash's voice rather
+  than read with Spanish vowels.
 
 ### R2 buckets, and a preview trap
 

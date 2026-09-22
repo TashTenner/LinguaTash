@@ -1,19 +1,28 @@
 import Image from 'next/image'
 import { Metadata } from 'next'
 import AudioTrackCard from '@/components/alemanydu/AudioTrackCard'
-import LiederCard from '@/components/alemanydu/LiederCard'
-import { clases, lieder } from '@/data/alemanydu-audios'
+import ReproducirTodo from '@/components/alemanydu/ReproducirTodo'
+import { audioUrl, clases } from '@/data/alemanydu-audios'
 
 export const metadata: Metadata = {
   title: 'Audios · Alemán·y·Du',
   robots: { index: false, follow: false, nocache: true },
 }
 
-const masRecienteFirst = (a: { clase: number }, b: { clase: number }) => b.clase - a.clase
+const porClase = (a: { clase: number }, b: { clase: number }) => a.clase - b.clase
+const porClaseDesc = (a: { clase: number }, b: { clase: number }) => b.clase - a.clase
 
 export default function AlemanYDuAudiosPage() {
-  const disponibles = clases.filter((c) => c.disponible).sort(masRecienteFirst)
-  const pendientes = clases.filter((c) => !c.disponible).sort(masRecienteFirst)
+  // Newest class on top, because that is the one a parent came for. The pending
+  // ones then ascend, so the block below reads as what is still coming.
+  const disponibles = clases.filter((c) => c.disponible).sort(porClaseDesc)
+  const pendientes = clases.filter((c) => !c.disponible).sort(porClase)
+
+  // Narrowed on purpose: this crosses into a client component.
+  const cola = clases
+    .filter((c) => c.disponible && c.archivo)
+    .sort(porClase)
+    .map((c) => ({ clase: c.clase, titulo: c.titulo, src: audioUrl(c.archivo) }))
 
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -43,79 +52,41 @@ export default function AlemanYDuAudiosPage() {
             Aquí están todos los audios del curso. Se pueden escuchar directamente o descargar para
             el coche.
           </p>
-          <p>Hay tres tipos de audio.</p>
+          <p>Cada clase tiene su audio con lo que hicimos ese lunes. Dura unos minutos.</p>
           <p>
-            La pista de la semana dura poco más de un minuto y trae lo que hicimos ese lunes en
-            clase.
+            Si esa semana aprendimos una canción, la canción va dentro del mismo audio. No hay pista
+            de canciones aparte.
           </p>
-          <p>
-            Todo hasta ahora junta el contenido de todas las clases desde el principio, en orden.
-            Crece cada semana. En junio va a durar unos veinte minutos, que es justo un trayecto en
-            coche.
-          </p>
-          <p>
-            Canciones es una pista aparte con todas las canciones del curso. No están incluidas en
-            Todo hasta ahora, para que esa pista no se haga eterna.
-          </p>
-          <p>No hace falta escuchar las tres. Con una alcanza.</p>
+          <p>No hace falta prestar atención. Con que suene de fondo alcanza.</p>
         </div>
       </section>
 
-      {/* CANCIONES */}
-      <section>
-        <LiederCard
-          archivo={lieder.archivo}
-          duracion={lieder.duracion}
-          actualizado={lieder.actualizado}
-          resumen={lieder.resumen}
-          canciones={lieder.canciones}
-          disponible={lieder.disponible}
-        />
-      </section>
+      {/* REPRODUCIR TODO */}
+      {cola.length > 0 ? (
+        <section>
+          <ReproducirTodo pistas={cola} />
+        </section>
+      ) : null}
 
       {/* LAS CLASES */}
       <section>
         <h2 className="text-2xl font-semibold">Las clases</h2>
 
-        {disponibles.length === 0 ? (
-          <p className="mt-6 leading-relaxed opacity-90">El primer audio llega esta semana.</p>
-        ) : (
-          <div className="mt-6 space-y-6">
-            {disponibles.map((c) => (
-              <AudioTrackCard
-                key={c.clase}
-                clase={c.clase}
-                fecha={c.fecha}
-                titulo={c.titulo}
-                resumen={c.resumen}
-                neu={c.neu}
-                neuDuracion={c.neuDuracion}
-                alles={c.alles}
-                allesDuracion={c.allesDuracion}
-                disponible={c.disponible}
-              />
-            ))}
-          </div>
-        )}
-
-        {pendientes.length > 0 ? (
-          <div className="mt-6 space-y-6">
-            {pendientes.map((c) => (
-              <AudioTrackCard
-                key={c.clase}
-                clase={c.clase}
-                fecha={c.fecha}
-                titulo={c.titulo}
-                resumen={c.resumen}
-                neu={c.neu}
-                neuDuracion={c.neuDuracion}
-                alles={c.alles}
-                allesDuracion={c.allesDuracion}
-                disponible={c.disponible}
-              />
-            ))}
-          </div>
-        ) : null}
+        <div className="mt-6 space-y-6">
+          {[...disponibles, ...pendientes].map((c) => (
+            <AudioTrackCard
+              key={c.clase}
+              clase={c.clase}
+              fecha={c.fecha}
+              titulo={c.titulo}
+              resumen={c.resumen}
+              archivo={c.archivo}
+              duracion={c.duracion}
+              cancion={c.cancion}
+              disponible={c.disponible}
+            />
+          ))}
+        </div>
       </section>
 
       {/* NOTA FINAL */}

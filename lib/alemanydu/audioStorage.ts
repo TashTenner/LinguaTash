@@ -14,7 +14,21 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
  * The only object names that may ever be requested. Anything else is rejected
  * before it reaches R2, so these handlers can never become a generic proxy.
  */
-export const NOMBRE_VALIDO = /^ayd_2627_(c\d{2}_(neu|alles)|(lieder|frase)_v\d{2})\.mp3$/
+export const NOMBRE_VALIDO = /^ayd_(c\d{2}|frase_prueba)\.mp3$/
+
+/**
+ * How long a given object may be cached.
+ *
+ * A class audio is written once and never replaced, so it can be cached hard:
+ * a parent replaying the same track all week in the car then downloads it once
+ * instead of every day. `ayd_frase_prueba.mp3` is the only file that can be
+ * re-recorded under the same name, so it gets a short cache and a new version
+ * reaches everyone within a day.
+ */
+export const cacheControlPara = (archivo: string) =>
+  /^ayd_c\d{2}\.mp3$/.test(archivo)
+    ? 'public, max-age=31536000, immutable'
+    : 'public, max-age=86400'
 
 const r2 = new S3Client({
   region: 'auto',

@@ -16,7 +16,7 @@ const fases = [
     tituloAleman: 'Ohren auf',
     periodo: 'Septiembre y octubre',
     descripcion:
-      'Escuchar. Saludos, el cuerpo, los colores y las órdenes de movimiento. Todavía no se pide hablar.',
+      'Escuchar. Saludos, el cuerpo, los colores y las órdenes de movimiento. Se habla desde el primer día y todo lo que salga vale.',
   },
   {
     titulo: 'Primeras palabras',
@@ -130,9 +130,8 @@ export default function AlemanYDuFamiliasPage() {
         <h2 className="text-2xl font-semibold">Los audios</h2>
 
         <p className="mt-6 leading-relaxed opacity-90">
-          Cada semana subo un audio corto con lo que hicimos el lunes, otro que junta todas las
-          clases desde el principio, y una pista aparte solo con las canciones. Están para escuchar
-          y para descargar.
+          Cada semana subo un audio corto con lo que hicimos el lunes. Está para escuchar y para
+          descargar.
         </p>
 
         <Link
@@ -149,8 +148,7 @@ export default function AlemanYDuFamiliasPage() {
 
         <div className="mt-6 rounded-2xl border-2 border-[#B3475A] bg-[#B3475A]/10 px-5 py-10 sm:px-8">
           <p className="leading-relaxed opacity-90">
-            Escucha esta frase, dísela a tu hijo o hija una sola vez, sin traducirla, y mira qué
-            hace.
+            Ponle este audio a tu hijo o hija una sola vez, sin traducir nada, y mira qué hace.
           </p>
 
           {frasePrueba.disponible && frasePrueba.archivo ? (
@@ -171,8 +169,8 @@ export default function AlemanYDuFamiliasPage() {
           <p className="leading-relaxed opacity-90">Si se toca la cabeza, ya está funcionando.</p>
 
           <p className="mt-6 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">
-            La frase va grabada y no escrita a propósito. Leída con ojos españoles suena de otra
-            manera, y entonces tu hijo o hija no la reconoce.
+            La frase va grabada y no escrita a propósito. Así la escucha en mi voz, igual que en
+            clase.
           </p>
         </div>
       </section>
@@ -254,7 +252,7 @@ export default function AlemanYDuFamiliasPage() {
           La última clase prevista es el lunes 14 de junio de 2027. El curso escolar termina el 21
           de junio, que también cae en lunes. Todavía no sé si ese día habrá clase: otros años el
           colegio cerró a las 13:00 el último día, así que lo más probable es que no. En cuanto lo
-          confirmen, te aviso.
+          confirmen, mandaré un aviso.
         </p>
       </section>
 

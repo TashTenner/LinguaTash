@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getAudioObjeto, NOMBRE_VALIDO } from '@/lib/alemanydu/audioStorage'
+import { cacheControlPara, getAudioObjeto, NOMBRE_VALIDO } from '@/lib/alemanydu/audioStorage'
 
 /**
  * Playback for the Alemán·y·Du audio page.
@@ -34,9 +34,7 @@ export async function GET(req: NextRequest) {
   const headers = new Headers({
     'Content-Type': 'audio/mpeg',
     'Accept-Ranges': 'bytes',
-    // Safe because every key is unique: neu and alles are unique per class, and
-    // the songs and phrase tracks are versioned rather than overwritten.
-    'Cache-Control': 'public, max-age=31536000, immutable',
+    'Cache-Control': cacheControlPara(archivo),
   })
 
   if (objeto.longitud !== undefined) {

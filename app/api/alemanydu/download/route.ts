@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getAudioObjeto, NOMBRE_VALIDO } from '@/lib/alemanydu/audioStorage'
+import { cacheControlPara, getAudioObjeto, NOMBRE_VALIDO } from '@/lib/alemanydu/audioStorage'
 
 /**
  * Downloads for the Alemán·y·Du audio page.
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   const headers = new Headers({
     'Content-Type': 'audio/mpeg',
     'Content-Disposition': `attachment; filename="${archivo}"`,
-    'Cache-Control': 'public, max-age=31536000, immutable',
+    'Cache-Control': cacheControlPara(archivo),
   })
 
   if (objeto.longitud !== undefined) {

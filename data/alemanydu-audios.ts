@@ -1,13 +1,14 @@
 /**
  * Audios de Alemán·y·Du, Primaria, curso 2026/2027.
  *
- * INTERNAL FIELD WARNING
- * `skript` is for Tash only. It must never be rendered, never returned by an
- * API route, and never imported into a client component (Next would serialise
- * it into the page payload). See section 8 of the build spec.
+ * One audio per class, and that is the whole model. There is no cumulative
+ * track and no separate songs track: when a class has a song, the song is
+ * inside that class's own audio.
  *
- * Practical rule: import this module from server components only, and pass
- * narrowed props down to the cards instead of the whole track object.
+ * Import this module from server components only. Anything handed to a client
+ * component (the play all button) must be a narrowed object built here, never
+ * a whole track, so that future internal fields cannot leak into the page
+ * payload by accident.
  */
 
 export type AudioTrack = {
@@ -17,33 +18,22 @@ export type AudioTrack = {
   fecha: string
   /** Short public title, shown to families. Spanish. */
   titulo: string
-  /** One line of what this track covers. Spanish. */
+  /** One line of what this class covers. Spanish. */
   resumen: string
-  /** Basename of the weekly track. Empty when not recorded. */
-  neu: string
-  /** Duration of the weekly track in seconds. 0 when not recorded. */
-  neuDuracion: number
-  /** Basename of the cumulative snapshot. Empty when not recorded. */
-  alles: string
-  /** Duration of the cumulative snapshot in seconds. 0 when not recorded. */
-  allesDuracion: number
-  /** Controls playable vs pending state. */
-  disponible: boolean
-  /** INTERNAL ONLY. Never rendered. */
-  skript?: string
-}
-
-export type LiederTrack = {
-  /** Versioned basename, e.g. ayd_2627_lieder_v03.mp3 */
+  /** Basename of the audio. Derived from the class number, so it is prefilled. */
   archivo: string
   /** Duration in seconds. 0 when not recorded. */
   duracion: number
-  /** ISO date of the last update, shown to parents. */
-  actualizado: string
-  /** One line of what this track is. Spanish. */
-  resumen: string
-  /** Public list of song titles currently on the track, in order. */
-  canciones: string[]
+  /** Title of the song taught in this class, if any. Shown on the card. */
+  cancion?: string
+  /** Controls playable vs pending state. */
+  disponible: boolean
+}
+
+export type FraseTrack = {
+  archivo: string
+  /** Duration in seconds. 0 when not recorded. */
+  duracion: number
   disponible: boolean
 }
 
@@ -64,44 +54,39 @@ export const downloadUrl = (basename: string) =>
 /**
  * The 32 classes of the course, in order.
  *
- * Publishing workflow, once the ffmpeg script has produced the files:
- *   1. Upload ayd_2627_cNN_neu.mp3 and ayd_2627_cNN_alles.mp3 to the bucket.
- *   2. Fill both basenames and both durations in that entry, write `titulo`
- *      and `resumen`, and flip `disponible` to true.
- *   3. Commit and push. No other code changes, ever.
+ * `archivo` is already filled for every class, because the name follows from
+ * the class number. Publishing a week is therefore: upload `ayd_cNN.mp3`, then
+ * fill `duracion`, write `titulo` and `resumen`, add `cancion` if the class
+ * taught one, and flip `disponible` to true.
  */
 export const clases: AudioTrack[] = [
   {
     clase: 1,
     fecha: '2026-09-14',
     titulo: 'Clase 1. Hallo',
-    resumen: 'Saludos, el sonido de la hache, las partes del cuerpo y la canción.',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
-    disponible: false,
+    resumen:
+      'Saludos, el sonido de la hache, el tiempo que hace, las partes del cuerpo y las órdenes de movimiento.',
+    archivo: 'ayd_c01.mp3',
+    duracion: 279,
+    cancion: 'Kopf, Schulter, Knie und Fuß',
+    disponible: true,
   },
   {
     clase: 2,
     fecha: '2026-09-21',
-    titulo: 'Clase 2',
-    resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
-    disponible: false,
+    titulo: 'Clase 2. Du bist dran',
+    resumen: 'El sonido sch, la mano, y las órdenes en grupo con wir.',
+    archivo: 'ayd_c02.mp3',
+    duracion: 191,
+    disponible: true,
   },
   {
     clase: 3,
     fecha: '2026-09-28',
     titulo: 'Clase 3',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c03.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -109,10 +94,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-10-05',
     titulo: 'Clase 4',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c04.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -120,10 +103,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-10-19',
     titulo: 'Clase 5',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c05.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -131,10 +112,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-10-26',
     titulo: 'Clase 6',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c06.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -142,10 +121,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-11-02',
     titulo: 'Clase 7',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c07.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -153,10 +130,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-11-09',
     titulo: 'Clase 8',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c08.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -164,10 +139,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-11-16',
     titulo: 'Clase 9',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c09.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -175,10 +148,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-11-23',
     titulo: 'Clase 10',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c10.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -186,10 +157,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-11-30',
     titulo: 'Clase 11',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c11.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -197,10 +166,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-12-14',
     titulo: 'Clase 12',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c12.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -208,10 +175,8 @@ export const clases: AudioTrack[] = [
     fecha: '2026-12-21',
     titulo: 'Clase 13',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c13.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -219,10 +184,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-01-11',
     titulo: 'Clase 14',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c14.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -230,10 +193,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-01-18',
     titulo: 'Clase 15',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c15.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -241,10 +202,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-01-25',
     titulo: 'Clase 16',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c16.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -252,10 +211,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-02-01',
     titulo: 'Clase 17',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c17.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -263,10 +220,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-02-15',
     titulo: 'Clase 18',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c18.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -274,10 +229,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-02-22',
     titulo: 'Clase 19',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c19.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -285,10 +238,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-03-01',
     titulo: 'Clase 20',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c20.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -296,10 +247,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-03-08',
     titulo: 'Clase 21',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c21.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -307,10 +256,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-03-15',
     titulo: 'Clase 22',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c22.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -318,10 +265,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-04-05',
     titulo: 'Clase 23',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c23.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -329,10 +274,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-04-12',
     titulo: 'Clase 24',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c24.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -340,10 +283,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-04-19',
     titulo: 'Clase 25',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c25.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -351,10 +292,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-04-26',
     titulo: 'Clase 26',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c26.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -362,10 +301,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-05-03',
     titulo: 'Clase 27',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c27.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -373,10 +310,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-05-10',
     titulo: 'Clase 28',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c28.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -384,10 +319,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-05-24',
     titulo: 'Clase 29',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c29.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -395,10 +328,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-05-31',
     titulo: 'Clase 30',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c30.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -406,10 +337,8 @@ export const clases: AudioTrack[] = [
     fecha: '2027-06-07',
     titulo: 'Clase 31',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c31.mp3',
+    duracion: 0,
     disponible: false,
   },
   {
@@ -417,52 +346,21 @@ export const clases: AudioTrack[] = [
     fecha: '2027-06-14',
     titulo: 'Clase 32',
     resumen: '',
-    neu: '',
-    neuDuracion: 0,
-    alles: '',
-    allesDuracion: 0,
+    archivo: 'ayd_c32.mp3',
+    duracion: 0,
     disponible: false,
   },
 ]
 
 /**
- * The songs track. Not tied to a class number: it changes when the repertoire
- * changes, roughly once a month.
- *
- * Songs never enter the cumulative `alles` track. They live in `neu` and here.
- *
- * Always bump the version in the filename when you replace it. Overwriting the
- * same key behind a CDN with a one year cache header serves the stale file to
- * some parents and the new one to others.
- */
-export const lieder: LiederTrack = {
-  archivo: '',
-  duracion: 0,
-  actualizado: '',
-  resumen: 'Todas las canciones del curso, en orden. Crece a medida que aprendemos una nueva.',
-  canciones: [],
-  disponible: false,
-}
-
-export type FraseTrack = {
-  /** Versioned basename, e.g. ayd_2627_frase_v01.mp3 */
-  archivo: string
-  /** Duration in seconds. 0 when not recorded. */
-  duracion: number
-  disponible: boolean
-}
-
-/**
- * The phrase parents are invited to try at home, on the familias page.
+ * The phrase parents play on the familias page.
  *
  * It is audio and not text on purpose: a Spanish reading parent looking at
  * `Wo ist der Kopf?` will say it with Spanish vowels, which is the exact thing
- * the course is trying to avoid. They hear it first, then repeat it.
- *
- * Versioned like the songs track, because it gets replaced rather than added.
+ * the course is trying to avoid. The child hears it in Tash's voice instead.
  */
 export const frasePrueba: FraseTrack = {
-  archivo: '',
-  duracion: 0,
-  disponible: false,
+  archivo: 'ayd_frase_prueba.mp3',
+  duracion: 12,
+  disponible: true,
 }
