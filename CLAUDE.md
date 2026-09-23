@@ -320,39 +320,47 @@ its scope, otherwise every request returns `AccessDenied`.
 
 ### Publishing a week
 
-**House format: mono, 44.1 kHz, 96 kbps MP3.**
+**Use the script.** It does the whole job and, more to the point, it checks its
+own work:
 
 ```bash
-ffmpeg -i clase03.wav \
-  -ac 1 -ar 44100 \
-  -af "highpass=f=80,loudnorm=I=-16:TP=-1.5:LRA=11" \
-  -codec:a libmp3lame -b:a 96k \
-  -metadata title="Clase 3" \
-  -metadata artist="LinguaTash" \
-  -metadata album="Alemán y Du · Primaria" \
-  ayd_c03_sin_arte.mp3
-
-# then attach the cover, copying the audio so it is never re-encoded
-ffmpeg -i ayd_c03_sin_arte.mp3 -i public/static/images/alemanydu-cover.jpg \
-  -map 0:a -map 1:v -c:a copy -c:v copy -id3v2_version 3 \
-  -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" \
-  -disposition:v attached_pic \
-  ayd_c03.mp3
+node scripts/publicar-clase.mjs --clase 3   --wav "D:/grabaciones/clase03.wav"   --copia "D:/Mi unidad/AlemanYDu"
 ```
 
-- **Do not downsample to 22 kHz** to save space. It caps the audio near 11 kHz
+Add `--dry-run` to do everything except the upload.
+
+It refuses to overwrite an `ayd_cNN.mp3` that already exists, locally or in the
+bucket, so repeating the command cannot cost a master. It measures the WAV,
+encodes with those measured values, attaches the cover without re-encoding,
+then **measures the finished MP3 and refuses to publish if it is out of range**:
+loudness off target by more than 1 LU, true peak above -1 dBTP, not mono, not
+44.1 kHz, no cover, or a duration that does not match the source. Nothing is
+copied and nothing is uploaded when a check fails.
+
+That last part is the reason the script exists. A mistyped flag that leaves one
+Monday's track 15 dB quieter than the rest is invisible until a parent quietly
+stops listening. This turns that into a loud failure at publish time.
+
+Then paste the printed snippet into `data/alemanydu-audios.ts`, write the
+`resumen`, commit and push. **No other code changes, ever.**
+
+#### The format, and why
+
+Mono, 44.1 kHz, MP3 at 96 kbps, loudness normalised to -16 LUFS in two passes,
+true peak at **-3 dBTP** with an 80 Hz high pass.
+
+- **`TP=-3`, not `-1.5`.** Lossy encoding can overshoot the true peak of the
+  PCM it came from, so the target needs headroom or the finished MP3 clips.
+- **Two passes, not one.** The first measures, the second applies the measured
+  values. Single pass loudnorm is a rough live estimate and drifts between
+  tracks, which is exactly the inconsistency being avoided.
+- **Never downsample to 22 kHz** to save space. It caps the audio near 11 kHz
   and dulls the sibilants, the ich-Laut and the ach-Laut, which are precisely
   what the course teaches. This is the one setting where the whole point of the
   course is at stake.
-- `loudnorm` matters: without it one week is quiet and the next is loud, and a
-  parent driving has to reach for the volume every time.
-- ID3 tags show on CarPlay, Android Auto and the lock screen. Without them the
-  dashboard shows `ayd_c03`.
-- **The cover art is not optional.** `public/static/images/alemanydu-cover.jpg`
-  is 1400 square: the Alemán·y·Du mark on the cream background. On a dashboard
-  the artwork is most of what a parent sees while driving, and a file without
-  it gets a grey generic icon. The source icon is transparent, which is why the
-  cover has a solid background baked in rather than being used directly.
+- ID3 tags show on CarPlay, Android Auto and the lock screen of a **downloaded**
+  file. Streaming from the page uses the MediaSession metadata the page sets
+  instead, so both paths need to stay right.
 - Record and archive masters in WAV, publish MP3. The route rejects anything
   that is not `.mp3`.
 
@@ -367,16 +375,6 @@ ayd_frase_prueba.mp3   the phrase on the familias page
 **Note for a future course.** The names carry no year, so `ayd_c01.mp3` for
 2027/28 would collide with this year's. Before next September, either add a
 year segment back or give the new course its own bucket.
-
-Then, every week:
-
-1. Upload `ayd_cNN.mp3`.
-2. In `data/alemanydu-audios.ts` find that class. `archivo` is already filled
-   for all 32 classes, because the name follows from the class number. Set
-   `duracion` in seconds
-   (`ffprobe -v error -show_entries format=duration -of csv=p=0 FILE`), write
-   `titulo` and `resumen`, and flip `disponible` to `true`.
-3. Commit and push. **No other code changes, ever.**
 
 ### Copy rules for these two pages
 
