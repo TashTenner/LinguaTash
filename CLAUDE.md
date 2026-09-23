@@ -347,13 +347,26 @@ Then paste the printed snippet into `data/alemanydu-audios.ts`, write the
 #### The format, and why
 
 Mono, 44.1 kHz, MP3 at 96 kbps, loudness normalised to -16 LUFS in two passes,
-true peak at **-3 dBTP** with an 80 Hz high pass.
+true peak at **-5 dBTP** with an 80 Hz high pass.
 
-- **`TP=-3`, not `-1.5`.** Lossy encoding can overshoot the true peak of the
-  PCM it came from, so the target needs headroom or the finished MP3 clips.
+- **`TP=-5`, and the number is measured, not guessed.** The MP3 encoder
+  overshoots the true peak of the PCM it came from by about 2.75 dB, very
+  consistently: measured across classes 1 and 2, `TP=-3` lands at -0.28 dBTP,
+  `-4` at -1.25, `-5` at -2.2, `-6` at -3.15. At `-3` the finished file sits
+  against zero, which is why the ceiling is lower than it looks like it should
+  be. Do not raise it back without re-measuring.
+- **Do not lower it past -5 either.** The limiter also drags integrated
+  loudness down: at `TP=-6` class 2 lands at -16.86 LUFS, so the margin gained
+  on peak is lost on loudness. -5 is where both margins are comfortable, a
+  little over a decibel on each.
 - **Two passes, not one.** The first measures, the second applies the measured
   values. Single pass loudnorm is a rough live estimate and drifts between
   tracks, which is exactly the inconsistency being avoided.
+- The publish script checks the finished file against these numbers: loudness
+  within 1.5 LU of target, true peak at or below -1 dBTP. Those thresholds and
+  the encode ceiling are one system. **Change one and you must re-measure the
+  other**, or the script will start rejecting good tracks, which is how it was
+  briefly broken.
 - **Never downsample to 22 kHz** to save space. It caps the audio near 11 kHz
   and dulls the sibilants, the ich-Laut and the ach-Laut, which are precisely
   what the course teaches. This is the one setting where the whole point of the

@@ -28,15 +28,29 @@ import { HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CARATULA = path.join(RAIZ, 'public/static/images/alemanydu-cover.jpg')
 
-// Objetivo de sonoridad. TP a -3 y no a -1.5 porque el MP3 se pasa por encima:
-// la codificación con pérdida puede superar el pico real del PCM, así que hay
-// que dejarle margen o el archivo final acaba recortando.
+// Objetivo de sonoridad.
+//
+// El techo va a -5 y no a -1.5 ni a -3 porque el codificador MP3 se pasa por
+// encima del pico del PCM del que viene, y se pasa bastante: medido sobre las
+// clases 1 y 2, unos 2,75 dB de forma muy estable. Con TP=-3 el archivo final
+// aterriza en -0,28 dBTP, que es pegado a cero. Con -5 aterriza en -2,2, que
+// es margen de verdad.
+//
+// No conviene bajarlo más. El limitador también tira de la sonoridad
+// integrada: con TP=-6 la clase 2 se va a -16,86 LUFS, y a partir de ahí el
+// margen que se gana en pico se pierde en sonoridad.
 const LUFS_OBJETIVO = -16
-const TP_OBJETIVO = -3
+const TP_OBJETIVO = -5
 const LRA_OBJETIVO = 11
 
 // Márgenes de la comprobación final, sobre el MP3 ya codificado.
-const TOLERANCIA_LUFS = 1.0
+//
+// Estos números están puestos a partir de lo medido, no a ojo. Con TP=-5 las
+// pistas reales salen en torno a -2,2 dBTP y entre -16,4 y -16,7 LUFS, así que
+// queda algo más de un decibelio de margen en cada eje. La tolerancia de
+// sonoridad no busca precisión de emisora: busca cazar el error gordo, una
+// pista que sale quince decibelios más baja porque se escapó un flag.
+const TOLERANCIA_LUFS = 1.5
 const TP_MAXIMO = -1.0
 
 // ── utilidades ───────────────────────────────────────────────────────────────
