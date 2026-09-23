@@ -302,7 +302,7 @@ Set per file in `cacheControlPara`, not globally:
 
 | File                   | Cache             | Why                                                                            |
 | ---------------------- | ----------------- | ------------------------------------------------------------------------------ |
-| `ayd_cNN.mp3`          | 1 year, immutable | written once, never replaced; a parent replaying it all week downloads it once |
+| `ayd_pre_a1_cNN.mp3`   | 1 year, immutable | written once, never replaced; a parent replaying it all week downloads it once |
 | `ayd_frase_prueba.mp3` | 1 day             | the only file that gets re-recorded under the same name                        |
 
 If class audios ever do get replaced in place, this is wrong and the name needs
@@ -329,7 +329,7 @@ node scripts/publicar-clase.mjs --clase 3   --wav "D:/grabaciones/clase03.wav"  
 
 Add `--dry-run` to do everything except the upload.
 
-It refuses to overwrite an `ayd_cNN.mp3` that already exists, locally or in the
+It refuses to overwrite an `ayd_pre_a1_cNN.mp3` that already exists, locally or in the
 bucket, so repeating the command cannot cost a master. It measures the WAV,
 encodes with those measured values, attaches the cover without re-encoding,
 then **measures the finished MP3 and refuses to publish if it is out of range**:
@@ -368,13 +368,22 @@ Object names, at the **bucket root, never in a folder** (the allowlist contains
 no slashes):
 
 ```
-ayd_cNN.mp3            the audio for class NN, two digits
+ayd_pre_a1_cNN.mp3     the audio for class NN of pre-A1, two digits
 ayd_frase_prueba.mp3   the phrase on the familias page
 ```
 
-**Note for a future course.** The names carry no year, so `ayd_c01.mp3` for
-2027/28 would collide with this year's. Before next September, either add a
-year segment back or give the new course its own bucket.
+**The level is in the name on purpose.** A1.1 will have its own class 1, and it
+could run at the same time as pre-A1 rather than after it, so separating by
+level is what keeps two different recordings from fighting over one key. A new
+level means a new segment (`ayd_a1_1_cNN.mp3`) and one more branch in
+`NOMBRE_VALIDO`. The phrase file has no level: it lives on the familias page,
+which is deliberately general across years and groups.
+
+The level also goes in the ID3 title (`pre-A1 · Clase 3`) and album
+(`Alemán y Du · pre-A1`), because a downloaded file shows up in a flat list
+where `Clase 3` alone says nothing. It stays **out** of the card titles on the
+page: the whole page is one course, and the familias page already explains what
+pre-A1 means.
 
 ### Copy rules for these two pages
 

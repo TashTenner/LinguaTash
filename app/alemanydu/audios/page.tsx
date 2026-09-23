@@ -22,7 +22,11 @@ export default function AlemanYDuAudiosPage() {
 
   // Narrowed on purpose: these cross into a client component.
   const titulos = Object.fromEntries(
-    clases.filter((c) => c.disponible && c.archivo).map((c) => [c.archivo, c.titulo])
+    clases
+      .filter((c) => c.disponible && c.archivo)
+      // El nivel va en la pantalla de bloqueo, no en la tarjeta: la página entera
+      // es de un curso, pero el audio viaja fuera de ella.
+      .map((c) => [c.archivo, `pre-A1 · ${c.titulo}`])
   )
 
   const cola = clases

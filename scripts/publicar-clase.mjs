@@ -6,7 +6,7 @@
  *
  * Qué hace, en orden:
  *
- *   1. Se niega a seguir si `ayd_cNN.mp3` ya existe, en local o en el bucket.
+ *   1. Se niega a seguir si `ayd_pre_a1_cNN.mp3` ya existe, en local o en el bucket.
  *   2. Mide el WAV con loudnorm (primera pasada).
  *   3. Codifica aplicando los valores medidos (segunda pasada).
  *   4. Incrusta la carátula copiando el audio, sin recodificar.
@@ -119,7 +119,7 @@ if (!fs.existsSync(copia)) morir(`la carpeta de respaldo no existe: ${copia}`)
 if (!fs.existsSync(CARATULA)) morir(`falta la carátula: ${CARATULA}`)
 
 const nn = String(clase).padStart(2, '0')
-const nombre = `ayd_c${nn}.mp3`
+const nombre = `ayd_pre_a1_c${nn}.mp3`
 
 // ── 1. no pisar nada ─────────────────────────────────────────────────────────
 
@@ -212,11 +212,11 @@ let r = correr('ffmpeg', [
   '-b:a',
   '96k',
   '-metadata',
-  `title=Clase ${clase}`,
+  `title=pre-A1 · Clase ${clase}`,
   '-metadata',
   'artist=LinguaTash',
   '-metadata',
-  'album=Alemán y Du · Primaria',
+  'album=Alemán y Du · pre-A1',
   '-metadata',
   `track=${clase}`,
   sinArte,

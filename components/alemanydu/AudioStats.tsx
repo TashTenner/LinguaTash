@@ -35,7 +35,7 @@ export default function AudioStats({ titulos }: { titulos: Record<string, string
         navigator.mediaSession.metadata = new MediaMetadata({
           title: titulos[archivo] ?? 'Alemán·y·Du',
           artist: 'Alemán·y·Du',
-          album: 'Alemán·y·Du · Primaria',
+          album: 'Alemán·y·Du · pre-A1',
           artwork: [
             {
               src: '/static/images/alemanydu-cover.jpg',
