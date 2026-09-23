@@ -344,6 +344,37 @@ stops listening. This turns that into a loud failure at publish time.
 Then paste the printed snippet into `data/alemanydu-audios.ts`, write the
 `resumen`, commit and push. **No other code changes, ever.**
 
+#### The two checks the script cannot do
+
+The script verifies the container, not the contents. It knows the file is mono,
+44.1 kHz, correctly loud and the right length. It has no idea whether the class
+is any good, and it has no idea whether the page works. Both of these are part
+of publishing a week and neither has an owner unless it is written here.
+
+1. **Listen to, or transcribe, the finished MP3 before pushing.** This is how
+   classes 1 and 2 were checked: transcribe and read it back to confirm every
+   block is there and in order. A track can be perfectly normalised and still
+   be missing half the lesson, or have a blank where a song should be.
+2. **Open the page and press play on the new class after deploying.** Thirty
+   seconds. The script uploads and prints a snippet; nothing between that and a
+   family's phone is verified by anything. If a route, a header or an env var
+   breaks, the first person to find out should not be a parent.
+
+#### Before changing the loudness numbers
+
+`TP_OBJETIVO`, `TOLERANCIA_LUFS` and `TP_MAXIMO` are one system. The script has
+a mode that measures them against a real recording:
+
+```bash
+node scripts/publicar-clase.mjs --calibrar --wav "…/ayd_pre_a1_c01.wav"
+```
+
+It prints what each ceiling produces and which ones pass, so the numbers can be
+re-derived rather than argued about. **Use a real master, never a test tone.**
+The one time these thresholds were wrong, it was because they had been checked
+against a synthetic tone that landed nowhere near the limit, so the check
+passed while real speech would have been rejected.
+
 #### The format, and why
 
 Mono, 44.1 kHz, MP3 at 96 kbps, loudness normalised to -16 LUFS in two passes,

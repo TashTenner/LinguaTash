@@ -123,6 +123,104 @@ const clase = Number(opcion('clase'))
 const wav = opcion('wav')
 const copia = opcion('copia')
 const enSeco = bandera('dry-run')
+const calibrar = bandera('calibrar')
+
+// ── calibrar ─────────────────────────────────────────────────────────────────
+//
+// Mide qué produce cada techo sobre una grabación real y dice cuáles pasarían
+// las comprobaciones actuales.
+//
+// Existe porque los umbrales y el techo son un solo sistema, y porque la vez
+// que esto estuvo roto fue justamente por probar con un tono sintético en vez
+// de con voz: el tono aterrizó lejísimos del umbral y el fallo no se vio. Antes
+// de tocar cualquiera de los tres números, correr esto sobre un master de
+// verdad:
+//
+//   node scripts/publicar-clase.mjs --calibrar --wav "…/ayd_pre_a1_c01.wav"
+//
+if (calibrar) {
+  if (!wav || !fs.existsSync(wav)) morir(`no encuentro el WAV: ${wav ?? '(falta --wav)'}`)
+  console.log(`
+Calibrando sobre ${path.basename(wav)}`)
+  console.log(
+    gris(`  umbrales actuales: ${LUFS_OBJETIVO} ±${TOLERANCIA_LUFS} LUFS, pico <= ${TP_MAXIMO} dBTP
+`)
+  )
+  console.log('  techo    sonoridad      pico real    ¿pasa?')
+
+  const tmpCal = fs.mkdtempSync(path.join(os.tmpdir(), 'ayd-cal-'))
+  for (const techo of [-3, -4, -5, -6, -7]) {
+    const m = ultimoJson(
+      correr('ffmpeg', [
+        '-hide_banner',
+        '-i',
+        wav,
+        '-af',
+        `highpass=f=80,loudnorm=I=${LUFS_OBJETIVO}:TP=${techo}:LRA=${LRA_OBJETIVO}:print_format=json`,
+        '-f',
+        'null',
+        '-',
+      ]).err
+    )
+    if (!m) morir('no se pudo medir el WAV')
+    const salida = path.join(tmpCal, `tp${techo}.mp3`)
+    const r = correr('ffmpeg', [
+      '-hide_banner',
+      '-y',
+      '-i',
+      wav,
+      '-af',
+      'highpass=f=80,' +
+        [
+          `loudnorm=I=${LUFS_OBJETIVO}`,
+          `TP=${techo}`,
+          `LRA=${LRA_OBJETIVO}`,
+          `measured_I=${m.input_i}`,
+          `measured_TP=${m.input_tp}`,
+          `measured_LRA=${m.input_lra}`,
+          `measured_thresh=${m.input_thresh}`,
+          `offset=${m.target_offset}`,
+          'linear=true',
+        ].join(':'),
+      '-ac',
+      '1',
+      '-ar',
+      '44100',
+      '-codec:a',
+      'libmp3lame',
+      '-b:a',
+      '96k',
+      salida,
+    ])
+    if (r.code !== 0) morir(`falló la codificación de prueba con TP=${techo}`)
+    const f = ultimoJson(
+      correr('ffmpeg', [
+        '-hide_banner',
+        '-i',
+        salida,
+        '-af',
+        `loudnorm=I=${LUFS_OBJETIVO}:TP=${techo}:LRA=${LRA_OBJETIVO}:print_format=json`,
+        '-f',
+        'null',
+        '-',
+      ]).err
+    )
+    const lu = Number(f.input_i)
+    const pk = Number(f.input_tp)
+    const ok = Math.abs(lu - LUFS_OBJETIVO) <= TOLERANCIA_LUFS && pk <= TP_MAXIMO
+    const marca = ok ? verde('sí') : rojo('no')
+    const margen = ok ? gris(`  (margen ${(TP_MAXIMO - pk).toFixed(2)} dB de pico)`) : ''
+    console.log(
+      `  ${String(techo).padStart(5)}    ${String(lu).padStart(7)} LUFS   ${String(pk).padStart(6)} dBTP    ${marca}${margen}`
+    )
+  }
+  fs.rmSync(tmpCal, { recursive: true, force: true })
+  console.log(`
+${gris('El techo elegido está en TP_OBJETIVO, arriba del todo. Si se cambia,')}`)
+  console.log(`${gris('hay que volver a correr esto y revisar los dos márgenes, no solo el pico.')}
+`)
+  process.exit(0)
+}
 
 if (!Number.isInteger(clase) || clase < 1 || clase > 32) {
   morir('falta --clase, o no está entre 1 y 32')
