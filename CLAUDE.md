@@ -330,6 +330,13 @@ ffmpeg -i clase03.wav \
   -metadata title="Clase 3" \
   -metadata artist="LinguaTash" \
   -metadata album="Alemán y Du · Primaria" \
+  ayd_c03_sin_arte.mp3
+
+# then attach the cover, copying the audio so it is never re-encoded
+ffmpeg -i ayd_c03_sin_arte.mp3 -i public/static/images/alemanydu-cover.jpg \
+  -map 0:a -map 1:v -c:a copy -c:v copy -id3v2_version 3 \
+  -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" \
+  -disposition:v attached_pic \
   ayd_c03.mp3
 ```
 
@@ -341,6 +348,11 @@ ffmpeg -i clase03.wav \
   parent driving has to reach for the volume every time.
 - ID3 tags show on CarPlay, Android Auto and the lock screen. Without them the
   dashboard shows `ayd_c03`.
+- **The cover art is not optional.** `public/static/images/alemanydu-cover.jpg`
+  is 1400 square: the Alemán·y·Du mark on the cream background. On a dashboard
+  the artwork is most of what a parent sees while driving, and a file without
+  it gets a grey generic icon. The source icon is transparent, which is why the
+  cover has a solid background baked in rather than being used directly.
 - Record and archive masters in WAV, publish MP3. The route rejects anything
   that is not `.mp3`.
 
@@ -377,6 +389,16 @@ Then, every week:
 - The familias page never asks a parent to say German aloud. The phrase box
   plays the recording instead, so the child hears it in Tash's voice rather
   than read with Spanish vowels.
+
+### The recordings cannot be remade
+
+`linguatash-alemanydu-audio` holds the only copy of something irreplaceable:
+each class happened once, with those children, on that Monday. R2 has no object
+versioning enabled here, so an overwrite or a delete has no undo.
+
+Keep the WAV masters somewhere independent of Cloudflare, and take a copy of
+the bucket from time to time. Everything else in this repo can be rebuilt from
+git. These cannot.
 
 ### R2 buckets, and a preview trap
 

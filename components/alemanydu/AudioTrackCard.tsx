@@ -1,5 +1,6 @@
 import AudioPlayer from './AudioPlayer'
 import DownloadButton from './DownloadButton'
+import MarcaEscuchado from './MarcaEscuchado'
 import { formatFecha } from './format'
 
 /**
@@ -55,6 +56,7 @@ export default function AudioTrackCard({
             ariaLabel={`Audio de la clase ${clase}`}
           />
           <DownloadButton archivo={archivo} ariaLabel={`Descargar el audio de la clase ${clase}`} />
+          <MarcaEscuchado archivo={archivo} />
         </div>
       ) : (
         <p className="mt-6 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">Todavía no disponible</p>

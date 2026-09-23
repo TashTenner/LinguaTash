@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { marcar } from './escuchados'
 import { registrar } from './track'
 
 /**
@@ -39,7 +40,10 @@ export default function AudioStats() {
 
     const alTerminar = (e: Event) => {
       const archivo = archivoDe(e.target)
-      if (archivo) registrar('audio-fin', { archivo })
+      if (!archivo) return
+      registrar('audio-fin', { archivo })
+      // Reaching the end is the honest signal that a class was listened to.
+      marcar(archivo)
     }
 
     document.addEventListener('play', alReproducir, true)

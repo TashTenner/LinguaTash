@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Metadata } from 'next'
 import AudioStats from '@/components/alemanydu/AudioStats'
 import AudioTrackCard from '@/components/alemanydu/AudioTrackCard'
+import { formatFecha } from '@/components/alemanydu/format'
 import ReproducirTodo from '@/components/alemanydu/ReproducirTodo'
 import { audioUrl, clases } from '@/data/alemanydu-audios'
 
@@ -81,7 +82,7 @@ export default function AlemanYDuAudiosPage() {
         <h2 className="text-2xl font-semibold">Las clases</h2>
 
         <div className="mt-6 space-y-6">
-          {[...disponibles, ...pendientes].map((c) => (
+          {disponibles.map((c) => (
             <AudioTrackCard
               key={c.clase}
               clase={c.clase}
@@ -94,6 +95,27 @@ export default function AlemanYDuAudiosPage() {
             />
           ))}
         </div>
+
+        {/*
+          The classes still to come are folded away. Until about March there are
+          far more of them than published ones, and thirty grey cards saying
+          "todavía no disponible" bury the two a parent actually came for.
+        */}
+        {pendientes.length > 0 ? (
+          <details className="mt-8 rounded-2xl border border-[#9A8F85]/25 px-5 py-4 sm:px-8">
+            <summary className="min-h-11 cursor-pointer list-none text-sm font-semibold text-[#B3475A]">
+              Próximas clases ({pendientes.length})
+            </summary>
+            <ul className="mt-4 space-y-2 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">
+              {pendientes.map((c) => (
+                <li key={c.clase} className="flex flex-wrap gap-x-2">
+                  <span className="font-semibold">Clase {c.clase}</span>
+                  <span>{formatFecha(c.fecha)}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </section>
     </main>
   )
