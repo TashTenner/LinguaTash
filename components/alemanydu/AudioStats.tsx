@@ -19,8 +19,36 @@ import { registrar } from './track'
  *
  * Renders nothing.
  */
-export default function AudioStats() {
+export default function AudioStats({ titulos }: { titulos: Record<string, string> }) {
   useEffect(() => {
+    /**
+     * What the phone shows on the lock screen and in the car.
+     *
+     * When audio streams from a page, iOS builds the now playing panel from the
+     * page, not from the ID3 tags in the file: without this it shows the site
+     * icon and the browser tab title. The embedded cover art still matters, but
+     * only for a file someone downloaded and played from Files.
+     */
+    const ponerMetadatos = (archivo: string) => {
+      if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: titulos[archivo] ?? 'Alemán·y·Du',
+          artist: 'Alemán·y·Du',
+          album: 'Alemán·y·Du · Primaria',
+          artwork: [
+            {
+              src: '/static/images/alemanydu-cover.jpg',
+              sizes: '1400x1400',
+              type: 'image/jpeg',
+            },
+          ],
+        })
+      } catch {
+        // An unsupported or partial implementation must not stop playback.
+      }
+    }
+
     const archivoDe = (destino: EventTarget | null) => {
       const el = destino as HTMLAudioElement | null
       const src = el?.currentSrc || el?.src || ''
@@ -30,12 +58,19 @@ export default function AudioStats() {
 
     const alReproducir = (e: Event) => {
       const el = e.target as HTMLAudioElement | null
+      if (!el) return
+      const archivo = archivoDe(e.target)
+      if (!archivo) return
+
+      // Always, including on resume and when the queue advances a track, so the
+      // lock screen never lags behind what is actually playing.
+      ponerMetadatos(archivo)
+
       // `play` fires again on every resume after a pause. Only count a start
       // from the beginning, so pausing halfway does not read as a second play.
       // A genuine replay seeks back to zero and is still counted.
-      if (!el || el.currentTime > 1) return
-      const archivo = archivoDe(e.target)
-      if (archivo) registrar('audio-play', { archivo })
+      if (el.currentTime > 1) return
+      registrar('audio-play', { archivo })
     }
 
     const alTerminar = (e: Event) => {
@@ -52,7 +87,7 @@ export default function AudioStats() {
       document.removeEventListener('play', alReproducir, true)
       document.removeEventListener('ended', alTerminar, true)
     }
-  }, [])
+  }, [titulos])
 
   return null
 }

@@ -44,7 +44,7 @@ const fases = [
 export default function AlemanYDuFamiliasPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
-      <AudioStats />
+      <AudioStats titulos={frasePrueba.archivo ? { [frasePrueba.archivo]: 'La frase' } : {}} />
 
       {/* HERO */}
       <section className="pt-10">

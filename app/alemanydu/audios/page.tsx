@@ -20,7 +20,11 @@ export default function AlemanYDuAudiosPage() {
   const disponibles = clases.filter((c) => c.disponible).sort(porClaseDesc)
   const pendientes = clases.filter((c) => !c.disponible).sort(porClase)
 
-  // Narrowed on purpose: this crosses into a client component.
+  // Narrowed on purpose: these cross into a client component.
+  const titulos = Object.fromEntries(
+    clases.filter((c) => c.disponible && c.archivo).map((c) => [c.archivo, c.titulo])
+  )
+
   const cola = clases
     .filter((c) => c.disponible && c.archivo)
     .sort(porClase)
@@ -28,7 +32,7 @@ export default function AlemanYDuAudiosPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
-      <AudioStats />
+      <AudioStats titulos={titulos} />
 
       {/* CABECERA */}
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-5 py-14 sm:px-8 dark:bg-[#081C3C]">
