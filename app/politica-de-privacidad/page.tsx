@@ -146,8 +146,17 @@ export default function PoliticaPrivacidadPage() {
             <li>Nombre del titular de la cuenta</li>
             <li>Datos bancarios (IBAN, tarjeta) — gestionados directamente por Stripe</li>
             <li>Dirección de correo electrónico</li>
+            <li>Número de teléfono</li>
             <li>Dirección de facturación</li>
           </ul>
+          <p>
+            En las reservas de La Juntada, el formulario de pago recoge además algunos datos para
+            poder organizar la tarde: cuántos niños y niñas asisten, sus edades y, de forma
+            opcional, la provincia o ciudad de origen de la familia. No se solicitan nombres de
+            menores. Estos datos se utilizan únicamente para preparar la merienda y la actividad, no
+            se comparten con terceros y no se emplean para elaborar perfiles. Los registros de pago
+            se conservan durante los plazos exigidos por la normativa fiscal.
+          </p>
           <p>
             La transferencia de datos a Estados Unidos se realiza al amparo de las Cláusulas
             Contractuales Tipo aprobadas por la Comisión Europea. Stripe cumple con el estándar PCI
@@ -159,8 +168,9 @@ export default function PoliticaPrivacidadPage() {
               6(1)(b) GDPR)
             </li>
             <li>
-              <span className="font-medium">Finalidad:</span> procesamiento seguro de pagos y
-              gestión de mandatos de domiciliación SEPA
+              <span className="font-medium">Finalidad:</span> procesamiento seguro de pagos, gestión
+              de reservas y organización de las actividades, y gestión de mandatos de domiciliación
+              SEPA
             </li>
           </ul>
           <p>
