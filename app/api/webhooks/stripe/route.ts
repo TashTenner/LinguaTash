@@ -321,10 +321,14 @@ async function addToKit(email: string): Promise<void> {
 // ── Slack notifications ───────────────────────────────────────────────────────
 // Posts order events to #linguatash-orders channel for real-time monitoring.
 // Each event shows exactly what happened — email sent, PDF saved, errors, etc.
-async function sendSlackNotification(blocks: object[]): Promise<void> {
-  if (!process.env.SLACK_WEBHOOK_URL) return // skip if not configured
+async function sendSlackNotification(blocks: object[], webhookUrl?: string): Promise<void> {
+  // Un webhook de Slack cuelga de un canal concreto, así que separar canales es
+  // separar URLs. Sin la suya, un proyecto cae en el canal general: preferible a
+  // quedarse callado por una variable que falta.
+  const url = webhookUrl || process.env.SLACK_WEBHOOK_URL
+  if (!url) return // skip if not configured
   try {
-    await fetch(process.env.SLACK_WEBHOOK_URL, {
+    await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ blocks }),
@@ -333,6 +337,9 @@ async function sendSlackNotification(blocks: object[]): Promise<void> {
     console.warn('[Webhook] Slack notification failed (non-fatal):', err)
   }
 }
+
+/** El canal propio de La Juntada, si lo hay. */
+const SLACK_LAJUNTADA = process.env.SLACK_WEBHOOK_URL_LAJUNTADA
 
 /**
  * Un reembolso de La Juntada.
@@ -395,7 +402,7 @@ async function notificarReembolso(charge: Stripe.Charge): Promise<void> {
   if (!session?.payment_link) return
 
   console.log('[Webhook] La Juntada refund:', session.id)
-  await sendSlackNotification(slackReembolsoBlocks(session, charge))
+  await sendSlackNotification(slackReembolsoBlocks(session, charge), SLACK_LAJUNTADA)
 }
 
 /**
@@ -586,7 +593,7 @@ export async function POST(req: NextRequest) {
   if (!languagesRaw) {
     if (session.payment_link) {
       console.log('[Webhook] La Juntada booking:', session.id)
-      await sendSlackNotification(slackJuntadaBlocks(session))
+      await sendSlackNotification(slackJuntadaBlocks(session), SLACK_LAJUNTADA)
     } else {
       console.log('[Webhook] Not a salten order, ignoring:', session.id)
     }
