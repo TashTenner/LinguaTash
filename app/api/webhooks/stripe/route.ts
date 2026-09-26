@@ -338,8 +338,9 @@ async function sendSlackNotification(blocks: object[], webhookUrl?: string): Pro
   }
 }
 
-/** El canal propio de La Juntada, si lo hay. */
+// Cada proyecto tiene su canal. Sin su variable, cae en el general.
 const SLACK_LAJUNTADA = process.env.SLACK_WEBHOOK_URL_LAJUNTADA
+const SLACK_SALTEN = process.env.SLACK_WEBHOOK_URL_SALTEN
 
 /**
  * Un reembolso de La Juntada.
@@ -883,7 +884,8 @@ export async function POST(req: NextRequest) {
           },
         ],
         hasError: pdfBytes === null,
-      })
+      }),
+      SLACK_SALTEN
     )
 
     return NextResponse.json({ received: true })
