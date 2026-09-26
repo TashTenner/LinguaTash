@@ -460,8 +460,18 @@ export async function POST(req: NextRequest) {
     hasFactura: !!nif,
   })
 
-  if (!customerEmail || !languagesRaw || !nombre) {
-    console.error('[Webhook] Missing required metadata', session.metadata)
+  // Not every checkout session on this account is a salten order. A La Juntada
+  // booking is the same event type and carries none of this metadata, so it
+  // reaches here too. Acknowledge it and leave: an error would make Stripe
+  // retry an event we are never going to handle, and enough failures disable
+  // the endpoint, which would take salten down with it.
+  if (!languagesRaw) {
+    console.log('[Webhook] Not a salten order, ignoring:', session.id)
+    return NextResponse.json({ received: true })
+  }
+
+  if (!customerEmail || !nombre) {
+    console.error('[Webhook] salten order missing required metadata', session.metadata)
     return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
   }
 
