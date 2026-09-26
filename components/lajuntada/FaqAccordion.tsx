@@ -23,13 +23,14 @@ const FAQS = [
       'Tu mate y tu bombilla, si tomás. El agua caliente y la yerba ya están puestas, así que llegás y cebás. Para los chicos hay jugo.',
   },
   {
-    question: '¿Puede venir la abuela o el abuelo?',
-    answer: 'Sí, y ojalá vengan. Cada adulto más de la familia son 5 euros, hasta dos.',
+    question: '¿Y si quiero traer a mi abuela?',
+    answer:
+      'Escribime por WhatsApp y lo arreglamos. La reserva de la web cubre a un progenitor y sus hijos, o a los dos progenitores. Para una abuela, un abuelo o un familiar de visita lo vemos caso por caso.',
   },
   {
     question: '¿Puedo venir con mi hermana y sus hijos?',
     answer:
-      'Sí, pero cada familia reserva por separado. El adulto adicional es para quien viene con ustedes sin traer sus propios hijos: una abuela, un abuelo, un tío de visita. Si tu hermana viene con sus chicos, son otra familia y tienen su lugar propio.',
+      'Sí, pero cada familia reserva por separado. La reserva cubre a un progenitor y sus hijos, o a los dos progenitores. Si tu hermana viene con sus chicos, son otra familia y tienen su lugar propio.',
   },
   {
     question: '¿Hay que venir todos los meses?',

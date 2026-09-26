@@ -20,8 +20,7 @@ const WHATSAPP_LA_JUNTADA =
 
 const PRECIOS_PUBLICADOS = true
 const PRECIO_BASE = 30
-const PRECIO_ADULTO_MAS = 5
-const MAX_ADULTOS_MAS = 2
+const PRECIO_OTRO_PROGENITOR = 5
 
 const UBICACION_PUBLICADA = true
 
@@ -264,16 +263,18 @@ export default function LaJuntadaPage() {
           <h2 className="mb-6 text-2xl font-semibold">Precio</h2>
 
           <ul className="ml-6 list-disc space-y-2 opacity-90">
-            <li>Una familia con un adulto y sus hijos: {PRECIO_BASE} euros</li>
-            <li>
-              Cada adulto más de la familia: {PRECIO_ADULTO_MAS} euros, hasta {MAX_ADULTOS_MAS}
-            </li>
+            <li>Un progenitor y sus hijos: {PRECIO_BASE} euros</li>
+            <li>El otro progenitor: {PRECIO_OTRO_PROGENITOR} euros más</li>
           </ul>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
             Incluye la actividad, la yerba, el agua caliente y un jugo para los chicos. Cada adulto
-            trae su mate y su bombilla. Si viene la abuela, el abuelo o algún familiar de visita,
-            son bienvenidos.
+            trae su mate y su bombilla.
+          </p>
+
+          <p className="mt-4 text-justify leading-relaxed opacity-90">
+            Si querés venir con la abuela, el abuelo o algún familiar de visita, escribime y lo
+            vemos.
           </p>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
