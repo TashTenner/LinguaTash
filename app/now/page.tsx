@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { formatDate } from '../../lib/formatDate'
 
 export default function NowPage() {
-  const lastUpdated = '2026-04-30'
+  const lastUpdated = '2026-09-26'
 
   return (
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -33,10 +33,12 @@ export default function NowPage() {
         <h2 className="text-2xl font-semibold">Enfoque profesional</h2>
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
+          <li>Empezar Alemán·y·Du: alemán extraescolar en La Salle Gràcia</li>
+          <li>Abrir Nordkreis, la escuela de alemán de los sábados</li>
           <li>
-            Aprender cómo funciona Instagram y subir las primeras publicaciones para LinguaTash
+            Preparar La Juntada, que empieza en octubre: un domingo al mes para familias
+            rioplatenses en Barcelona
           </li>
-          <li>Volver a grabar las lecciones de Fonetikas con mejor calidad</li>
         </ul>
       </section>
 
@@ -46,12 +48,12 @@ export default function NowPage() {
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
           <li>
-            Cuánto pan es razonable para adultos y niños — es un alimento cómodo y rápido, pero no
-            el más nutritivo
+            Aprender en Empower, un curso Erasmus+ sobre aprendizaje socioemocional y autodirigido,
+            y llevar lo que aprendo a mis clases
           </li>
           <li>
-            Cómo reducir el plástico de forma profunda y realista, sin pretender eliminarlo por
-            completo
+            Volver con energía después de cinco semanas en Jena y unas vacaciones con amigos y
+            familia
           </li>
         </ul>
       </section>

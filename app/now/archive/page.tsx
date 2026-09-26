@@ -3,6 +3,17 @@ import { formatDate } from '../../../lib/formatDate'
 
 const updates = [
   {
+    date: '2026-04-30',
+    profesional: [
+      'Aprender cómo funciona Instagram y subir las primeras publicaciones para LinguaTash',
+      'Volver a grabar las lecciones de Fonetikas con mejor calidad',
+    ],
+    personal: [
+      'Cuánto pan es razonable para adultos y niños — es un alimento cómodo y rápido, pero no el más nutritivo',
+      'Cómo reducir el plástico de forma profunda y realista, sin pretender eliminarlo por completo',
+    ],
+  },
+  {
     date: '2026-02-01',
     profesional: [
       'Mejorar y refinar la web de LinguaTash',
