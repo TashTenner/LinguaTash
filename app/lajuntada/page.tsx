@@ -19,14 +19,17 @@ const WHATSAPP_LA_JUNTADA =
   encodeURIComponent('Hola Tash, me interesa La Juntada. ¿Me contás cómo reservar?')
 
 const PRECIOS_PUBLICADOS = true
-const PRECIO_UN_PROGENITOR = 30
-const PRECIO_DOS_PROGENITORES = 35
-const PRECIO_ADULTO_ADICIONAL = 10
+const PRECIO_BASE = 30
+const PRECIO_ADULTO_MAS = 5
+const MAX_ADULTOS_MAS = 2
 
 const UBICACION_PUBLICADA = true
 
 export default function LaJuntadaPage() {
   const hoy = new Date().toISOString().slice(0, 10)
+  // La primera fecha que todavía no pasó y ya tiene link. El hero se actualiza
+  // solo cuando se abre la reserva de la siguiente.
+  const proximaAbierta = fechasLaJuntada.find((f) => f.iso >= hoy && f.stripeUrl)
 
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -62,24 +65,35 @@ export default function LaJuntadaPage() {
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
-          Estamos armando la primera juntada para el domingo 18 de octubre, en La Salle Gràcia.
-          Somos entre 10 y 15 familias. Escribinos y te avisamos en cuanto abran las reservas.
+          La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Somos
+          entre 10 y 15 familias y las reservas ya están abiertas.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          {proximaAbierta ? (
+            <a
+              href={proximaAbierta.stripeUrl ?? '#fechas'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 text-base font-medium text-white transition-transform duration-300 hover:scale-105"
+            >
+              Reservar tu lugar
+            </a>
+          ) : (
+            <a
+              href="#fechas"
+              className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 text-base font-medium text-white transition-transform duration-300 hover:scale-105"
+            >
+              Ver las fechas
+            </a>
+          )}
           <a
             href={WHATSAPP_LA_JUNTADA}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 text-base font-medium text-white transition-transform duration-300 hover:scale-105"
-          >
-            Escribinos por WhatsApp
-          </a>
-          <a
-            href="#fechas"
             className="inline-block rounded-xl border border-[#9A8F85]/60 px-8 py-3 text-base font-medium transition-transform duration-300 hover:scale-105"
           >
-            Ver las fechas
+            Escribinos por WhatsApp
           </a>
         </div>
       </section>
@@ -219,6 +233,8 @@ export default function LaJuntadaPage() {
                         {!pasada && f.stripeUrl && (
                           <a
                             href={f.stripeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-xs font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
                           >
                             Reservar →
@@ -234,9 +250,10 @@ export default function LaJuntadaPage() {
         </div>
 
         <p className="text-sm opacity-70">
-          Todas las juntadas son de 15h a 17h. Las fechas previstas se confirman con antelación. Los
-          temas son una intención y pueden cambiar: la chacarera, el locro o los juegos de patio
-          dependen de quién nos acompañe ese día.
+          Todas las juntadas son de 15h a 17h. Por ahora se reserva solo la primera; las demás se
+          abren más adelante. Las fechas previstas se confirman con antelación. Los temas son una
+          intención y pueden cambiar: la chacarera, el locro o los juegos de patio dependen de quién
+          nos acompañe ese día.
         </p>
       </section>
 
@@ -246,16 +263,20 @@ export default function LaJuntadaPage() {
           <h2 className="mb-6 text-2xl font-semibold">Precio</h2>
 
           <ul className="ml-6 list-disc space-y-2 opacity-90">
-            <li>Un progenitor con sus hijos: {PRECIO_UN_PROGENITOR} euros por familia</li>
-            <li>Los dos progenitores con sus hijos: {PRECIO_DOS_PROGENITORES} euros por familia</li>
+            <li>Una familia con un adulto y sus hijos: {PRECIO_BASE} euros</li>
             <li>
-              Cada adulto adicional de la familia, una abuela o un abuelo por ejemplo:{' '}
-              {PRECIO_ADULTO_ADICIONAL} euros
+              Cada adulto más de la familia: {PRECIO_ADULTO_MAS} euros, hasta {MAX_ADULTOS_MAS}
             </li>
           </ul>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
-            Incluye la actividad, la merienda de los chicos y una bebida para cada adulto.
+            Incluye la actividad, la merienda de los chicos y una bebida para cada adulto. Si viene
+            la abuela, el abuelo o algún familiar de visita, son bienvenidos.
+          </p>
+
+          <p className="mt-4 text-justify leading-relaxed opacity-90">
+            Los chicos que vienen son los de la familia que reserva. Si llega otra familia con sus
+            propios hijos, reserva aparte y tiene su lugar.
           </p>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
@@ -299,9 +320,8 @@ export default function LaJuntadaPage() {
         <h2 className="mb-4 text-2xl font-semibold">Me interesa</h2>
 
         <p className="mx-auto max-w-2xl leading-relaxed opacity-90">
-          Las reservas todavía no están abiertas. Escribinos y te avisamos antes que a nadie, o
-          contanos cualquier duda: cuántos son en tu familia, qué edades tienen los chicos, si viene
-          alguien más.
+          Si tenés alguna duda antes de reservar, escribinos: cuántos son en tu familia, qué edades
+          tienen los chicos, si viene alguien más. Contestamos nosotros, no hay formulario.
         </p>
 
         <div className="mt-8 flex justify-center">
