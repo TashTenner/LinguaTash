@@ -334,6 +334,53 @@ async function sendSlackNotification(blocks: object[]): Promise<void> {
   }
 }
 
+/**
+ * Una reserva de La Juntada.
+ *
+ * Se distingue de una compra de salten porque viene de un payment link:
+ * salten crea su sesión a mano con sessions.create y nunca tiene uno.
+ */
+function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
+  const d = session.customer_details
+  const campos = (session.custom_fields ?? [])
+    .map((f) => {
+      const etiqueta = f.label?.custom ?? f.key
+      const valor = f.text?.value ?? f.numeric?.value ?? '—'
+      return `*${etiqueta}* ${valor}`
+    })
+    .join('\n')
+
+  const importe = (session.amount_total ?? 0) / 100
+  // La base es una familia con un adulto; por encima de 30 vino el otro progenitor.
+  const adultos = (session.amount_total ?? 0) > 3000 ? 2 : 1
+
+  return [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: '🧉 Nueva reserva de La Juntada', emoji: true },
+    },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*Familia*\n${d?.name ?? '—'}` },
+        { type: 'mrkdwn', text: `*Adultos*\n${adultos}` },
+        { type: 'mrkdwn', text: `*Email*\n${d?.email ?? '—'}` },
+        { type: 'mrkdwn', text: `*Teléfono*\n${d?.phone ?? '—'}` },
+      ],
+    },
+    ...(campos ? [{ type: 'section', text: { type: 'mrkdwn', text: campos } }] : []),
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `${importe.toFixed(2)} € · ${session.id}`,
+        },
+      ],
+    },
+  ]
+}
+
 function slackOrderBlocks({
   invoiceNumber,
   customerEmail,
@@ -466,7 +513,12 @@ export async function POST(req: NextRequest) {
   // retry an event we are never going to handle, and enough failures disable
   // the endpoint, which would take salten down with it.
   if (!languagesRaw) {
-    console.log('[Webhook] Not a salten order, ignoring:', session.id)
+    if (session.payment_link) {
+      console.log('[Webhook] La Juntada booking:', session.id)
+      await sendSlackNotification(slackJuntadaBlocks(session))
+    } else {
+      console.log('[Webhook] Not a salten order, ignoring:', session.id)
+    }
     return NextResponse.json({ received: true })
   }
 
