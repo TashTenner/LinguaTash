@@ -335,6 +335,70 @@ async function sendSlackNotification(blocks: object[]): Promise<void> {
 }
 
 /**
+ * Un reembolso de La Juntada.
+ *
+ * Importa porque un reembolso completo libera el lugar: el contador de la
+ * página y el panel dejan de ver esa reserva, así que conviene enterarse
+ * cuando pasa y no descubrirlo contando cabezas el domingo.
+ */
+function slackReembolsoBlocks(session: Stripe.Checkout.Session, charge: Stripe.Charge): object[] {
+  const d = session.customer_details
+  const devuelto = charge.amount_refunded / 100
+  const total = charge.amount / 100
+  const completo = charge.refunded
+
+  return [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: completo
+          ? '↩️ Reserva cancelada de La Juntada'
+          : '↩️ Reembolso parcial de La Juntada',
+        emoji: true,
+      },
+    },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*Familia*\n${d?.name ?? '—'}` },
+        { type: 'mrkdwn', text: `*Devuelto*\n${devuelto.toFixed(2)} € de ${total.toFixed(2)} €` },
+        { type: 'mrkdwn', text: `*Email*\n${d?.email ?? '—'}` },
+        { type: 'mrkdwn', text: `*Teléfono*\n${d?.phone ?? '—'}` },
+      ],
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: completo
+            ? 'Su lugar vuelve a estar libre.'
+            : 'Sigue contando como reserva, solo se devolvió una parte.',
+        },
+      ],
+    },
+  ]
+}
+
+/**
+ * Busca la reserva a la que pertenece un cobro devuelto y avisa si es de
+ * La Juntada. Un reembolso de salten no pasa por acá.
+ */
+async function notificarReembolso(charge: Stripe.Charge): Promise<void> {
+  const paymentIntent =
+    typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id
+  if (!paymentIntent) return
+
+  const sesiones = await stripe.checkout.sessions.list({ payment_intent: paymentIntent, limit: 1 })
+  const session = sesiones.data[0]
+  if (!session?.payment_link) return
+
+  console.log('[Webhook] La Juntada refund:', session.id)
+  await sendSlackNotification(slackReembolsoBlocks(session, charge))
+}
+
+/**
  * Una reserva de La Juntada.
  *
  * Se distingue de una compra de salten porque viene de un payment link:
@@ -478,6 +542,13 @@ export async function POST(req: NextRequest) {
   }
 
   console.log('[Webhook] Event type:', event.type)
+
+  // Requiere que charge.refunded esté suscrito en el endpoint de Stripe.
+  if (event.type === 'charge.refunded') {
+    await notificarReembolso(event.data.object as Stripe.Charge)
+    return NextResponse.json({ received: true })
+  }
+
   if (event.type !== 'checkout.session.completed') {
     console.log('[Webhook] Ignoring event type')
     return NextResponse.json({ received: true })
