@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { genPageMetadata } from 'app/seo'
 import { fechasLaJuntada } from '@/content/lajuntada/fechas'
+import { contarFamilias } from '@/lib/lajuntada/reservas'
 import FaqAccordion from '@/components/lajuntada/FaqAccordion'
 
 export const metadata = genPageMetadata({
@@ -11,9 +12,15 @@ export const metadata = genPageMetadata({
   image: '/static/images/lajuntada-og.png',
 })
 
-// Las fechas pasadas se marcan solas. Sin esto la pagina se generaria una sola vez
-// y "Pasada" se quedaria congelada en la fecha del build.
-export const revalidate = 86400
+// Las fechas pasadas se marcan solas y el contador de familias se lee de Stripe.
+// Sin esto la pagina se generaria una sola vez: "Pasada" quedaria congelada en la
+// fecha del build y el contador en el numero que hubiera ese dia.
+export const revalidate = 600
+
+// Debajo de esto no se muestra el contador. "1 de 15" en una pagina recien
+// abierta es honesto y desalentador a la vez; a partir de tres ya cuenta algo.
+const MINIMO_PARA_CONTAR = 3
+const CUPO = 15
 
 // El mismo número que ya usan el header, el footer y las páginas de Alemán·y·Du.
 const WHATSAPP_LA_JUNTADA =
@@ -26,11 +33,19 @@ const PRECIO_OTRO_PROGENITOR = 5
 
 const UBICACION_PUBLICADA = true
 
-export default function LaJuntadaPage() {
+export default async function LaJuntadaPage() {
   const hoy = new Date().toISOString().slice(0, 10)
   // La primera fecha que todavía no pasó y ya tiene link. El hero se actualiza
   // solo cuando se abre la reserva de la siguiente.
   const proximaAbierta = fechasLaJuntada.find((f) => f.iso >= hoy && f.stripeUrl)
+
+  // Una consulta por fecha abierta, no una por fila: hoy es una sola.
+  const reservadas = new Map<string, number | null>()
+  await Promise.all(
+    fechasLaJuntada
+      .filter((f) => f.iso >= hoy && f.stripeUrl)
+      .map(async (f) => reservadas.set(f.iso, await contarFamilias(f.stripeUrl)))
+  )
 
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -229,14 +244,21 @@ export default function LaJuntadaPage() {
                             Pasada
                           </span>
                         ) : f.stripeUrl ? (
-                          <a
-                            href={f.stripeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
-                          >
-                            Reservar →
-                          </a>
+                          <>
+                            <a
+                              href={f.stripeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+                            >
+                              Reservar →
+                            </a>
+                            {(reservadas.get(f.iso) ?? 0) >= MINIMO_PARA_CONTAR && (
+                              <span className="text-xs opacity-70">
+                                {reservadas.get(f.iso)} de {CUPO} familias
+                              </span>
+                            )}
+                          </>
                         ) : (
                           <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
                             Prevista
