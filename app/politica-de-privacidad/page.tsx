@@ -153,9 +153,9 @@ export default function PoliticaPrivacidadPage() {
             En las reservas de La Juntada, el formulario de pago recoge además algunos datos para
             poder organizar la tarde: cuántos niños y niñas asisten, sus edades y, de forma
             opcional, la provincia o ciudad de origen de la familia. No se solicitan nombres de
-            menores. Estos datos se utilizan únicamente para preparar la merienda y la actividad, no
-            se comparten con terceros y no se emplean para elaborar perfiles. Los registros de pago
-            se conservan durante los plazos exigidos por la normativa fiscal.
+            menores. Estos datos se utilizan únicamente para organizar la actividad y las bebidas,
+            no se comparten con terceros y no se emplean para elaborar perfiles. Los registros de
+            pago se conservan durante los plazos exigidos por la normativa fiscal.
           </p>
           <p>
             La transferencia de datos a Estados Unidos se realiza al amparo de las Cláusulas

@@ -65,8 +65,8 @@ export default function LaJuntadaPage() {
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
-          La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Somos
-          entre 10 y 15 familias y las reservas ya están abiertas.
+          La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Hay
+          lugar para 15 familias y las reservas ya están abiertas.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -93,7 +93,7 @@ export default function LaJuntadaPage() {
             rel="noopener noreferrer"
             className="inline-block rounded-xl border border-[#9A8F85]/60 px-8 py-3 text-base font-medium transition-transform duration-300 hover:scale-105"
           >
-            Escribinos por WhatsApp
+            Escribime por WhatsApp
           </a>
         </div>
       </section>
@@ -183,9 +183,9 @@ export default function LaJuntadaPage() {
           {[
             [
               '15h',
-              'Llegada, merienda y mate. Cada adulto trae su mate y su bombilla, nosotros ponemos los termos y la yerba.',
+              'Llegada y mate. Cada adulto trae su mate y su bombilla, yo pongo los termos, el agua caliente y la yerba. Para los chicos hay jugo.',
             ],
-            ['15h30', 'La actividad del día, una hora, con un invitado o coordinada por nosotros.'],
+            ['15h30', 'La actividad del día, una hora, con un invitado o coordinada por mí.'],
             ['16h30', 'Ronda de cierre, todos juntos.'],
             ['17h', 'Nos despedimos.'],
           ].map(([hora, texto]) => (
@@ -223,14 +223,11 @@ export default function LaJuntadaPage() {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-col items-start gap-2">
-                        <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
-                          {pasada
-                            ? 'Pasada'
-                            : f.estado === 'confirmada'
-                              ? 'Confirmada'
-                              : 'Prevista'}
-                        </span>
-                        {!pasada && f.stripeUrl && (
+                        {pasada ? (
+                          <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
+                            Pasada
+                          </span>
+                        ) : f.stripeUrl ? (
                           <a
                             href={f.stripeUrl}
                             target="_blank"
@@ -239,6 +236,10 @@ export default function LaJuntadaPage() {
                           >
                             Reservar →
                           </a>
+                        ) : (
+                          <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
+                            Prevista
+                          </span>
                         )}
                       </div>
                     </td>
@@ -270,8 +271,9 @@ export default function LaJuntadaPage() {
           </ul>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
-            Incluye la actividad, la merienda de los chicos y una bebida para cada adulto. Si viene
-            la abuela, el abuelo o algún familiar de visita, son bienvenidos.
+            Incluye la actividad, la yerba, el agua caliente y un jugo para los chicos. Cada adulto
+            trae su mate y su bombilla. Si viene la abuela, el abuelo o algún familiar de visita,
+            son bienvenidos.
           </p>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
@@ -320,8 +322,8 @@ export default function LaJuntadaPage() {
         <h2 className="mb-4 text-2xl font-semibold">Me interesa</h2>
 
         <p className="mx-auto max-w-2xl leading-relaxed opacity-90">
-          Si tenés alguna duda antes de reservar, escribinos: cuántos son en tu familia, qué edades
-          tienen los chicos, si viene alguien más. Contestamos nosotros, no hay formulario.
+          Si tenés alguna duda antes de reservar, escribime: cuántos son en tu familia, qué edades
+          tienen los chicos, si viene alguien más. Contesto yo, no hay formulario.
         </p>
 
         <div className="mt-8 flex justify-center">
@@ -331,7 +333,7 @@ export default function LaJuntadaPage() {
             rel="noopener noreferrer"
             className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 text-base font-medium text-white transition-transform duration-300 hover:scale-105"
           >
-            Escribinos por WhatsApp
+            Escribime por WhatsApp
           </a>
         </div>
 

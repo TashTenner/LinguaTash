@@ -20,12 +20,11 @@ const FAQS = [
   {
     question: '¿Tengo que traer algo?',
     answer:
-      'Tu mate y tu bombilla, si tomás. El agua caliente y la yerba ya están puestas, así que llegás y cebás. El resto también lo ponemos nosotros.',
+      'Tu mate y tu bombilla, si tomás. El agua caliente y la yerba ya están puestas, así que llegás y cebás. Para los chicos hay jugo.',
   },
   {
     question: '¿Puede venir la abuela o el abuelo?',
-    answer:
-      'Sí, y ojalá vengan. Cada adulto más de la familia son 5 euros, hasta dos. Para un chico, escuchar a sus abuelos hablar en su lengua vale más que cualquier actividad que podamos armar.',
+    answer: 'Sí, y ojalá vengan. Cada adulto más de la familia son 5 euros, hasta dos.',
   },
   {
     question: '¿Puedo venir con mi hermana y sus hijos?',
