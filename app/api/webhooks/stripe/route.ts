@@ -392,14 +392,28 @@ function slackReembolsoBlocks(session: Stripe.Checkout.Session, charge: Stripe.C
  * Busca la reserva a la que pertenece un cobro devuelto y avisa si es de
  * La Juntada. Un reembolso de salten no pasa por acá.
  */
-async function notificarReembolso(charge: Stripe.Charge): Promise<void> {
+async function notificarReembolso(chargeDelEvento: Stripe.Charge): Promise<void> {
+  // Este endpoint está fijado a la version 2017-06-05 de la API, anterior a los
+  // payment intents y a los checkout sessions, así que el objeto que llega puede
+  // no traer los campos que necesitamos. El id sí es estable entre versiones:
+  // lo volvemos a pedir y trabajamos con la forma de hoy.
+  const charge = await stripe.charges.retrieve(chargeDelEvento.id)
+
   const paymentIntent =
     typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id
-  if (!paymentIntent) return
+  if (!paymentIntent) {
+    console.log('[Webhook] Refund without payment intent, ignoring:', charge.id)
+    return
+  }
 
+  // charge.refunded llega por cualquier devolución de la cuenta, no solo de
+  // La Juntada: salten y Nordkreis también. El payment link es lo que distingue.
   const sesiones = await stripe.checkout.sessions.list({ payment_intent: paymentIntent, limit: 1 })
   const session = sesiones.data[0]
-  if (!session?.payment_link) return
+  if (!session?.payment_link) {
+    console.log('[Webhook] Refund is not a La Juntada booking, ignoring:', charge.id)
+    return
+  }
 
   console.log('[Webhook] La Juntada refund:', session.id)
   await sendSlackNotification(slackReembolsoBlocks(session, charge), SLACK_LAJUNTADA)
@@ -591,9 +605,12 @@ export async function POST(req: NextRequest) {
   // retry an event we are never going to handle, and enough failures disable
   // the endpoint, which would take salten down with it.
   if (!languagesRaw) {
-    if (session.payment_link) {
-      console.log('[Webhook] La Juntada booking:', session.id)
-      await sendSlackNotification(slackJuntadaBlocks(session), SLACK_LAJUNTADA)
+    // Por la misma versión vieja de la API: el evento puede no traer payment_link
+    // ni custom_fields, que es justo lo que mira esto. Se pide de nuevo.
+    const fresca = await stripe.checkout.sessions.retrieve(session.id)
+    if (fresca.payment_link) {
+      console.log('[Webhook] La Juntada booking:', fresca.id)
+      await sendSlackNotification(slackJuntadaBlocks(fresca), SLACK_LAJUNTADA)
     } else {
       console.log('[Webhook] Not a salten order, ignoring:', session.id)
     }
