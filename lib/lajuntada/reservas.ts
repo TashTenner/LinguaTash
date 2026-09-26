@@ -46,14 +46,31 @@ async function idDelLink(stripeUrl: string): Promise<string | null> {
   return null
 }
 
+/**
+ * Una reserva reembolsada por completo ya no ocupa lugar.
+ *
+ * Stripe deja una sesión devuelta en `payment_status: 'paid'` para siempre, así
+ * que sin esto una cancelación seguiría contando y el cupo diría quince con
+ * catorce familias. Un reembolso parcial (devolver solo el otro progenitor)
+ * sigue siendo una reserva.
+ */
+function estaDevuelta(session: Stripe.Checkout.Session): boolean {
+  const pi = session.payment_intent
+  if (!pi || typeof pi === 'string') return false
+  const charge = pi.latest_charge
+  if (!charge || typeof charge === 'string') return false
+  return charge.refunded
+}
+
 /** Solo las sesiones efectivamente pagadas: una abandonada no es una reserva. */
 async function sesionesPagadas(paymentLinkId: string): Promise<Stripe.Checkout.Session[]> {
   const pagadas: Stripe.Checkout.Session[] = []
   for await (const session of stripe.checkout.sessions.list({
     payment_link: paymentLinkId,
     limit: 100,
+    expand: ['data.payment_intent.latest_charge'],
   })) {
-    if (session.payment_status === 'paid') pagadas.push(session)
+    if (session.payment_status === 'paid' && !estaDevuelta(session)) pagadas.push(session)
   }
   return pagadas
 }
