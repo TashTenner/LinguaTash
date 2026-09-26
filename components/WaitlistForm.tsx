@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-const PROJECTS = ['Fonetikas', 'Nordkreis', 'Alemán·y·Du', 'Resuena', '1P2L'] as const
+const PROJECTS = ['Fonetikas', 'Nordkreis', 'Alemán·y·Du', 'Resuena', '1P2L', 'La·Juntada'] as const
 
 export default function WaitlistForm() {
   const [email, setEmail] = useState('')

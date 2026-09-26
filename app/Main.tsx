@@ -15,9 +15,13 @@ export default function Home() {
             forma natural: en la infancia, en la edad adulta y a través del juego.
           </p>
           <p className="text-lg opacity-80">
-            De esta base nacen cinco proyectos complementarios: <strong>Fonetikas</strong> –{' '}
-            <strong>Nordkreis</strong> – <strong>Alemán·y·Du</strong> – <strong>Resuena</strong> –{' '}
-            <strong>1P2L</strong>
+            De esta base nacen seis proyectos. Algunos están muy cerca unos de otros y otros menos,
+            pero todos nacen de la misma pregunta: cómo se transmite una lengua cuando el entorno no
+            la sostiene.
+          </p>
+          <p className="text-lg opacity-80">
+            <strong>Fonetikas</strong> · <strong>Nordkreis</strong> · <strong>Alemán·y·Du</strong> ·{' '}
+            <strong>Resuena</strong> · <strong>1P2L</strong> · <strong>La Juntada</strong>
           </p>
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-8 dark:bg-[#081C3C]">
             <h2 className="mb-1 text-xl font-semibold">Mantente al día</h2>
@@ -231,6 +235,42 @@ export default function Home() {
               className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
             >
               Ver 1P2L
+            </Link>
+          </div>
+
+          {/* La Juntada */}
+          <div className="flex flex-col justify-between rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] p-8 dark:bg-[#081C3C]">
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <Image
+                  src="/static/images/laJuntada-icon.png"
+                  alt="La Juntada Logo"
+                  width={64}
+                  height={64}
+                  className="block h-16 w-16 dark:hidden"
+                />
+                <Image
+                  src="/static/images/laJuntada-icon-dark.png"
+                  alt="La Juntada Dark Logo"
+                  width={64}
+                  height={64}
+                  className="hidden h-16 w-16 dark:block"
+                />
+              </div>
+
+              <h3 className="text-xl font-semibold">La Juntada</h3>
+
+              <p className="mt-4 opacity-90">
+                Familias argentinas y uruguayas en Barcelona: encuentro mensual para que los hijos
+                vivan la cultura y la lengua de sus padres fuera de casa.
+              </p>
+            </div>
+
+            <Link
+              href="/lajuntada"
+              className="mt-8 inline-flex items-center justify-center rounded-xl bg-[#B3475A] px-6 py-3 font-medium text-white transition-transform duration-300 hover:scale-105"
+            >
+              Conocer La Juntada
             </Link>
           </div>
         </div>

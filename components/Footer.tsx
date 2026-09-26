@@ -55,6 +55,11 @@ export default function Footer() {
                   1P2L
                 </Link>
               </li>
+              <li>
+                <Link href="/lajuntada" className="hover:text-primary-500">
+                  La Juntada
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -130,6 +135,11 @@ export default function Footer() {
                 <li>
                   <a href="mailto:1p2l@linguatash.com" className="hover:text-primary-500">
                     1p2l@linguatash.com
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:lajuntada@linguatash.com" className="hover:text-primary-500">
+                    lajuntada@linguatash.com
                   </a>
                 </li>
               </ul>
