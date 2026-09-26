@@ -7,6 +7,8 @@ export const metadata = genPageMetadata({
   title: 'La Juntada',
   description:
     'Encuentro mensual en Barcelona para familias argentinas y uruguayas con hijos. Un domingo al mes, cultura argentina compartida entre padres e hijos.',
+  // Sin esto la tarjeta de WhatsApp muestra el banner genérico de LinguaTash.
+  image: '/static/images/lajuntada-og.png',
 })
 
 // Las fechas pasadas se marcan solas. Sin esto la pagina se generaria una sola vez
