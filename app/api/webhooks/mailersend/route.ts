@@ -6,8 +6,9 @@
 // Events handled: delivered, soft_bounced, hard_bounced, spam_complaint, opened, clicked
 //
 // ENV VARS REQUIRED:
-//   MAILERSEND_WEBHOOK_SECRET  — from MailerSend webhook settings
-//   SLACK_WEBHOOK_URL          — Slack incoming webhook URL
+//   MAILERSEND_WEBHOOK_SECRET     — from MailerSend webhook settings
+//   SLACK_WEBHOOK_URL_MAILERSEND  — its own channel; falls back to the shared one
+//   SLACK_WEBHOOK_URL             — shared Slack incoming webhook URL
 
 import { NextRequest, NextResponse } from 'next/server'
 import crypto, { createHmac } from 'crypto'
@@ -39,9 +40,12 @@ const EVENT_META: Record<string, { emoji: string; label: string; urgent: boolean
 
 // ── Send to Slack ─────────────────────────────────────────────────────────────
 async function notifySlack(blocks: object[]): Promise<void> {
-  if (!process.env.SLACK_WEBHOOK_URL) return
+  // Estos eventos son de correo de todos los proyectos, así que tienen canal
+  // propio en vez de repartirse. Sin su variable, caen en el general.
+  const url = process.env.SLACK_WEBHOOK_URL_MAILERSEND || process.env.SLACK_WEBHOOK_URL
+  if (!url) return
   try {
-    await fetch(process.env.SLACK_WEBHOOK_URL, {
+    await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ blocks }),
