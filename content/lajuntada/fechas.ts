@@ -19,7 +19,7 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     tema: 'Canciones de la infancia',
     fechaArgentina: 'Día de la Madre',
     estado: 'confirmada',
-    stripeUrl: null,
+    stripeUrl: 'https://buy.stripe.com/7sY7sM6RQbLI5DjbxI5gc00',
   },
   {
     fecha: 'Domingo 15 de noviembre 2026',
