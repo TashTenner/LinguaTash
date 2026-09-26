@@ -38,8 +38,87 @@ To recover: kill the whole `yarn dev` / `next dev` process tree,
 `Remove-Item -Recurse -Force .next`, then start the dev server again.
 
 When debugging site-wide 500s, check a route you did not touch (`/` or
-`/la-juntada`) before suspecting the code you just wrote. That single request
+`/lajuntada`) before suspecting the code you just wrote. That single request
 separates "my page is broken" from "the dev server is broken".
+
+---
+
+## Email addresses on linguatash.com
+
+**There are no mailboxes.** The domain's MX records point to **ImprovMX**, which is a
+forwarder: every `algo@linguatash.com` catches mail and forwards it into
+`tashfonetikas@gmail.com`. Nothing is stored at ImprovMX. Sending _as_ one of these
+addresses is a separate mechanism, Gmail's **Send mail as**, and the two halves are
+configured in different places. MailerSend also appears in the SPF record, but that is
+the site's transactional mail (Nordkreis invoices and similar) and is unrelated.
+
+```
+v=spf1 include:spf.improvmx.com include:_spf.mailersend.net ~all
+```
+
+Current addresses: `info@`, `fonetikas@`, `nordkreis@`, `alemanydu@`, `resuena@`,
+`1p2l@`, `lajuntada@`.
+
+### Adding a new address
+
+**Step 1, receiving.** ImprovMX dashboard, select linguatash.com, add the alias
+forwarding to `tashfonetikas@gmail.com`. Live in seconds, no DNS change. Send a test
+mail to it from a phone and confirm it lands.
+
+This step is the one that matters. An address that receives is a working address; if a
+link on the site points at it, that link now resolves. Everything below is only about
+what recipients see in the From line.
+
+**Step 2, sending.** Gmail, Settings, Accounts and Import, Send mail as, Add another
+email address. Name is what recipients see (`La Juntada`), address is the full alias,
+leave "Treat as an alias" ticked. Gmail then mails a confirmation code **to that
+address**, which arrives through the forward from Step 1. Paste it in.
+
+Use Gmail's own SMTP on that screen:
+
+| Field       | Value                                              |
+| ----------- | -------------------------------------------------- |
+| SMTP Server | `smtp.gmail.com`                                   |
+| Port        | 587, TLS                                           |
+| Username    | `tashfonetikas@gmail.com`                          |
+| Password    | a Google **App Password**, not the normal password |
+
+App Passwords are generated at <https://myaccount.google.com/apppasswords>, need
+2-Step Verification enabled, and are shown once.
+
+### Why not ImprovMX's SMTP, and the three errors it produces
+
+ImprovMX does offer outbound SMTP, and it looks like the obvious choice because the
+domain already lives there. It is the slower road, and it failed three ways while
+setting up `lajuntada@` on 2026-09-26:
+
+1. **`421`, "unable to complete the message transaction"** while Gmail reports
+   "Authentication error". The server was `mx1.improvmx.com`, which is the **inbound**
+   MX host and does not accept authenticated submission. The outbound relay is
+   `smtp.improvmx.com`, a different host with different IPs. Gmail's error headline is
+   a guess and points at the wrong thing; read the quoted server response instead.
+2. **Username as the local part.** ImprovMX wants the full `alias@linguatash.com`.
+3. **`535 5.7.8 Authentication credentials invalid`.** This is the real rejection, and
+   it means host and username were finally right. The password is neither the ImprovMX
+   login nor the Gmail password: it is a separate SMTP credential in the ImprovMX
+   dashboard, **shared by every alias on the domain**, and outbound SMTP is a paid
+   feature there.
+
+That shared credential is the reason to prefer Gmail's SMTP. Regenerating the ImprovMX
+SMTP password silently breaks sending for every other address already configured in
+Gmail, and each one then has to be re-entered. Gmail's App Password route touches
+nothing else.
+
+Also check the alias exists in ImprovMX before debugging credentials at all. Attempting
+to authenticate as an alias that has not been created fails as an auth error, which
+sends you looking in the wrong place.
+
+### After setting one up
+
+Send a test to a non-Gmail address, Outlook or Yahoo, and confirm it is not filtered as
+spam. The SPF record ends in `~all`, a softfail, so this should pass, but sending as a
+domain through Gmail's servers is the configuration most likely to look odd to a strict
+receiver. Better to learn that now than from the first parent who writes in.
 
 ---
 
