@@ -1,5 +1,9 @@
 // lib/nordkreis/paymentEmail.ts
-// Sent after each successful Stripe charge (enrollment fee + monthly payments)
+// Sent after each successful Stripe charge (enrollment fee + monthly payments).
+//
+// A payment confirmation, not an invoice: invoices are issued by hand in
+// Declarando and sent separately (decided 27 Sep 2026). The website version
+// that attached a numbered PDF is on the archive/website-invoicing branch.
 
 import type { NordkreisInvoiceType } from './generateInvoicePdf'
 
@@ -8,9 +12,8 @@ export function buildPaymentEmailHtml({
   childName,
   childGroup,
   invoiceType,
-  invoiceNumber,
   amountEur,
-  issueDate,
+  paymentDate,
   monthNumber,
   totalMonths,
 }: {
@@ -18,9 +21,8 @@ export function buildPaymentEmailHtml({
   childName: string
   childGroup: string
   invoiceType: NordkreisInvoiceType
-  invoiceNumber: string
   amountEur: number
-  issueDate: string
+  paymentDate: string
   monthNumber?: number
   totalMonths?: number
 }): string {
@@ -32,20 +34,20 @@ export function buildPaymentEmailHtml({
 
   const isEnrollment = invoiceType === 'enrollment_fee'
 
-  const dateDe = new Date(issueDate + 'T12:00:00').toLocaleDateString('de-DE', {
+  const dateDe = new Date(paymentDate + 'T12:00:00').toLocaleDateString('de-DE', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
-  const dateEs = new Date(issueDate + 'T12:00:00').toLocaleDateString('es-ES', {
+  const dateEs = new Date(paymentDate + 'T12:00:00').toLocaleDateString('es-ES', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
 
   const subjectDE = isEnrollment
-    ? 'Rechnung Einschreibegebühr'
-    : `Rechnung Monatsbeitrag${monthNumber ? ` ${monthNumber}/${totalMonths ?? 10}` : ''}`
+    ? 'Zahlungsbestätigung Einschreibegebühr'
+    : `Zahlungsbestätigung Monatsbeitrag${monthNumber ? ` ${monthNumber}/${totalMonths ?? 10}` : ''}`
   const descDE = isEnrollment
     ? `Einschreibegebühr für ${childName} (${childGroup})`
     : `Monatsbeitrag${monthNumber ? ` ${monthNumber} von ${totalMonths ?? 10}` : ''} für ${childName} (${childGroup})`
@@ -132,10 +134,6 @@ export function buildPaymentEmailHtml({
                         <td style="font-size:13px;color:#081C3C;padding:3px 0;">${dateDe} / ${dateEs}</td>
                       </tr>
                       <tr>
-                        <td style="font-size:13px;color:#9a8f85;padding:3px 0;">Rechnungsnr. / Factura</td>
-                        <td style="font-size:12px;color:#081C3C;font-family:monospace;padding:3px 0;">${invoiceNumber}</td>
-                      </tr>
-                      <tr>
                         <td style="font-size:13px;color:#9a8f85;padding:3px 0;">MwSt. / IVA</td>
                         <td style="font-size:13px;color:#9a8f85;padding:3px 0;">Befreit / Exento (Art. 20 Ley 37/1992)</td>
                       </tr>
@@ -144,12 +142,12 @@ export function buildPaymentEmailHtml({
                 </tr>
               </table>
 
-              <!-- PDF note -->
+              <!-- Invoice follows separately -->
               <p style="font-size:14px;line-height:1.7;margin:0 0 6px;color:#081C3C;">
-                Die vollständige Rechnung findest Du als PDF-Anhang in dieser E-Mail.
+                Dies ist Deine Zahlungsbestätigung. Die Rechnung schicke ich Dir in den nächsten Tagen separat per E-Mail.
               </p>
               <p style="font-size:12px;color:#9a8f85;margin:0 0 28px;">
-                La factura completa se adjunta como PDF a este correo electrónico.
+                Esta es tu confirmación de pago. La factura te la enviaré por separado en los próximos días.
               </p>
 
               <!-- Divider -->
@@ -202,9 +200,8 @@ export function buildPaymentEmailText({
   childName,
   childGroup,
   invoiceType,
-  invoiceNumber,
   amountEur,
-  issueDate,
+  paymentDate,
   monthNumber,
   totalMonths,
 }: {
@@ -212,9 +209,8 @@ export function buildPaymentEmailText({
   childName: string
   childGroup: string
   invoiceType: NordkreisInvoiceType
-  invoiceNumber: string
   amountEur: number
-  issueDate: string
+  paymentDate: string
   monthNumber?: number
   totalMonths?: number
 }): string {
@@ -228,11 +224,10 @@ ${isEnrollment ? 'Einschreibegebühr eingegangen' : 'Monatsbeitrag eingegangen'}
 
 ${desc}
 Betrag: ${amountEur.toFixed(2)} Euro
-Datum: ${issueDate}
-Rechnungsnummer: ${invoiceNumber}
+Datum: ${paymentDate}
 MwSt.: Befreit — Bildungsaktivität (Art. 20 Ley 37/1992)
 
-Die vollständige Rechnung findest Du als PDF-Anhang.
+Dies ist Deine Zahlungsbestätigung. Die Rechnung schicke ich Dir in den nächsten Tagen separat per E-Mail.
 
 Fragen? nordkreis@linguatash.com
 

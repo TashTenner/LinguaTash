@@ -3,6 +3,12 @@
 // Handles Stripe webhook events for Nordkreis payments.
 // Separate from the Salten webhook (app/api/webhooks/stripe/route.ts).
 //
+// On a successful payment it does NOT issue an invoice. Invoices are issued
+// by hand in Declarando (decided 27 Sep 2026; certified software is required
+// from July 2027 anyway). This webhook posts the invoice details to Slack for
+// that, and sends the family a payment confirmation. The version that issued
+// numbered PDF invoices itself is on the archive/website-invoicing branch.
+//
 // Register this endpoint in Stripe Dashboard:
 //   https://dashboard.stripe.com/webhooks
 //   URL: https://linguatash.com/api/webhooks/nordkreis
@@ -18,29 +24,14 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import {
-  generateNordkreisInvoicePdf,
-  generateNordkreisInvoiceNumber,
-} from '@/lib/nordkreis/generateInvoicePdf'
 import { buildPaymentEmailHtml, buildPaymentEmailText } from '@/lib/nordkreis/paymentEmail'
 import {
   buildPaymentFailureEmailHtml,
   buildPaymentFailureEmailText,
 } from '@/lib/nordkreis/paymentFailureEmail'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
-import { registerVerifactuInvoice } from '@/lib/verifactu'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-const r2 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
-  },
-})
 
 // ── Course months ─────────────────────────────────────────────────────────────
 
@@ -82,7 +73,14 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice
-    await handlePaymentSucceeded(invoice).catch(console.error)
+    try {
+      await handlePaymentSucceeded(invoice)
+    } catch (err) {
+      // 500 makes Stripe retry. Swallowing the error instead would leave a
+      // payment with no invoice prompt and no confirmation to the family.
+      console.error('[Nordkreis webhook] Payment not processed, Stripe will retry:', err)
+      return NextResponse.json({ error: 'Payment not processed' }, { status: 500 })
+    }
   }
 
   if (event.type === 'invoice.payment_failed') {
@@ -167,99 +165,123 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     childName = childName || sheetData.childFullName
     childGroup = sheetData.childGroup
   }
+  // The name for the invoice: the sheet's, as the parent typed it at enrollment,
+  // with Stripe's as fallback. Some Stripe names carry double spaces.
+  const clientName = (sheetData?.parentFullName || parentName).trim().replace(/\s+/g, ' ')
 
   const amountEur = (invoice.amount_paid ?? 0) / 100
-  const issueDate = new Date((invoice.created ?? Date.now() / 1000) * 1000)
-    .toISOString()
-    .split('T')[0]
-  const invoiceNumber = generateNordkreisInvoiceNumber()
+  const paymentDate = madridToday()
+  const invoiceType = isEnrollment ? 'enrollment_fee' : 'monthly'
 
-  // 1. Generate PDF invoice
-  const pdfBytes = await generateNordkreisInvoicePdf({
-    invoiceNumber,
-    issueDate,
-    stripeInvoiceId: invoice.id,
-    invoiceType: isEnrollment ? 'enrollment_fee' : 'monthly',
-    monthNumber,
-    totalMonths,
-    buyerName: parentName,
-    buyerEmail: parentEmail,
+  // 1. Tell Tash what to invoice in Declarando. This comes first and must
+  //    succeed: it is the only prompt to issue the invoice, so if it fails the
+  //    webhook answers 500 and Stripe retries before the family hears anything.
+  await notifyDeclarandoInvoice({
+    invoice,
+    clientName,
+    parentEmail,
     childName,
     childGroup,
+    isEnrollment,
+    monthNumber,
     amountEur,
+    paymentDate,
   })
 
-  // 2. Upload to R2
-  const invoiceDate = new Date()
-  const r2Key = `nordkreis/rechnungen/${invoiceDate.getFullYear()}/${String(invoiceDate.getMonth() + 1).padStart(2, '0')}/${invoiceNumber}.pdf`
-  await r2.send(
-    new PutObjectCommand({
-      Bucket:
-        process.env.CLOUDFLARE_R2_NORDKREIS_INVOICES_BUCKET ??
-        process.env.CLOUDFLARE_R2_BUCKET_NAME!,
-      Key: r2Key,
-      Body: Buffer.from(pdfBytes),
-      ContentType: 'application/pdf',
-    })
-  )
-
-  // 3. Register with Verifactu / AEAT (non-fatal)
-  try {
-    const exemptDesc = isEnrollment
-      ? `Matrícula Nordkreis — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
-      : `Cuota mensual Nordkreis ${monthNumber ?? ''}/${totalMonths} — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
-    await registerVerifactuInvoice({
-      series: 'NORDKREIS',
-      invoiceNumber,
-      issueDate,
-      invoiceType: 'F2',
-      description: exemptDesc,
-      externalReference: invoice.id,
-      customerName: parentName,
-      items: [
-        {
-          description: exemptDesc,
-          quantity: 1,
-          unit_price: amountEur,
-          tax_rate: 0,
-          aeat_code: '01',
-          operation_qualification: 'E1',
-        },
-      ],
-    })
-    console.log('[Nordkreis webhook] ✓ Verifactu registered:', invoiceNumber)
-  } catch (err) {
-    console.error('[Nordkreis webhook] Verifactu error (non-fatal):', err)
-  }
-
-  // 4. Send email with PDF attached
+  // 2. Payment confirmation to the family. The invoice follows from Declarando.
   await sendPaymentEmail({
     to: parentEmail,
     parentName,
     childName,
     childGroup,
-    invoiceType: isEnrollment ? 'enrollment_fee' : 'monthly',
-    invoiceNumber,
+    invoiceType,
     amountEur,
-    issueDate,
+    paymentDate,
     monthNumber,
     totalMonths,
-    pdfBytes,
   })
-
-  // 5. Notify Slack
-  if (process.env.SLACK_WEBHOOK_URL) {
-    await fetch(process.env.SLACK_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: `💶 *Nordkreis Zahlung eingegangen*\n${isEnrollment ? 'Einschreibegebühr' : `Monatsbeitrag ${monthNumber ?? ''}`}: ${amountEur} €\nKind: ${childName} · ${parentEmail}\nRechnung: \`${invoiceNumber}\``,
-      }),
-    }).catch(console.error)
-  }
 }
 
-// ── Send payment email ─────────────────────────────────────────────────────────
+// ── Declarando prompt ──────────────────────────────────────────────────────────
+
+/** Today's date in Madrid as YYYY-MM-DD. */
+function madridToday(): string {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' })
+}
+
+/** "octubre de 2026": the month a fee pays for, from the period its line bills. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function billedMonthEs(invoice: any): string {
+  const start: number | undefined = invoice.lines?.data?.[0]?.period?.start ?? invoice.created
+  if (!start) return ''
+  return new Date(start * 1000).toLocaleDateString('es-ES', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/Madrid',
+  })
+}
+
+/**
+ * Posts everything needed to issue the invoice in Declarando, already worded
+ * in Spanish so the concept can be pasted as it is.
+ *
+ * Invoices are issued there by hand (decided 27 Sep 2026), so this message is
+ * the only thing standing between a payment and its invoice. It throws when
+ * Slack is not configured or refuses the post, rather than failing quietly.
+ */
+async function notifyDeclarandoInvoice({
+  invoice,
+  clientName,
+  parentEmail,
+  childName,
+  childGroup,
+  isEnrollment,
+  monthNumber,
+  amountEur,
+  paymentDate,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  invoice: any
+  clientName: string
+  parentEmail: string
+  childName: string
+  childGroup: string
+  isEnrollment: boolean
+  monthNumber?: number
+  amountEur: number
+  paymentDate: string
+}) {
+  const url = process.env.SLACK_WEBHOOK_URL
+  if (!url) throw new Error('SLACK_WEBHOOK_URL is not set: no prompt to issue the invoice')
+
+  const alumno = `${childName || '¿alumno?'}${childGroup ? `, ${childGroup}` : ''}`
+  const concepto = isEnrollment
+    ? `Nordkreis: matrícula curso 2026/27. Alumno: ${alumno}`
+    : `Nordkreis: cuota mensual${monthNumber ? ` ${monthNumber} de ${COURSE_MONTHS}` : ''} (${billedMonthEs(invoice)}). Alumno: ${alumno}`
+  const [y, m, d] = paymentDate.split('-')
+  const importe = amountEur.toFixed(2).replace('.', ',')
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      // In the order of Declarando's form: Añadir ingreso → Con factura simplificada
+      text: [
+        '🧾 *Nordkreis: Rechnung in Declarando anlegen*',
+        '*Tipo:* con factura simplificada',
+        '*Actividad:* Enseñanza formación prof. no superior',
+        `*Cliente:* ${clientName} · ${parentEmail}`,
+        `*Concepto:* ${concepto}`,
+        `*Importe:* ${importe} € · exento de IVA`,
+        `*Cobrado:* ${d}/${m}/${y}, domiciliación SEPA vía Stripe`,
+        `Stripe: \`${invoice.id}\``,
+      ].join('\n'),
+    }),
+  })
+  if (!res.ok) throw new Error(`Slack refused the Declarando prompt: ${res.status}`)
+}
+
+// ── Send payment confirmation ──────────────────────────────────────────────────
 
 async function sendPaymentEmail({
   to,
@@ -267,29 +289,35 @@ async function sendPaymentEmail({
   childName,
   childGroup,
   invoiceType,
-  invoiceNumber,
   amountEur,
-  issueDate,
+  paymentDate,
   monthNumber,
   totalMonths,
-  pdfBytes,
 }: {
   to: string
   parentName: string
   childName: string
   childGroup: string
   invoiceType: 'enrollment_fee' | 'monthly'
-  invoiceNumber: string
   amountEur: number
-  issueDate: string
+  paymentDate: string
   monthNumber?: number
   totalMonths?: number
-  pdfBytes: Uint8Array
 }) {
   const isEnrollment = invoiceType === 'enrollment_fee'
   const subject = isEnrollment
-    ? `Rechnung Einschreibegebühr · Nordkreis · ${invoiceNumber}`
-    : `Rechnung Monatsbeitrag${monthNumber ? ` ${monthNumber}/${totalMonths ?? 10}` : ''} · Nordkreis · ${invoiceNumber}`
+    ? 'Zahlungsbestätigung Einschreibegebühr · Nordkreis'
+    : `Zahlungsbestätigung Monatsbeitrag${monthNumber ? ` ${monthNumber}/${totalMonths ?? 10}` : ''} · Nordkreis`
+  const content = {
+    parentName,
+    childName,
+    childGroup,
+    invoiceType,
+    amountEur,
+    paymentDate,
+    monthNumber,
+    totalMonths,
+  } as const
 
   const res = await fetch('https://api.mailersend.com/v1/email', {
     method: 'POST',
@@ -305,41 +333,13 @@ async function sendPaymentEmail({
       to: [{ email: to, name: parentName }],
       reply_to: { email: 'nordkreis@linguatash.com', name: 'Nordkreis' },
       subject,
-      html: buildPaymentEmailHtml({
-        parentName,
-        childName,
-        childGroup,
-        invoiceType,
-        invoiceNumber,
-        amountEur,
-        issueDate,
-        monthNumber,
-        totalMonths,
-      }),
-      text: buildPaymentEmailText({
-        parentName,
-        childName,
-        childGroup,
-        invoiceType,
-        invoiceNumber,
-        amountEur,
-        issueDate,
-        monthNumber,
-        totalMonths,
-      }),
-      attachments: [
-        {
-          content: Buffer.from(pdfBytes).toString('base64'),
-          filename: `${invoiceNumber}.pdf`,
-          type: 'application/pdf',
-          disposition: 'attachment',
-        },
-      ],
+      html: buildPaymentEmailHtml(content),
+      text: buildPaymentEmailText(content),
     }),
   })
 
   if (!res.ok) {
-    console.error('Payment email failed:', await res.text())
+    throw new Error(`Payment confirmation email failed: ${await res.text()}`)
   }
 }
 
@@ -465,6 +465,7 @@ async function getStudentFromSheets(parentEmail: string, childName: string) {
     return {
       childFullName: row[5] ?? '', // F: Child Full Name
       childGroup: row[8] ?? '', // I: Group
+      parentFullName: row[12] ?? '', // M: Parent 1 Full Name
     }
   } catch {
     return null

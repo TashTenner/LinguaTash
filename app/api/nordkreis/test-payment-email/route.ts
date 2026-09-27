@@ -17,9 +17,8 @@ export async function GET(req: NextRequest) {
     childName: 'Emma Müller García',
     childGroup: 'Entdeckerkreis (3–5 Jahre, I3–I5)',
     invoiceType: type,
-    invoiceNumber: 'NORDKREIS-2026-TEST01',
     amountEur: type === 'enrollment_fee' ? 60 : 45,
-    issueDate: new Date().toISOString().split('T')[0],
+    paymentDate: new Date().toISOString().split('T')[0],
     monthNumber: type === 'monthly' ? 3 : undefined,
     totalMonths: 10,
   })

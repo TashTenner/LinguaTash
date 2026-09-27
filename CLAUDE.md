@@ -539,3 +539,43 @@ that preview does not serve a gigabyte of real game files.
 The preview fixtures are small stand-ins, and `salten/salten-es-ES.zip` there is
 a **228 byte stub**. Testing a Spanish purchase in Preview will therefore appear
 to succeed and hand over a near empty zip. It is not a bug in the checkout.
+
+---
+
+## Invoices: issued in Declarando, not by the website
+
+**Decided 2026-09-27.** Tash is autónoma since 09/09/2026 and uses
+Declarando (plan with tax filing) for invoices, the quarterly 303 and 130,
+and the renta. The website charges through Stripe but **does not issue
+invoices** for Nordkreis:
+
+- On `invoice.payment_succeeded`, `app/api/webhooks/nordkreis/route.ts` posts
+  a Slack message, "Rechnung in Declarando anlegen", with client, a Spanish
+  concepto ready to paste, amount and payment date. Tash creates the invoice
+  in Declarando from it. That Slack post is the only prompt, so if it fails
+  the webhook answers 500 and Stripe retries.
+- The family gets a **payment confirmation**, which says the invoice follows
+  separately.
+
+Why: Spanish invoices must be numbered **correlativos y sin saltos** within
+each series, and from **1 July 2027** VeriFactu requires them to come from
+certified software. Registering website invoices in Declarando afterwards
+does not satisfy that. Declarando has no public API or Stripe integration
+(checked Sept 2026), so issuing there is by hand. About four invoices a month.
+
+The website invoicing code is **parked, not deleted**, on the branch
+`archive/website-invoicing`: consecutive numbering in MongoDB, one number per
+Stripe payment reused on retry, cancelling rectificativas in the PDF
+template. Revisit it only together with a VeriFactu-certified API provider,
+or when choosing a Stripe-connected invoicing tool (Quaderno, Holded) in
+spring 2027, before the Declarando year ends in September 2027.
+
+Still open:
+
+- **Four enrollment invoices from 24/09/2026** (`NORDKREIS-2026-999589`,
+  `-217925`, `-400163`, `-866431`) went out with random numbers, dated
+  03/09, and `-217925` names Vera instead of Erik. They are to be cancelled
+  with rectificativas and reissued in Declarando.
+- **Salten** (`app/api/webhooks/stripe/route.ts`) still issues its own
+  `RESUENA-YYYY-XXXXXX` invoices with random numbers and calls the
+  Verifactu sandbox. No sales yet; decide before the first one.
