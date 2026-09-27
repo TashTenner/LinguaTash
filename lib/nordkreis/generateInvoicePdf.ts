@@ -4,7 +4,8 @@
 // Same visual style as lib/generateInvoicePdf.ts (Resuena).
 // No IVA — educational activity exempt under Art. 20 Ley 37/1992.
 //
-// Invoice numbering: NORDKREIS-YYYY-XXXXXX
+// Invoice numbering: NK-YYYY-NNNN, consecutive, see lib/invoicing/numbering.ts.
+// Rectificativas (series NK-R) use the same layout with a `rectifies` block.
 //
 // ENV VARS (shared with Resuena):
 //   EMISOR_NOMBRE, EMISOR_NIE, EMISOR_DIRECCION, EMISOR_CP,
@@ -32,8 +33,22 @@ const COL_W = (PAGE_W - MARGIN * 2) / 2 - 8
 
 export type NordkreisInvoiceType = 'enrollment_fee' | 'monthly'
 
+/**
+ * Present only on a rectificativa that cancels an earlier invoice in full.
+ * The amount is then the negative of the original, and `replacedBy` names the
+ * invoice that takes its place, so the family can see nothing is owed twice.
+ */
+export interface NordkreisRectification {
+  originalNumber: string
+  originalDate: string // DD/MM/YYYY, as printed on the original
+  reasonDe: string
+  reasonEs: string
+  replacedBy: string
+}
+
 export interface NordkreisInvoiceData {
-  invoiceNumber: string // NORDKREIS-YYYY-XXXXXX
+  invoiceNumber: string // NK-YYYY-NNNN, or NK-R-YYYY-NNNN for a rectificativa
+  rectifies?: NordkreisRectification
   issueDate: string // YYYY-MM-DD
   stripeInvoiceId: string // Stripe invoice ID for reference
   invoiceType: NordkreisInvoiceType
@@ -120,20 +135,34 @@ export async function generateNordkreisInvoicePdf(data: NordkreisInvoiceData): P
   })
 
   // Description lines
+  const rect = data.rectifies
   const isEnrollment = data.invoiceType === 'enrollment_fee'
-  const descDE = isEnrollment
-    ? `Nordkreis — Einschreibegebühr (${data.childGroup})`
-    : `Nordkreis — Monatsbeitrag${data.monthNumber ? ` ${data.monthNumber} von ${data.totalMonths ?? 10}` : ''} (${data.childGroup})`
-  const descES = isEnrollment
-    ? `Nordkreis — Matrícula (${data.childGroup})`
-    : `Nordkreis — Cuota mensual${data.monthNumber ? ` ${data.monthNumber} de ${data.totalMonths ?? 10}` : ''} (${data.childGroup})`
+  const descDE = `${rect ? 'Storno: ' : ''}${
+    isEnrollment
+      ? `Nordkreis — Einschreibegebühr (${data.childGroup})`
+      : `Nordkreis — Monatsbeitrag${data.monthNumber ? ` ${data.monthNumber} von ${data.totalMonths ?? 10}` : ''} (${data.childGroup})`
+  }`
+  const descES = `${rect ? 'Anulación: ' : ''}${
+    isEnrollment
+      ? `Nordkreis — Matrícula (${data.childGroup})`
+      : `Nordkreis — Cuota mensual${data.monthNumber ? ` ${data.monthNumber} de ${data.totalMonths ?? 10}` : ''} (${data.childGroup})`
+  }`
   const descChild = `Kind / Niño·a: ${data.childName}`
+  const money = (n: number) => `${n < 0 ? '-' : ''}${Math.abs(n).toFixed(2)} €`
 
   let curY = PAGE_H - MARGIN
 
   // ── HEADER BAR ──────────────────────────────────────────────────────────────
   drawRect(page, 0, PAGE_H - 56, PAGE_W, 56, NAVY)
-  drawText(page, 'RECHNUNG / FACTURA', MARGIN, PAGE_H - 22, fontBold, 16, CREAM)
+  drawText(
+    page,
+    rect ? 'RECHNUNGSKORREKTUR / FACTURA RECTIFICATIVA' : 'RECHNUNG / FACTURA',
+    MARGIN,
+    PAGE_H - 22,
+    fontBold,
+    rect ? 15 : 16,
+    CREAM
+  )
   drawText(page, `Nr. ${data.invoiceNumber}`, MARGIN, PAGE_H - 38, fontRegular, 9, CREAM)
   drawText(
     page,
@@ -197,13 +226,36 @@ export async function generateNordkreisInvoicePdf(data: NordkreisInvoiceData): P
   }
   curY -= 10
 
+  // ── RECTIFIED INVOICE (rectificativas only) ───────────────────────────────────
+  // Required content: number and date of the original, and the reason.
+  if (rect) {
+    curY += 4
+    drawText(page, 'BERICHTIGTE RECHNUNG / FACTURA RECTIFICADA', MARGIN, curY, fontBold, 7, ROSE)
+    curY -= 4
+    drawLine(page, MARGIN, curY, PAGE_W - MARGIN, ROSE)
+    curY -= 12
+    const rectLines: [string, ReturnType<typeof rgb>][] = [
+      [`Nr. ${rect.originalNumber}  ·  Datum / Fecha: ${rect.originalDate}`, BLACK],
+      [`Grund: ${rect.reasonDe}`, BLACK],
+      [`Motivo: ${rect.reasonEs}`, MUTED],
+      ['Vollständige Stornierung. / Anulación total (art. 15 RD 1619/2012).', MUTED],
+    ]
+    for (const [line, color] of rectLines) {
+      drawText(page, line, MARGIN, curY, fontRegular, 7.5, color)
+      curY -= 12
+    }
+    curY -= 8
+  }
+
   // ── LINE ITEMS TABLE ─────────────────────────────────────────────────────────
   drawRect(page, MARGIN, curY - 2, PAGE_W - MARGIN * 2, 16, NAVY)
 
+  // The amount column starts far enough left that "Betrag / Importe" and
+  // "-60.00 €" both fit inside the table instead of running past its edge.
   const col = {
     desc: MARGIN + 4,
     qty: PAGE_W - MARGIN - 160,
-    total: PAGE_W - MARGIN - 50,
+    total: PAGE_W - MARGIN - 72,
   }
 
   drawText(page, 'Beschreibung / Descripción', col.desc, curY + 3, fontBold, 7, CREAM)
@@ -215,7 +267,7 @@ export async function generateNordkreisInvoicePdf(data: NordkreisInvoiceData): P
   drawRect(page, MARGIN, curY - 4, PAGE_W - MARGIN * 2, 16, CREAM)
   drawText(page, descDE, col.desc, curY + 3, fontRegular, 7.5)
   drawText(page, '1', col.qty, curY + 3, fontRegular, 7.5)
-  drawText(page, `${data.amountEur.toFixed(2)} €`, col.total, curY + 3, fontRegular, 7.5)
+  drawText(page, money(data.amountEur), col.total, curY + 3, fontRegular, 7.5)
   curY -= 16
 
   // Row 2 — ES description (lighter row)
@@ -244,18 +296,41 @@ export async function generateNordkreisInvoicePdf(data: NordkreisInvoiceData): P
   curY -= 6
   const totX = PAGE_W - MARGIN - 200
   drawRect(page, totX - 4, curY - 5, PAGE_W - MARGIN - totX + 4, 20, NAVY)
-  const totalValue = `${data.amountEur.toFixed(2)} €`
+  const totalValue = money(data.amountEur)
   drawText(page, 'GESAMT / TOTAL', totX, curY + 3, fontBold, 9, CREAM)
   drawText(
     page,
     totalValue,
-    PAGE_W - MARGIN - 2 - fontBold.widthOfTextAtSize(totalValue, 9),
+    PAGE_W - MARGIN - 8 - fontBold.widthOfTextAtSize(totalValue, 9),
     curY + 3,
     fontBold,
     9,
     CREAM
   )
   curY -= 28
+
+  // What a cancellation means for the family: nothing owed, nothing refunded.
+  if (rect) {
+    curY -= 8
+    drawText(
+      page,
+      `Ersetzt durch Rechnung ${rect.replacedBy}. Die Zahlung gilt für die neue Rechnung, es ist nichts zu zahlen oder zu erstatten.`,
+      MARGIN,
+      curY,
+      fontRegular,
+      7.5
+    )
+    drawText(
+      page,
+      `Sustituida por la factura ${rect.replacedBy}. El pago se aplica a la nueva factura, no hay nada que pagar ni devolver.`,
+      MARGIN,
+      curY - 12,
+      fontRegular,
+      7.5,
+      MUTED
+    )
+    curY -= 26
+  }
 
   // ── PAYMENT METHOD ────────────────────────────────────────────────────────────
   curY -= 8
@@ -301,12 +376,4 @@ export async function generateNordkreisInvoicePdf(data: NordkreisInvoiceData): P
   )
 
   return pdfDoc.save()
-}
-
-// ── Invoice number generator ──────────────────────────────────────────────────
-
-export function generateNordkreisInvoiceNumber(): string {
-  const year = new Date().getFullYear()
-  const seq = String(Date.now()).slice(-6)
-  return `NORDKREIS-${year}-${seq}`
 }

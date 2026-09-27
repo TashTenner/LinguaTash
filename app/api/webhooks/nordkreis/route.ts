@@ -18,10 +18,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import {
-  generateNordkreisInvoicePdf,
-  generateNordkreisInvoiceNumber,
-} from '@/lib/nordkreis/generateInvoicePdf'
+import { generateNordkreisInvoicePdf } from '@/lib/nordkreis/generateInvoicePdf'
 import { buildPaymentEmailHtml, buildPaymentEmailText } from '@/lib/nordkreis/paymentEmail'
 import {
   buildPaymentFailureEmailHtml,
@@ -29,7 +26,7 @@ import {
 } from '@/lib/nordkreis/paymentFailureEmail'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
-import { registerVerifactuInvoice } from '@/lib/verifactu'
+import { claimInvoiceNumber, markInvoiceSent } from '@/lib/invoicing/numbering'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -82,7 +79,15 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'invoice.payment_succeeded') {
     const invoice = event.data.object as Stripe.Invoice
-    await handlePaymentSucceeded(invoice).catch(console.error)
+    try {
+      await handlePaymentSucceeded(invoice)
+    } catch (err) {
+      // Answering 500 makes Stripe retry, and the retry reuses the invoice
+      // number already taken for this payment. Swallowing the error instead
+      // would leave a paid invoice that never reaches the family.
+      console.error('[Nordkreis webhook] Invoice not delivered, Stripe will retry:', err)
+      return NextResponse.json({ error: 'Invoice not delivered' }, { status: 500 })
+    }
   }
 
   if (event.type === 'invoice.payment_failed') {
@@ -169,10 +174,19 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
   }
 
   const amountEur = (invoice.amount_paid ?? 0) / 100
-  const issueDate = new Date((invoice.created ?? Date.now() / 1000) * 1000)
-    .toISOString()
-    .split('T')[0]
-  const invoiceNumber = generateNordkreisInvoiceNumber()
+
+  // The number and date belong to this payment, not to this attempt: a retry
+  // gets the same ones back, and an invoice already sent is not sent again.
+  // The date is the day the invoice is issued, not the day Stripe created the
+  // charge, which for a SEPA debit can be weeks earlier.
+  const invoiceKey = `stripe:${invoice.id}`
+  const issued = await claimInvoiceNumber(invoiceKey, 'NK')
+  if (issued.status === 'sent') {
+    console.log('[Nordkreis webhook] Already sent, skipping:', issued.number, invoice.id)
+    return
+  }
+  const invoiceNumber = issued.number!
+  const issueDate = issued.issueDate
 
   // 1. Generate PDF invoice
   const pdfBytes = await generateNordkreisInvoicePdf({
@@ -189,9 +203,9 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     amountEur,
   })
 
-  // 2. Upload to R2
-  const invoiceDate = new Date()
-  const r2Key = `nordkreis/rechnungen/${invoiceDate.getFullYear()}/${String(invoiceDate.getMonth() + 1).padStart(2, '0')}/${invoiceNumber}.pdf`
+  // 2. Upload to R2 (a retry overwrites the same key with the same invoice)
+  const [issueYear, issueMonth] = issueDate.split('-')
+  const r2Key = `nordkreis/rechnungen/${issueYear}/${issueMonth}/${invoiceNumber}.pdf`
   await r2.send(
     new PutObjectCommand({
       Bucket:
@@ -203,36 +217,8 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     })
   )
 
-  // 3. Register with Verifactu / AEAT (non-fatal)
-  try {
-    const exemptDesc = isEnrollment
-      ? `Matrícula Nordkreis — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
-      : `Cuota mensual Nordkreis ${monthNumber ?? ''}/${totalMonths} — ${childName} — Enseñanza de alemán (exenta Art. 20.1.9ª Ley 37/1992)`
-    await registerVerifactuInvoice({
-      series: 'NORDKREIS',
-      invoiceNumber,
-      issueDate,
-      invoiceType: 'F2',
-      description: exemptDesc,
-      externalReference: invoice.id,
-      customerName: parentName,
-      items: [
-        {
-          description: exemptDesc,
-          quantity: 1,
-          unit_price: amountEur,
-          tax_rate: 0,
-          aeat_code: '01',
-          operation_qualification: 'E1',
-        },
-      ],
-    })
-    console.log('[Nordkreis webhook] ✓ Verifactu registered:', invoiceNumber)
-  } catch (err) {
-    console.error('[Nordkreis webhook] Verifactu error (non-fatal):', err)
-  }
-
-  // 4. Send email with PDF attached
+  // 3. Send email with PDF attached. Throws if it fails, so Stripe retries.
+  //    VeriFactu is handled in Declarando, where each invoice is entered.
   await sendPaymentEmail({
     to: parentEmail,
     parentName,
@@ -246,8 +232,9 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     totalMonths,
     pdfBytes,
   })
+  await markInvoiceSent(invoiceKey)
 
-  // 5. Notify Slack
+  // 4. Notify Slack
   if (process.env.SLACK_WEBHOOK_URL) {
     await fetch(process.env.SLACK_WEBHOOK_URL, {
       method: 'POST',
@@ -339,7 +326,7 @@ async function sendPaymentEmail({
   })
 
   if (!res.ok) {
-    console.error('Payment email failed:', await res.text())
+    throw new Error(`Payment email failed: ${await res.text()}`)
   }
 }
 
