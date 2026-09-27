@@ -42,6 +42,29 @@ const r2 = new S3Client({
   },
 })
 
+// ── Course months ─────────────────────────────────────────────────────────────
+
+/** The course runs September to June. */
+const COURSE_MONTHS = 10
+
+/**
+ * Which month of the course an invoice pays for: September is 1, June is 10.
+ *
+ * Read from the period the first line bills, not from when the invoice was
+ * created. A subscription line covers Oct 3 → Nov 3 and is October; a manual
+ * line has a single instant, the day it was added. Returns undefined for July
+ * and August, which are never billed, rather than inventing a number.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function courseMonth(invoice: any): number | undefined {
+  const start: number | undefined = invoice.lines?.data?.[0]?.period?.start ?? invoice.created
+  if (!start) return undefined
+  const month = new Date(start * 1000).getUTCMonth() // 0 = January
+  if (month >= 8) return month - 7 // Sep..Dec → 1..4
+  if (month <= 5) return month + 5 // Jan..Jun → 5..10
+  return undefined
+}
+
 // ── Webhook handler ───────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -115,25 +138,17 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
 
   let childName = ''
   let childGroup = ''
-  let totalMonths = 10
-  let monthNumber: number | undefined
+  // The number on the invoice is the month of the course, not a count of
+  // this family's charges: October is always 2/10, whether September came
+  // through the subscription, a manual invoice, or not at all.
+  const totalMonths = COURSE_MONTHS
+  const monthNumber = isEnrollment ? undefined : courseMonth(invoice)
 
   if (subscriptionId) {
     try {
       const sub = await stripe.subscriptions.retrieve(subscriptionId)
       childName = sub.metadata?.childName ?? ''
       childGroup = '' // not stored in sub metadata — we'll get from Sheets
-      totalMonths = parseInt(sub.metadata?.totalMonths ?? '10')
-
-      // Calculate which month this is based on subscription start
-      if (!isEnrollment && sub.start_date) {
-        const startDate = new Date(sub.start_date * 1000)
-        const invoiceDate = new Date((invoice.created ?? Date.now() / 1000) * 1000)
-        const diff =
-          (invoiceDate.getFullYear() - startDate.getFullYear()) * 12 +
-          (invoiceDate.getMonth() - startDate.getMonth())
-        monthNumber = Math.max(1, diff + 1)
-      }
     } catch (e) {
       console.error('Could not retrieve subscription:', e)
     }

@@ -53,35 +53,41 @@ function firstMonthlyChargeDate(): Date {
 }
 
 /**
- * Returns the cancel_at date: day after June 3rd ending the school year
- * that contains firstCharge.
+ * Returns the cancel_at date: July 3rd after the school year that contains
+ * firstCharge, at the exact same instant of day as the billing anchor.
  * School year = Sep YYYY → Jun YYYY+1
- * e.g. first charge Sep 2026 → ends June 2027 → cancel June 4, 2027
- *      first charge Jan 2027 → ends June 2027 → cancel June 4, 2027
+ * e.g. first charge Sep 2026 → last charge June 3, 2027 → cancel July 3, 2027
+ *
+ * It must be the END of June's billing period, not the day after the June
+ * charge. Stripe shortens whichever period contains cancel_at and prorates its
+ * invoice, with no way to switch that off: a June 4th cancel makes June's
+ * invoice cover one day, about €1.50 instead of €45.
+ *
+ * Built in UTC from firstCharge itself so the time of day matches the anchor
+ * to the second. Built in local time, a winter activation would land an hour
+ * early after the switch to summer time, and June would still be prorated.
  */
 function schoolYearEndDate(firstCharge: Date): Date {
-  const chargeYear = firstCharge.getFullYear()
-  const chargeMonth = firstCharge.getMonth()
   // Sep–Dec → school year ends June of next year
   // Jan–Jun → school year ends June of same year (but we never land Jan–Jun
   //            from firstMonthlyChargeDate since May/June skip to Sep)
-  const endYear = chargeMonth >= 8 ? chargeYear + 1 : chargeYear
-  return new Date(endYear, 5, 4, 12, 0, 0) // June 4th (day after last charge)
+  const endYear =
+    firstCharge.getUTCMonth() >= 8 ? firstCharge.getUTCFullYear() + 1 : firstCharge.getUTCFullYear()
+  const end = new Date(firstCharge)
+  end.setUTCFullYear(endYear, 6, 3) // July 3rd, same time of day
+  return end
 }
 
 /**
- * Counts monthly charges from firstCharge up to and including June 3rd.
- * cancelAt is June 4th, so we count months up to (but not including) cancelAt.
+ * Counts monthly charges from firstCharge up to and including June.
+ * cancelAt is July 3rd, the moment a July charge would have been taken, so
+ * every month before it is charged.
  * Sep→Jun = 10, Oct→Jun = 9, Nov→Jun = 8, etc.
  */
 function countMonths(firstCharge: Date, cancelAt: Date): number {
-  // cancelAt = June 4th (month 5, day 4)
-  // Last charge = June 3rd (same month as cancelAt, day 3)
-  const lastCharge = new Date(cancelAt.getFullYear(), cancelAt.getMonth(), 3)
   const months =
-    (lastCharge.getFullYear() - firstCharge.getFullYear()) * 12 +
-    (lastCharge.getMonth() - firstCharge.getMonth()) +
-    1
+    (cancelAt.getUTCFullYear() - firstCharge.getUTCFullYear()) * 12 +
+    (cancelAt.getUTCMonth() - firstCharge.getUTCMonth())
   return Math.max(1, months)
 }
 
@@ -188,7 +194,7 @@ export async function POST(req: NextRequest) {
       // This is the correct Stripe pattern when the first charge is far in the future
       // (billing_cycle_anchor is rejected if it's more than one billing cycle away).
       trial_end: firstMonthlyTimestamp,
-      // Cancel after June 3rd of the current school year
+      // Cancel when June's period ends — see schoolYearEndDate for why not June 4th
       cancel_at: cancelAtTimestamp,
       metadata: {
         childName: childName ?? studentName,
