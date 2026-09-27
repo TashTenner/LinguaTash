@@ -144,23 +144,28 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
   const totalMonths = COURSE_MONTHS
   const monthNumber = isEnrollment ? undefined : courseMonth(invoice)
 
-  if (subscriptionId) {
+  // Which child this invoice is for. Siblings share a parent email, so the
+  // email alone can't answer it: every source that names the child comes
+  // before the sheet. The enrollment fee carries it in its own metadata.
+  childName = invoice.metadata?.childName ?? ''
+
+  if (!childName && subscriptionId) {
     try {
       const sub = await stripe.subscriptions.retrieve(subscriptionId)
       childName = sub.metadata?.childName ?? ''
-      childGroup = '' // not stored in sub metadata — we'll get from Sheets
     } catch (e) {
       console.error('Could not retrieve subscription:', e)
     }
   }
 
-  // Try to get child info from Google Sheets if not in metadata
-  if (!childName || !childGroup) {
-    const sheetData = await getStudentFromSheets(parentEmail)
-    if (sheetData) {
-      childName = childName || sheetData.childFullName
-      childGroup = childGroup || sheetData.childGroup
-    }
+  // A manual invoice has neither, only its line: "Nordkreis Monatsbeitrag — Name"
+  if (!childName) childName = childNameFromDescription(firstDesc)
+
+  // The group is only in the sheet, found by email and child together
+  const sheetData = await getStudentFromSheets(parentEmail, childName)
+  if (sheetData) {
+    childName = childName || sheetData.childFullName
+    childGroup = sheetData.childGroup
   }
 
   const amountEur = (invoice.amount_paid ?? 0) / 100
@@ -358,13 +363,13 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
   const amountEur = (invoice.amount_due ?? 0) / 100
   const attemptCount: number = invoice.attempt_count ?? 1
 
-  // Get child name from subscription metadata or Sheets
-  let childName = ''
+  // Which child: same order as for a successful payment, sheet last
+  let childName: string = invoice.metadata?.childName ?? ''
   const subscriptionId: string =
     typeof invoice.subscription === 'string'
       ? invoice.subscription
       : (invoice.subscription?.id ?? '')
-  if (subscriptionId) {
+  if (!childName && subscriptionId) {
     try {
       const sub = await stripe.subscriptions.retrieve(subscriptionId)
       childName = sub.metadata?.childName ?? ''
@@ -372,8 +377,9 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
       // ignore
     }
   }
+  if (!childName) childName = childNameFromDescription(invoice.lines?.data?.[0]?.description ?? '')
   if (!childName) {
-    const sheetData = await getStudentFromSheets(parentEmail)
+    const sheetData = await getStudentFromSheets(parentEmail, '')
     childName = sheetData?.childFullName ?? ''
   }
 
@@ -415,25 +421,46 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
 
 // ── Get student data from Google Sheets ───────────────────────────────────────
 
-async function getStudentFromSheets(parentEmail: string) {
+/** Lowercase, trimmed, single spaces: the sheet has names like "Armand  Exner  Camps". */
+function normalizarNombre(name: string): string {
+  return name.trim().replace(/\s+/g, ' ').toLowerCase()
+}
+
+/**
+ * The child named on an invoice line we wrote ourselves, e.g.
+ * "Nordkreis Monatsbeitrag — Erik Grimm Villaescusa" → "Erik Grimm Villaescusa".
+ * Empty when the line doesn't follow that shape, rather than a guess.
+ */
+function childNameFromDescription(description: string): string {
+  const match = description.match(/^Nordkreis .+? — (.+)$/)
+  return match ? match[1].trim() : ''
+}
+
+/**
+ * A student's row, found by parent email and, when known, the child's name.
+ *
+ * Siblings share a parent email, so the email alone matches more than one row.
+ * With a name, the row must match both. Without one, a single match is safe
+ * and several are ambiguous: returning null there leaves a field blank, which
+ * is better than an invoice issued to the wrong child.
+ */
+async function getStudentFromSheets(parentEmail: string, childName: string) {
   if (!process.env.GOOGLE_SERVICE_ACCOUNT_JSON || !SHEET_ID) return null
   try {
     const token = await getSheetsToken()
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:I`)}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     const data = await res.json()
     const rows: string[][] = data.values ?? []
-    // col O (index 14) = parent1Email — but we only fetched A:I here for efficiency
-    // Fetch a wider range to find email
-    const res2 = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(`${SHEET_NAME}!A:O`)}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    const data2 = await res2.json()
-    const rows2: string[][] = data2.values ?? []
-    const row = rows2.find((r) => r[14] === parentEmail)
+    const email = parentEmail.trim().toLowerCase()
+    // col O (index 14) = parent1Email
+    const candidates = rows.filter((r) => (r[14] ?? '').trim().toLowerCase() === email)
+    const byName = childName
+      ? candidates.find((r) => normalizarNombre(r[5] ?? '') === normalizarNombre(childName))
+      : undefined
+    const row = byName ?? (candidates.length === 1 ? candidates[0] : undefined)
     if (!row) return null
     return {
       childFullName: row[5] ?? '', // F: Child Full Name
