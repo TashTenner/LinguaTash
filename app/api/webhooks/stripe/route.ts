@@ -343,6 +343,35 @@ const SLACK_LAJUNTADA = process.env.SLACK_WEBHOOK_URL_LAJUNTADA
 const SLACK_SALTEN = process.env.SLACK_WEBHOOK_URL_SALTEN
 
 /**
+ * Si una sesión es una reserva de La Juntada.
+ *
+ * Lo dice la etiqueta `evento` del payment link ("la-juntada-2026-10-18"),
+ * que Stripe copia a cada sesión. Que tenga un payment link no alcanza: un
+ * link para otra cosa, por ejemplo un evento suelto de Nordkreis, se tomaría
+ * por una reserva y su pago o su devolución llegarían al canal equivocado.
+ */
+function esReservaJuntada(session: Stripe.Checkout.Session | undefined): boolean {
+  return !!session?.payment_link && !!session.metadata?.evento?.startsWith('la-juntada-')
+}
+
+/** "18/10/2026", sacado de la etiqueta del evento. Vacío si no la trae. */
+function fechaJuntada(session: Stripe.Checkout.Session): string {
+  const iso = session.metadata?.evento?.match(/(\d{4})-(\d{2})-(\d{2})$/)
+  return iso ? `${iso[3]}/${iso[2]}/${iso[1]}` : ''
+}
+
+/**
+ * Los números para Declarando. La Juntada es "Otros servicios culturales",
+ * sujeta al 21 % de IVA, y el precio publicado lo incluye: de 30 € salen
+ * 24,79 € de base y 5,21 € de IVA.
+ */
+function desgloseIva(centimos: number): { total: string; base: string; iva: string } {
+  const base = Math.round(centimos / 1.21)
+  const coma = (c: number) => (c / 100).toFixed(2).replace('.', ',')
+  return { total: coma(centimos), base: coma(base), iva: coma(centimos - base) }
+}
+
+/**
  * Un reembolso de La Juntada.
  *
  * Importa porque un reembolso completo libera el lugar: el contador de la
@@ -354,6 +383,7 @@ function slackReembolsoBlocks(session: Stripe.Checkout.Session, charge: Stripe.C
   const devuelto = charge.amount_refunded / 100
   const total = charge.amount / 100
   const completo = charge.refunded
+  const rect = desgloseIva(charge.amount_refunded)
 
   return [
     {
@@ -386,6 +416,17 @@ function slackReembolsoBlocks(session: Stripe.Checkout.Session, charge: Stripe.C
         },
       ],
     },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: [
+          '*Declarando:* factura rectificativa de la factura simplificada de esta reserva',
+          `*Importe:* -${rect.total} € (base -${rect.base} € · IVA 21 % -${rect.iva} €)`,
+          `*Motivo:* ${completo ? 'cancelación de la reserva' : 'devolución parcial'}`,
+        ].join('\n'),
+      },
+    },
   ]
 }
 
@@ -408,10 +449,10 @@ async function notificarReembolso(chargeDelEvento: Stripe.Charge): Promise<void>
   }
 
   // charge.refunded llega por cualquier devolución de la cuenta, no solo de
-  // La Juntada: salten y Nordkreis también. El payment link es lo que distingue.
+  // La Juntada: salten y Nordkreis también. La etiqueta del evento es lo que distingue.
   const sesiones = await stripe.checkout.sessions.list({ payment_intent: paymentIntent, limit: 1 })
   const session = sesiones.data[0]
-  if (!session?.payment_link) {
+  if (!esReservaJuntada(session)) {
     console.log('[Webhook] Refund is not a La Juntada booking, ignoring:', charge.id)
     return
   }
@@ -423,8 +464,9 @@ async function notificarReembolso(chargeDelEvento: Stripe.Charge): Promise<void>
 /**
  * Una reserva de La Juntada.
  *
- * Se distingue de una compra de salten porque viene de un payment link:
- * salten crea su sesión a mano con sessions.create y nunca tiene uno.
+ * Se distingue de una compra de salten por la etiqueta del evento de su
+ * payment link (ver esReservaJuntada). Además de avisar, trae lo que pide
+ * Declarando para registrar el ingreso con factura simplificada.
  */
 function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
   const d = session.customer_details
@@ -439,6 +481,10 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
   const importe = (session.amount_total ?? 0) / 100
   // La base es una familia con un adulto; por encima de 30 vino el otro progenitor.
   const adultos = (session.amount_total ?? 0) > 3000 ? 2 : 1
+  const iva = desgloseIva(session.amount_total ?? 0)
+  const fecha = fechaJuntada(session)
+  const nombre = (d?.name ?? '').trim().replace(/\s+/g, ' ') || '—'
+  const concepto = `La Juntada${fecha ? ` del ${fecha}` : ''}: tarde familiar de cultura argentina, ${adultos === 2 ? 'dos adultos' : 'un adulto'} con sus hijos`
 
   return [
     {
@@ -455,6 +501,21 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
       ],
     },
     ...(campos ? [{ type: 'section', text: { type: 'mrkdwn', text: campos } }] : []),
+    {
+      type: 'section',
+      // En el orden del formulario: Añadir ingreso → Con factura simplificada
+      text: {
+        type: 'mrkdwn',
+        text: [
+          '*Declarando:* con factura simplificada',
+          '*Actividad:* Otros servicios culturales NCOP',
+          `*Cliente:* ${nombre} · ${d?.email ?? '—'}`,
+          `*Concepto:* ${concepto}`,
+          `*Importe:* ${iva.total} € IVA incluido (base ${iva.base} € · IVA 21 % ${iva.iva} €)`,
+          `*Cobrado:* ${new Date(session.created * 1000).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' })}, tarjeta vía Stripe`,
+        ].join('\n'),
+      },
+    },
     {
       type: 'context',
       elements: [
@@ -609,7 +670,7 @@ export async function POST(req: NextRequest) {
     // Por la misma versión vieja de la API: el evento puede no traer payment_link
     // ni custom_fields, que es justo lo que mira esto. Se pide de nuevo.
     const fresca = await stripe.checkout.sessions.retrieve(session.id)
-    if (fresca.payment_link) {
+    if (esReservaJuntada(fresca)) {
       console.log('[Webhook] La Juntada booking:', fresca.id)
       await sendSlackNotification(slackJuntadaBlocks(fresca), SLACK_LAJUNTADA)
     } else {

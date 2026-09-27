@@ -587,3 +587,31 @@ Still open:
 - **Salten** (`app/api/webhooks/stripe/route.ts`) still issues its own
   `RESUENA-YYYY-XXXXXX` invoices with random numbers and calls the
   Verifactu sandbox. No sales yet; decide before the first one.
+
+---
+
+## La Juntada: opening the next date
+
+Bookings are Stripe **payment links**, one per date, created in the Dashboard.
+The website reads them; it never creates them. For each new date:
+
+1. **Payment link** with the €30 price and the optional +€5 other parent.
+   Payment methods: instant only (card and the like), **never SEPA**, or
+   "Nueva reserva" would reach Slack before the money does.
+2. **Metadata `evento` = `la-juntada-YYYY-MM-DD`.** This tag is how the
+   webhook tells a Juntada booking or refund from any other payment link
+   (`esReservaJuntada` in `app/api/webhooks/stripe/route.ts`). A link without
+   it is ignored, and a non-Juntada link must never carry it.
+3. **Limit the number of payments to 15**, with an inactive message pointing
+   to WhatsApp for the waiting list. A refund does not give the place back in
+   Stripe's count: after a cancellation, raise the limit by one and reactivate.
+4. **Confirmation page message** with date, time, place and the cancellation
+   rule. Stripe's receipt and this page are the family's only confirmation.
+5. Put the link's URL in `content/lajuntada/fechas.ts`. The counter, the
+   "Completo" state and the admin panel find the link by that URL, so **never
+   replace a link that already has bookings**: edit it instead.
+
+Each booking posts to the La Juntada Slack channel with the Declarando data:
+**con factura simplificada**, activity _Otros servicios culturales NCOP_,
+21 % VAT included in the price (30 € = 24,79 € + 5,21 €). A refund posts the
+matching rectificativa. Adaptive Pricing is off: prices are euros only.

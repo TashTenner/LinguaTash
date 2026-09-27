@@ -27,6 +27,23 @@ const WHATSAPP_LA_JUNTADA =
   'https://wa.me/34644886723?text=' +
   encodeURIComponent('Hola Tash, me interesa La Juntada. ¿Me contás cómo reservar?')
 
+/** WhatsApp con el mensaje de la lista de espera de una fecha ya completa. */
+function listaDeEspera(fecha: string): string {
+  return (
+    'https://wa.me/34644886723?text=' +
+    encodeURIComponent(`Hola Tash, ¿me anotás en la lista de espera de La Juntada del ${fecha}?`)
+  )
+}
+
+/**
+ * Si una fecha ya no tiene lugar. Null (Stripe no contestó) cuenta como que
+ * sí hay lugar: el link de Stripe tiene su propio tope de 15 pagos, así que
+ * el peor caso es que alguien llegue a la página de "link inactivo".
+ */
+function completa(reservas: number | null | undefined): boolean {
+  return typeof reservas === 'number' && reservas >= CUPO
+}
+
 const PRECIOS_PUBLICADOS = true
 const PRECIO_BASE = 30
 const PRECIO_OTRO_PROGENITOR = 5
@@ -46,6 +63,7 @@ export default async function LaJuntadaPage() {
       .filter((f) => f.iso >= hoy && f.stripeUrl)
       .map(async (f) => reservadas.set(f.iso, await contarFamilias(f.stripeUrl)))
   )
+  const proximaCompleta = !!proximaAbierta && completa(reservadas.get(proximaAbierta.iso))
 
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -81,12 +99,22 @@ export default async function LaJuntadaPage() {
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
-          La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Hay
-          lugar para 15 familias y las reservas ya están abiertas.
+          {proximaCompleta
+            ? 'La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Ya se completaron los 15 lugares: escribime y te anoto en la lista de espera.'
+            : 'La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas ya están abiertas.'}
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          {proximaAbierta ? (
+          {proximaAbierta && proximaCompleta ? (
+            <a
+              href={listaDeEspera(proximaAbierta.fecha)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-xl bg-[#B3475A] px-8 py-3 text-base font-medium text-white transition-transform duration-300 hover:scale-105"
+            >
+              Completo · Lista de espera
+            </a>
+          ) : proximaAbierta ? (
             <a
               href={proximaAbierta.stripeUrl ?? '#fechas'}
               target="_blank"
@@ -243,6 +271,20 @@ export default async function LaJuntadaPage() {
                           <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
                             Pasada
                           </span>
+                        ) : f.stripeUrl && completa(reservadas.get(f.iso)) ? (
+                          <>
+                            <span className="inline-block rounded-full bg-[#B3475A]/15 px-3 py-1 text-xs font-medium text-[#B3475A]">
+                              Completo
+                            </span>
+                            <a
+                              href={listaDeEspera(f.fecha)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+                            >
+                              Lista de espera →
+                            </a>
+                          </>
                         ) : f.stripeUrl ? (
                           <>
                             <a
