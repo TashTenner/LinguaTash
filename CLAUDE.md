@@ -542,7 +542,7 @@ to succeed and hand over a near empty zip. It is not a bug in the checkout.
 
 ---
 
-## Invoices: issued in Declarando, not by the website
+## Invoices: recorded in Declarando, not issued by the website
 
 **Decided 2026-09-27.** Tash is autónoma since 09/09/2026 and uses
 Declarando (plan with tax filing) for invoices, the quarterly 303 and 130,
@@ -550,12 +550,20 @@ and the renta. The website charges through Stripe but **does not issue
 invoices** for Nordkreis:
 
 - On `invoice.payment_succeeded`, `app/api/webhooks/nordkreis/route.ts` posts
-  a Slack message, "Rechnung in Declarando anlegen", with client, a Spanish
-  concepto ready to paste, amount and payment date. Tash creates the invoice
-  in Declarando from it. That Slack post is the only prompt, so if it fails
-  the webhook answers 500 and Stripe retries.
-- The family gets a **payment confirmation**, which says the invoice follows
-  separately.
+  a Slack message, "Zahlung in Declarando eintragen", with client, a Spanish
+  concepto ready to paste, amount and payment date. Tash records it in
+  Declarando as **ingreso sin factura**. That Slack post is the only prompt,
+  so if it fails the webhook answers 500 and Stripe retries.
+- The family gets a **payment confirmation**, which offers an invoice on
+  request. A family that asks gets a **complete** invoice from Declarando,
+  which needs their DNI/NIE.
+
+Why "sin factura": the fees are teaching, VAT-exempt under art. 20.Uno LIVA,
+and exempt operations of that kind carry no obligation to issue an invoice
+(art. 3.1.a RD 1619/2012). Declarando reflects this: the teaching epígrafe
+offers only "sin factura" or a complete invoice, never a simplified one.
+Pending confirmation by Declarando's human agent as of 2026-09-27. La Salle,
+a company, always gets a complete invoice with its CIF.
 
 Why: Spanish invoices must be numbered **correlativos y sin saltos** within
 each series, and from **1 July 2027** VeriFactu requires them to come from

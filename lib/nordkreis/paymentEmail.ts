@@ -1,9 +1,11 @@
 // lib/nordkreis/paymentEmail.ts
 // Sent after each successful Stripe charge (enrollment fee + monthly payments).
 //
-// A payment confirmation, not an invoice: invoices are issued by hand in
-// Declarando and sent separately (decided 27 Sep 2026). The website version
-// that attached a numbered PDF is on the archive/website-invoicing branch.
+// A payment confirmation, not an invoice. The fees are VAT-exempt teaching,
+// recorded in Declarando as "ingreso sin factura"; a family that needs an
+// invoice replies and gets a complete one from Declarando. So the email offers
+// an invoice on request instead of promising one. The website version that
+// attached a numbered PDF is on the archive/website-invoicing branch.
 
 import type { NordkreisInvoiceType } from './generateInvoicePdf'
 
@@ -142,12 +144,12 @@ export function buildPaymentEmailHtml({
                 </tr>
               </table>
 
-              <!-- Invoice follows separately -->
+              <!-- Invoice on request -->
               <p style="font-size:14px;line-height:1.7;margin:0 0 6px;color:#081C3C;">
-                Dies ist Deine Zahlungsbestätigung. Die Rechnung schicke ich Dir in den nächsten Tagen separat per E-Mail.
+                Dies ist Deine Zahlungsbestätigung. Falls Du eine Rechnung benötigst, antworte einfach auf diese E-Mail.
               </p>
               <p style="font-size:12px;color:#9a8f85;margin:0 0 28px;">
-                Esta es tu confirmación de pago. La factura te la enviaré por separado en los próximos días.
+                Esta es tu confirmación de pago. Si necesitas una factura, responde a este correo.
               </p>
 
               <!-- Divider -->
@@ -227,7 +229,7 @@ Betrag: ${amountEur.toFixed(2)} Euro
 Datum: ${paymentDate}
 MwSt.: Befreit — Bildungsaktivität (Art. 20 Ley 37/1992)
 
-Dies ist Deine Zahlungsbestätigung. Die Rechnung schicke ich Dir in den nächsten Tagen separat per E-Mail.
+Dies ist Deine Zahlungsbestätigung. Falls Du eine Rechnung benötigst, antworte einfach auf diese E-Mail.
 
 Fragen? nordkreis@linguatash.com
 

@@ -3,11 +3,12 @@
 // Handles Stripe webhook events for Nordkreis payments.
 // Separate from the Salten webhook (app/api/webhooks/stripe/route.ts).
 //
-// On a successful payment it does NOT issue an invoice. Invoices are issued
-// by hand in Declarando (decided 27 Sep 2026; certified software is required
-// from July 2027 anyway). This webhook posts the invoice details to Slack for
-// that, and sends the family a payment confirmation. The version that issued
-// numbered PDF invoices itself is on the archive/website-invoicing branch.
+// On a successful payment it does NOT issue an invoice. Income is recorded by
+// hand in Declarando (decided 27 Sep 2026): as "ingreso sin factura", since the
+// fees are VAT-exempt teaching, or as a complete invoice when a family asks for
+// one. This webhook posts the details to Slack for that, and sends the family a
+// payment confirmation. The version that issued numbered PDF invoices itself
+// is on the archive/website-invoicing branch.
 //
 // Register this endpoint in Stripe Dashboard:
 //   https://dashboard.stripe.com/webhooks
@@ -188,7 +189,7 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     paymentDate,
   })
 
-  // 2. Payment confirmation to the family. The invoice follows from Declarando.
+  // 2. Payment confirmation to the family, offering an invoice on request.
   await sendPaymentEmail({
     to: parentEmail,
     parentName,
@@ -222,11 +223,11 @@ function billedMonthEs(invoice: any): string {
 }
 
 /**
- * Posts everything needed to issue the invoice in Declarando, already worded
+ * Posts everything needed to record the payment in Declarando, already worded
  * in Spanish so the concept can be pasted as it is.
  *
- * Invoices are issued there by hand (decided 27 Sep 2026), so this message is
- * the only thing standing between a payment and its invoice. It throws when
+ * Income is entered there by hand (decided 27 Sep 2026), so this message is
+ * the only thing standing between a payment and its record. It throws when
  * Slack is not configured or refuses the post, rather than failing quietly.
  */
 async function notifyDeclarandoInvoice({
@@ -265,10 +266,11 @@ async function notifyDeclarandoInvoice({
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      // In the order of Declarando's form: Añadir ingreso → Con factura simplificada
+      // In the order of Declarando's form: Añadir ingreso → Sin factura. The
+      // teaching epígrafe offers only "sin factura" or a complete invoice.
       text: [
-        '🧾 *Nordkreis: Rechnung in Declarando anlegen*',
-        '*Tipo:* con factura simplificada',
+        '🧾 *Nordkreis: Zahlung in Declarando eintragen*',
+        '*Tipo:* ingreso sin factura (o factura completa si la familia la pide)',
         '*Actividad:* Enseñanza formación prof. no superior',
         `*Cliente:* ${clientName} · ${parentEmail}`,
         `*Concepto:* ${concepto}`,
