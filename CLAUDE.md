@@ -590,6 +590,27 @@ Still open:
 
 ---
 
+## Stripe payment links: how the webhook routes them
+
+Any service can be sold with a payment link made in the Stripe Dashboard,
+without touching code. `app/api/webhooks/stripe/route.ts` sorts each sale and
+refund by the link's **metadata**:
+
+| Link metadata                   | Where it goes                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `evento: la-juntada-YYYY-MM-DD` | La Juntada channel, with booking details and the Declarando data (see below)                           |
+| anything else, or no metadata   | `SLACK_WEBHOOK_URL_PAGOS` (falls back to the general channel): "💶 Pago por payment link sin proyecto" |
+
+So **no payment passes silently**: an untagged link still posts what was
+sold, to whom and for how much, with a reminder to record it in Declarando.
+When a service deserves its own channel or its own Declarando wording, give
+its links a tag and add a branch next to `esReservaJuntada`. Only La Juntada
+links may carry the `la-juntada-` tag.
+
+Salten does not use payment links; its sessions are created in
+`app/api/checkout/salten/route.ts` and recognised by their `languages`
+metadata. Nordkreis subscriptions go to their own endpoint.
+
 ## La Juntada: opening the next date
 
 Bookings are Stripe **payment links**, one per date, created in the Dashboard.

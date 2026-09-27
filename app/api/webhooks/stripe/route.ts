@@ -354,6 +354,85 @@ function esReservaJuntada(session: Stripe.Checkout.Session | undefined): boolean
   return !!session?.payment_link && !!session.metadata?.evento?.startsWith('la-juntada-')
 }
 
+/**
+ * Canal para los pagos por payment link que no son de ningún proyecto conocido.
+ * Sin su variable, cae en el general, como los demás.
+ */
+const SLACK_PAGOS = process.env.SLACK_WEBHOOK_URL_PAGOS
+
+/** Lo que se vendió, según las líneas de la sesión: "Taller X · Extra Y". */
+async function descripcionDeLaVenta(sessionId: string): Promise<string> {
+  try {
+    const lineas = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 10 })
+    return (
+      lineas.data
+        .map((l) => l.description)
+        .filter(Boolean)
+        .join(' · ') || '—'
+    )
+  } catch (err) {
+    console.warn('[Webhook] Could not read line items (non-fatal):', err)
+    return '—'
+  }
+}
+
+/**
+ * Un pago, o su devolución, por un payment link sin etiqueta conocida.
+ *
+ * Existe para que ningún cobro pase en silencio. Un link nuevo para un taller,
+ * un evento de Nordkreis o cualquier otro servicio funciona sin tocar código,
+ * y su venta llega acá con lo necesario para registrarla en Declarando. Si el
+ * servicio merece su propio canal o su propio texto, se le da una etiqueta.
+ */
+function slackSinProyectoBlocks(
+  session: Stripe.Checkout.Session,
+  descripcion: string,
+  devolucion?: Stripe.Charge
+): object[] {
+  const d = session.customer_details
+  const nombre = (d?.name ?? '').trim().replace(/\s+/g, ' ') || '—'
+  const importe = ((devolucion?.amount_refunded ?? session.amount_total ?? 0) / 100)
+    .toFixed(2)
+    .replace('.', ',')
+  const etiqueta = session.metadata?.evento ?? session.metadata?.proyecto
+
+  return [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: devolucion
+          ? '↩️ Devolución por payment link sin proyecto'
+          : '💶 Pago por payment link sin proyecto',
+        emoji: true,
+      },
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: [
+          `*Qué:* ${descripcion}`,
+          `*Cliente:* ${nombre} · ${d?.email ?? '—'}`,
+          `*Importe:* ${devolucion ? '-' : ''}${importe} €`,
+          devolucion
+            ? '*Declarando:* factura rectificativa de la venta original'
+            : '*Declarando:* registrar el ingreso. Elegí la actividad y el tipo de factura según el servicio.',
+        ].join('\n'),
+      },
+    },
+    {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `${etiqueta ? `Etiqueta: ${etiqueta} · ` : 'Sin etiqueta · '}${session.id}`,
+        },
+      ],
+    },
+  ]
+}
+
 /** "18/10/2026", sacado de la etiqueta del evento. Vacío si no la trae. */
 function fechaJuntada(session: Stripe.Checkout.Session): string {
   const iso = session.metadata?.evento?.match(/(\d{4})-(\d{2})-(\d{2})$/)
@@ -453,7 +532,15 @@ async function notificarReembolso(chargeDelEvento: Stripe.Charge): Promise<void>
   const sesiones = await stripe.checkout.sessions.list({ payment_intent: paymentIntent, limit: 1 })
   const session = sesiones.data[0]
   if (!esReservaJuntada(session)) {
-    console.log('[Webhook] Refund is not a La Juntada booking, ignoring:', charge.id)
+    if (session?.payment_link) {
+      console.log('[Webhook] Refund on a payment link without a known project:', charge.id)
+      await sendSlackNotification(
+        slackSinProyectoBlocks(session, await descripcionDeLaVenta(session.id), charge),
+        SLACK_PAGOS
+      )
+      return
+    }
+    console.log('[Webhook] Refund is not a payment link sale, ignoring:', charge.id)
     return
   }
 
@@ -673,6 +760,12 @@ export async function POST(req: NextRequest) {
     if (esReservaJuntada(fresca)) {
       console.log('[Webhook] La Juntada booking:', fresca.id)
       await sendSlackNotification(slackJuntadaBlocks(fresca), SLACK_LAJUNTADA)
+    } else if (fresca.payment_link) {
+      console.log('[Webhook] Payment link sale without a known project:', fresca.id)
+      await sendSlackNotification(
+        slackSinProyectoBlocks(fresca, await descripcionDeLaVenta(fresca.id)),
+        SLACK_PAGOS
+      )
     } else {
       console.log('[Webhook] Not a salten order, ignoring:', session.id)
     }
