@@ -124,7 +124,12 @@ receiver. Better to learn that now than from the first parent who writes in.
 
 ## Instagram Keyword Automation (ManyChat alternative)
 
-**Status as of 2026-06-15: PAUSED — waiting for autónoma registration in Spain**
+**Status as of 2026-09-28: PAUSED by choice, no longer blocked.**
+
+The autónoma registration is done, so the thing that held this up since June is
+gone. What remains is Meta's paperwork: Business Verification, then App Review
+for `instagram_manage_messages`. Both are Meta's queue, not ours, and nothing in
+this repo needs to change to start them.
 
 This is a self-hosted ManyChat-style automation. When someone comments a keyword
 (e.g. HAFEN) on a LinguaTash Instagram post, they automatically receive a DM with
@@ -257,9 +262,9 @@ $r.Content
 
 ### Next steps when returning (in order)
 
-**Step 1 — Register as autónoma in Spain**
-Get the "Certificado de Alta en el RETA" from Social Security. This is the legal
-document Meta requires for Business Verification.
+**Step 1 — Register as autónoma in Spain — DONE**
+The "Certificado de Alta en el RETA" from Social Security is what Meta asks for
+in Business Verification. Have it to hand for Step 2.
 
 **Step 2 — Complete Meta Business Verification**
 Meta App Dashboard → App Review → Business Verification → upload RETA certificate.
