@@ -324,7 +324,7 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 
 ## Alemán·y·Du — familias and audios pages
 
-**Status as of 2026-09-22: live. Classes 1 and 2 published.**
+**Status as of 2026-09-28: live. Classes 1, 2 and 3 published.**
 
 Two unlisted pages for the families of the Primaria group. Both are `noindex`,
 absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
