@@ -149,20 +149,44 @@ export default async function LaJuntadaPage() {
         <div className="space-y-4 text-justify leading-relaxed opacity-90">
           <p>En Barcelona tus hijos van a hablar español. Eso no está en riesgo.</p>
 
+          <p>Lo que se puede perder es otra cosa, y es más grande que el idioma.</p>
+
           <p>
-            Lo que se pierde es otra cosa. El voseo, la tonada, las palabras, las canciones que vos
-            escuchabas de chico. Llega un día en que le hablás en tu voz y te contesta en otra. No
-            es que no te entienda. Es que ya no suena tuyo.
+            No es solo el vos y la tonada. Es la chacarera bailada en ronda, con pañuelo. El olor de
+            las empanadas cuando se repulgan en familia y cada uno hace la suya mal. El mate que va
+            pasando de mano en mano. Las canciones de María Elena Walsh que todos los chicos de allá
+            se saben de memoria. El pan dulce en diciembre, con cuarenta grados. La pelota en la
+            vereda. El 20 de junio y esa cosa rara de emocionarse cantándole a una bandera. El tango
+            que sonaba en la casa de los abuelos. Las fechas que allá significan algo y acá pasan
+            como un día más.
           </p>
+
+          <p>
+            Es una manera entera de estar con la gente. Y no se aprende explicándola: se transmite
+            haciéndola.
+          </p>
+
+          <p>
+            Pensá en tu hijo dentro de diez años, de visita allá, en una mesa con chicos de su edad.
+            Alguien arranca con Manuelita, la de Pehuajó. ¿La sigue? ¿Entiende de qué se ríen? ¿Se
+            anima a pararse cuando empieza la chacarera?
+          </p>
+
+          <p>De eso se trata. No de que hable bien, sino de que pertenezca.</p>
 
           <p>
             La Juntada es un encuentro mensual para familias argentinas y uruguayas que viven en
             Barcelona. Un domingo al mes nos juntamos dos horas: los chicos con sus padres, con
-            otros chicos y con otros adultos que hablan como ellos.
+            otros chicos y con otros grandes que hablan como ellos.
           </p>
 
           <p>
-            No es una clase. No es una guardería. Es una tarde argentina, con la gente que la habla.
+            No es una clase. No es una guardería. Es una tarde argentina, con la gente que la vive.
+          </p>
+
+          <p>
+            Y si entre un mate y una chacarera se te hace un nudo en la garganta, también es para
+            vos.
           </p>
         </div>
       </section>
