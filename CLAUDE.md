@@ -635,4 +635,11 @@ The website reads them; it never creates them. For each new date:
 Each booking posts to the La Juntada Slack channel with the Declarando data:
 **con factura simplificada**, activity _Otros servicios culturales NCOP_,
 21 % VAT included in the price (30 € = 24,79 € + 5,21 €). A refund posts the
-matching rectificativa. Adaptive Pricing is off: prices are euros only.
+matching rectificativa.
+
+**Adaptive Pricing** is on, deliberately (decided 2026-09-27): for payment
+links Stripe offers no switch, and for Checkout it helps salten's buyers
+outside the eurozone. A visitor with a foreign card may see and pay in their
+own currency, paying the conversion fee themselves. Harmless for us: the
+session, the payout and every amount the website reads stay in euros, so
+Slack, Declarando and the adults count are unaffected.
