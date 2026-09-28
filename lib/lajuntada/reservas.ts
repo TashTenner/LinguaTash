@@ -30,6 +30,8 @@ export interface ReservaLaJuntada {
   origen: string | null
   /** En euros, lo que pagó de verdad. */
   importe: number
+  /** Una devuelta ya no ocupa lugar, pero sigue siendo parte del historial. */
+  estado: 'pagada' | 'devuelta'
 }
 
 /**
@@ -53,6 +55,9 @@ async function idDelLink(stripeUrl: string): Promise<string | null> {
  * que sin esto una cancelación seguiría contando y el cupo diría quince con
  * catorce familias. Un reembolso parcial (devolver solo el otro progenitor)
  * sigue siendo una reserva.
+ *
+ * El contador la descuenta; el panel la sigue mostrando, marcada, porque una
+ * fila que desaparece parece un error y no deja rastro de que alguien canceló.
  */
 function estaDevuelta(session: Stripe.Checkout.Session): boolean {
   const pi = session.payment_intent
@@ -62,7 +67,7 @@ function estaDevuelta(session: Stripe.Checkout.Session): boolean {
   return charge.refunded
 }
 
-/** Solo las sesiones efectivamente pagadas: una abandonada no es una reserva. */
+/** Las sesiones efectivamente cobradas: una abandonada no es una reserva. */
 async function sesionesPagadas(paymentLinkId: string): Promise<Stripe.Checkout.Session[]> {
   const pagadas: Stripe.Checkout.Session[] = []
   for await (const session of stripe.checkout.sessions.list({
@@ -70,7 +75,7 @@ async function sesionesPagadas(paymentLinkId: string): Promise<Stripe.Checkout.S
     limit: 100,
     expand: ['data.payment_intent.latest_charge'],
   })) {
-    if (session.payment_status === 'paid' && !estaDevuelta(session)) pagadas.push(session)
+    if (session.payment_status === 'paid') pagadas.push(session)
   }
   return pagadas
 }
@@ -123,7 +128,8 @@ export async function contarFamilias(stripeUrl: string | null): Promise<number |
   try {
     const id = await idDelLink(stripeUrl)
     if (!id) return null
-    return (await sesionesPagadas(id)).length
+    const sesiones = await sesionesPagadas(id)
+    return sesiones.filter((s) => !estaDevuelta(s)).length
   } catch (err) {
     console.error('[La Juntada] No se pudo contar las reservas:', err)
     return null
@@ -149,6 +155,7 @@ export async function listarReservas(stripeUrl: string): Promise<ReservaLaJuntad
       edades: campo(s, 'edades'),
       origen: campo(s, 'parte'),
       importe: (s.amount_total ?? 0) / 100,
+      estado: estaDevuelta(s) ? ('devuelta' as const) : ('pagada' as const),
     }))
     .sort((a, b) => a.creada.localeCompare(b.creada))
 }
