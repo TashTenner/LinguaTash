@@ -428,6 +428,27 @@ stops listening. This turns that into a loud failure at publish time.
 Then paste the printed snippet into `data/alemanydu-audios.ts`, write the
 `resumen`, commit and push. **No other code changes, ever.**
 
+#### Check the class recording the same day
+
+Not the audio guide, the recording of the class itself, the one that gets
+transcribed:
+
+```bash
+node scripts/revisar-grabacion.mjs --archivo "…/Recording (13).m4a" --esperado 55
+```
+
+It looks for the two ways a class gets lost, which are not the same thing. The
+recording **stopped** (laptop slept, app closed, battery died), in which case
+there is no silence to find and the file is simply short, so `--esperado` is
+what catches it. Or the recording **continued with no sound** (microphone
+covered or unplugged), which shows up as a silent stretch. It exits non zero if
+either happens.
+
+Same day matters more than it sounds. On Monday 28 September 2026 twenty
+minutes were lost to the first case, and noticing that day is what allowed
+reconstructing from memory what the audio no longer had. A Tuesday notice does
+not work as well.
+
 #### The two checks the script cannot do
 
 The script verifies the container, not the contents. It knows the file is mono,
@@ -567,8 +588,9 @@ Why "sin factura": the fees are teaching, VAT-exempt under art. 20.Uno LIVA,
 and exempt operations of that kind carry no obligation to issue an invoice
 (art. 3.1.a RD 1619/2012). Declarando reflects this: the teaching epígrafe
 offers only "sin factura" or a complete invoice, never a simplified one.
-Pending confirmation by Declarando's human agent as of 2026-09-27. La Salle,
-a company, always gets a complete invoice with its CIF.
+**Confirmed by Declarando's human agent on 2026-09-28**: Nordkreis fees are
+recorded as "ingreso sin factura". La Salle, a company, always gets a
+complete invoice with its CIF.
 
 Why: Spanish invoices must be numbered **correlativos y sin saltos** within
 each series, and from **1 July 2027** VeriFactu requires them to come from
@@ -583,12 +605,13 @@ template. Revisit it only together with a VeriFactu-certified API provider,
 or when choosing a Stripe-connected invoicing tool (Quaderno, Holded) in
 spring 2027, before the Declarando year ends in September 2027.
 
+The four enrollment documents the website sent on 24/09/2026
+(`NORDKREIS-2026-999589`, `-217925`, `-400163`, `-866431`) are not invoices
+in Declarando and need no rectificativas: those payments are recorded there
+as ingreso sin factura dated 24/09, like every other Nordkreis fee.
+
 Still open:
 
-- **Four enrollment invoices from 24/09/2026** (`NORDKREIS-2026-999589`,
-  `-217925`, `-400163`, `-866431`) went out with random numbers, dated
-  03/09, and `-217925` names Vera instead of Erik. They are to be cancelled
-  with rectificativas and reissued in Declarando.
 - **Salten** (`app/api/webhooks/stripe/route.ts`) still issues its own
   `RESUENA-YYYY-XXXXXX` invoices with random numbers and calls the
   Verifactu sandbox. No sales yet; decide before the first one.
