@@ -80,10 +80,10 @@ export const clases: AudioTrack[] = [
     clase: 3,
     fecha: '2026-09-28',
     titulo: 'Clase 3',
-    resumen: '',
+    resumen: 'Un sonido nuevo, las partes de la cara y el juego de escuchar si es uno o son dos.',
     archivo: 'ayd_pre_a1_c03.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 349,
+    disponible: true,
   },
   {
     clase: 4,
