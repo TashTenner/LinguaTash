@@ -261,8 +261,8 @@ export default function Home() {
               <h3 className="text-xl font-semibold">La Juntada</h3>
 
               <p className="mt-4 opacity-90">
-                Familias argentinas y uruguayas en Barcelona: encuentro mensual para que los hijos
-                vivan la cultura y la lengua de sus padres fuera de casa.
+                Familias argentinas en Barcelona: encuentro mensual para que los hijos vivan la
+                cultura y la lengua de sus padres fuera de casa.
               </p>
             </div>
 

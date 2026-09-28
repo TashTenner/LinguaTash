@@ -36,8 +36,8 @@ export default function NowPage() {
           <li>Empezar Alemán·y·Du: alemán extraescolar en La Salle Gràcia</li>
           <li>Abrir Nordkreis, la escuela de alemán de los sábados</li>
           <li>
-            Preparar La Juntada, que empieza en octubre: un domingo al mes para familias
-            rioplatenses en Barcelona
+            Preparar La Juntada, que empieza en octubre: un domingo al mes para familias argentinas
+            en Barcelona
           </li>
         </ul>
       </section>

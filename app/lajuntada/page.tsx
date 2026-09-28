@@ -7,7 +7,7 @@ import FaqAccordion from '@/components/lajuntada/FaqAccordion'
 export const metadata = genPageMetadata({
   title: 'La Juntada',
   description:
-    'Encuentro mensual en Barcelona para familias argentinas y uruguayas con hijos. Un domingo al mes, cultura argentina compartida entre padres e hijos.',
+    'Encuentro mensual en Barcelona para familias argentinas con hijos. Un domingo al mes, cultura argentina compartida entre padres e hijos.',
   // Sin esto la tarjeta de WhatsApp muestra el banner genérico de LinguaTash.
   image: '/static/images/lajuntada-og.png',
 })
@@ -95,7 +95,7 @@ export default async function LaJuntadaPage() {
         </p>
 
         <p className="mt-6 font-[Caveat] text-3xl text-[#B3475A]">
-          Para que tus hijos te escuchen en argentino
+          Para que tus hijos también sean de allá
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
@@ -172,12 +172,15 @@ export default async function LaJuntadaPage() {
             anima a pararse cuando empieza la chacarera?
           </p>
 
-          <p>De eso se trata. No de que hable bien, sino de que pertenezca.</p>
+          <p>
+            De eso se trata. No de que hable bien, sino de que pertenezca. De que el día de mañana
+            pueda decir «yo también soy argentino» y sentirlo de verdad, aunque haya nacido acá.
+          </p>
 
           <p>
-            La Juntada es un encuentro mensual para familias argentinas y uruguayas que viven en
-            Barcelona. Un domingo al mes nos juntamos dos horas: los chicos con sus padres, con
-            otros chicos y con otros grandes que hablan como ellos.
+            La Juntada es un encuentro mensual para familias argentinas que viven en Barcelona. Un
+            domingo al mes nos juntamos dos horas: los chicos con sus padres, con otros chicos y con
+            otros grandes que hablan como ellos.
           </p>
 
           <p>
@@ -197,13 +200,14 @@ export default async function LaJuntadaPage() {
 
         <div className="space-y-4 text-justify leading-relaxed opacity-90">
           <p>
-            La Juntada es para familias donde al menos uno de los progenitores habla el castellano
-            de Argentina o Uruguay como lengua propia y se la habla a sus hijos.
+            La Juntada es para familias donde al menos uno de los progenitores es argentino y le
+            habla a sus hijos en su lengua.
           </p>
 
           <p>
-            De Buenos Aires, de Salta, de Córdoba, de la Patagonia o de Montevideo. Todas las
-            tonadas entran. El criterio es la lengua y no el pasaporte.
+            De Buenos Aires, de Salta, de Córdoba, de Mendoza o de la Patagonia. Todas las tonadas
+            entran. Y si sos uruguayo y te sentís en casa en todo esto, también sos bienvenido: la
+            puerta no la cierra el pasaporte.
           </p>
 
           <p>
@@ -213,9 +217,7 @@ export default async function LaJuntadaPage() {
 
           <p>Pensada para chicos de 3 a 8 años. Los hermanos de cualquier edad son bienvenidos.</p>
 
-          <p>
-            La lengua de la tarde es el castellano de Argentina y Uruguay, con todas sus tonadas.
-          </p>
+          <p>La lengua de la tarde es el castellano de Argentina, con todas sus tonadas.</p>
         </div>
       </section>
 
