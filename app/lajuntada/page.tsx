@@ -187,10 +187,7 @@ export default async function LaJuntadaPage() {
             No es una clase. No es una guardería. Es una tarde argentina, con la gente que la vive.
           </p>
 
-          <p>
-            Y si entre un mate y una chacarera se te hace un nudo en la garganta, también es para
-            vos.
-          </p>
+          <p>Y si entre un mate y una chacarera se te pianta un lagrimón, también es para vos.</p>
         </div>
       </section>
 
