@@ -89,10 +89,11 @@ export const clases: AudioTrack[] = [
     clase: 4,
     fecha: '2026-10-05',
     titulo: 'Clase 4',
-    resumen: '',
+    resumen:
+      'Pedir el turno, un sonido nuevo, el brazo y la pierna, y órdenes para las manos y la lengua.',
     archivo: 'ayd_pre_a1_c04.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 402,
+    disponible: true,
   },
   {
     clase: 5,
