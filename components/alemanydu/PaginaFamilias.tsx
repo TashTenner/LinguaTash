@@ -103,8 +103,8 @@ export default function PaginaFamilias({ grupo }: { grupo: Grupo }) {
             pronunciación, oír vale más que entender.
           </p>
           <p>
-            En el grupo hay niños mayores y niños pequeños. Si yo explicara gramática, los mayores
-            seguirían y los pequeños se quedarían fuera. Escuchando, todos parten del mismo lugar.
+            El grupo es de edades mixtas. Si yo explicara gramática, los mayores seguirían y los
+            pequeños se quedarían fuera. Escuchando, todos parten del mismo lugar.
           </p>
           <p>
             Fuera de eso, el castellano o el catalán quedan como válvula en dos casos: si hay un

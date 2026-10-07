@@ -18,6 +18,8 @@ export type Grupo = {
   nombre: string
   /** «los miércoles de 14:00 a 15:00». Entra en la frase del calendario. */
   horario: string
+  /** Hora a la que termina la clase, `HH:MM`. Decide cuándo aparece el audio. */
+  horaFin: string
   /** «miércoles». Entra en «lo que hicimos ese miércoles». */
   diaSemana: string
   /** «Curso 2026/2027». */
@@ -36,6 +38,7 @@ export const grupoLunes: Grupo = {
   slug: '',
   nombre: 'Primaria, lunes',
   horario: 'los lunes de 14:00 a 15:00',
+  horaFin: '15:00',
   diaSemana: 'lunes',
   curso: 'Curso 2026/2027',
   fechas: [
@@ -91,6 +94,7 @@ export const grupoMiercoles: Grupo = {
   slug: 'miercoles',
   nombre: 'Primaria, miércoles',
   horario: 'los miércoles de 14:00 a 15:00',
+  horaFin: '15:00',
   diaSemana: 'miércoles',
   curso: 'Curso 2026/2027',
   fechas: [
@@ -137,14 +141,23 @@ export const grupoMiercoles: Grupo = {
   cierreCalendario: 'La última clase del curso es el miércoles 16 de junio de 2027.',
 }
 
+const relojMadrid = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Europe/Madrid',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+})
+
 /**
- * Hoy en Madrid, como `YYYY-MM-DD`.
+ * Ahora mismo en Madrid, como `YYYY-MM-DDTHH:MM`.
  *
- * Importa la zona: una clase de las 14:00 tiene que aparecer ese mismo día, y
- * comparar contra UTC la adelantaría o la atrasaría según la hora.
+ * Importa la zona horaria, no la del servidor: una clase que termina a las
+ * 15:00 en Barcelona tiene que aparecer a esa hora y no a otra.
  */
-export const hoyEnMadrid = () =>
-  new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Madrid' })
+export const ahoraEnMadrid = () => relojMadrid.format(new Date()).replace(' ', 'T')
 
 /**
  * Cuántas clases ha tenido ya este grupo.
@@ -152,6 +165,11 @@ export const hoyEnMadrid = () =>
  * Se deriva de las fechas, no de un contador que alguien tenga que subir cada
  * semana. Un contador se olvida, y se olvida justo en la dirección mala: de
  * más, mostrando una clase que el grupo todavía no dio.
+ *
+ * La comparación es contra el **final** de la clase, no contra el día. Mirando
+ * solo la fecha, el audio del miércoles aparecería a las 00:00 de ese
+ * miércoles, catorce horas antes de que la clase ocurra, y la página estaría
+ * diciendo «las clases que ya tuvimos» de una que todavía no fue.
  */
-export const clasesDadas = (grupo: Grupo, hoy = hoyEnMadrid()) =>
-  grupo.fechas.filter((f) => f <= hoy).length
+export const clasesDadas = (grupo: Grupo, ahora = ahoraEnMadrid()) =>
+  grupo.fechas.filter((f) => `${f}T${grupo.horaFin}` <= ahora).length
