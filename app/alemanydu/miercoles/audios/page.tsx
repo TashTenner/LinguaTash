@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import PaginaAudios from '@/components/alemanydu/PaginaAudios'
-import { grupoLunes } from '@/data/alemanydu-grupos'
+import { grupoMiercoles } from '@/data/alemanydu-grupos'
 
 export const metadata: Metadata = {
   title: 'Audios · Alemán·y·Du',
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 
 export default function Pagina() {
-  return <PaginaAudios grupo={grupoLunes} />
+  return <PaginaAudios grupo={grupoMiercoles} />
 }

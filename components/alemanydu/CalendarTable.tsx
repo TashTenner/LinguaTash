@@ -1,50 +1,28 @@
-import { clases } from '@/data/alemanydu-audios'
+import type { Grupo } from '@/data/alemanydu-grupos'
 import { diaDelMes, formatMesAno } from './format'
 
 type DiaDelCurso = {
-  /** ISO date of the Monday. */
   fecha: string
-  /** What happens that Monday. */
   etiqueta: string
-  /** Mondays without class are shown quieter. */
+  /** Los días sin clase se muestran más apagados. */
   hayClase: boolean
 }
 
-/**
- * The Mondays with no class. Every other Monday of the course has one, so this
- * list plus the class dates covers the whole year with nothing left over.
- */
-const sinClase: { fecha: string; motivo: string }[] = [
-  { fecha: '2026-10-12', motivo: 'Fiesta Nacional' },
-  { fecha: '2026-12-07', motivo: 'Día de libre disposición' },
-  { fecha: '2026-12-28', motivo: 'Vacaciones de Navidad' },
-  { fecha: '2027-01-04', motivo: 'Vacaciones de Navidad' },
-  { fecha: '2027-02-08', motivo: 'Día de libre disposición' },
-  { fecha: '2027-03-22', motivo: 'Semana Santa' },
-  { fecha: '2027-03-29', motivo: 'Semana Santa' },
-  { fecha: '2027-05-17', motivo: 'Festivo local de Barcelona' },
-]
-
-/** The last day of school. Whether there is a class that day is still open. */
-const ultimoDia: DiaDelCurso = {
-  fecha: '2027-06-21',
-  etiqueta: 'Último día de colegio',
-  hayClase: false,
-}
-
-function construirCalendario(): DiaDelCurso[] {
+function construirCalendario(grupo: Grupo): DiaDelCurso[] {
   const dias: DiaDelCurso[] = [
-    ...clases.map((c) => ({
-      fecha: c.fecha,
-      etiqueta: `Clase ${c.clase}`,
+    ...grupo.fechas.map((fecha, i) => ({
+      fecha,
+      etiqueta: `Clase ${i + 1}`,
       hayClase: true,
     })),
-    ...sinClase.map((d) => ({
+    ...grupo.sinClase.map((d) => ({
       fecha: d.fecha,
       etiqueta: `Sin clase. ${d.motivo}`,
       hayClase: false,
     })),
-    ultimoDia,
+    ...(grupo.ultimoDia
+      ? [{ fecha: grupo.ultimoDia.fecha, etiqueta: grupo.ultimoDia.etiqueta, hayClase: false }]
+      : []),
   ]
 
   return dias.sort((a, b) => a.fecha.localeCompare(b.fecha))
@@ -67,12 +45,13 @@ function agruparPorMes(dias: DiaDelCurso[]) {
 }
 
 /**
- * The whole course, Monday by Monday. Grouped by month rather than laid out as
- * a wide table so that it reads on a phone without scrolling sideways, which is
- * where most parents will open it.
+ * El curso entero del grupo, semana a semana.
+ *
+ * Agrupado por mes en vez de puesto como tabla ancha, para que se lea en un
+ * móvil sin desplazarse de lado, que es donde lo va a abrir la mayoría.
  */
-export default function CalendarTable() {
-  const meses = agruparPorMes(construirCalendario())
+export default function CalendarTable({ grupo }: { grupo: Grupo }) {
+  const meses = agruparPorMes(construirCalendario(grupo))
 
   return (
     <div className="space-y-8">

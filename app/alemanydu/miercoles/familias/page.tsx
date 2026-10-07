@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import PaginaFamilias from '@/components/alemanydu/PaginaFamilias'
-import { grupoLunes } from '@/data/alemanydu-grupos'
+import { grupoMiercoles } from '@/data/alemanydu-grupos'
 
 export const metadata: Metadata = {
   title: 'Para las familias · Alemán·y·Du',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 }
 
 export default function Pagina() {
-  return <PaginaFamilias grupo={grupoLunes} />
+  return <PaginaFamilias grupo={grupoMiercoles} />
 }

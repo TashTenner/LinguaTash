@@ -41,6 +41,20 @@ When debugging site-wide 500s, check a route you did not touch (`/` or
 `/lajuntada`) before suspecting the code you just wrote. That single request
 separates "my page is broken" from "the dev server is broken".
 
+**If a build fails with `PageNotFoundError: Cannot find module for page:
+/_document`**, it is almost never `/_document`. There is no `pages/` directory
+here. That error is Next failing to render its own error page, which hides
+whatever actually went wrong, and in practice it has meant stale generated
+state rather than broken code. Clearing `.next` alone is not enough:
+
+```powershell
+Remove-Item -Recurse -Force .next, .contentlayer
+Remove-Item -Force tsconfig.tsbuildinfo
+```
+
+Seen on 2026-10-07, when the code compiled, typechecked, linted and rendered
+correctly in dev, and the build still failed until those three were cleared.
+
 ---
 
 ## Email addresses on linguatash.com
@@ -326,9 +340,18 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 
 **Status as of 2026-09-28: live. Classes 1, 2 and 3 published.**
 
-Two unlisted pages for the families of the Primaria group. Both are `noindex`,
+Unlisted pages for the families, **one pair per group**. All are `noindex`,
 absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
 Parents reach them by a QR card handed out in class and by WhatsApp.
+
+| Group               | familias                        | audios                        |
+| ------------------- | ------------------------------- | ----------------------------- |
+| Primaria, lunes     | `/alemanydu/familias`           | `/alemanydu/audios`           |
+| Primaria, miércoles | `/alemanydu/miercoles/familias` | `/alemanydu/miercoles/audios` |
+
+The Monday group keeps the bare URLs because its QR cards are already printed.
+A new group gets a slug and two five line route files; everything else is
+shared.
 
 - `/alemanydu/familias` — the method, what is normal, what helps at home, the
   four phases of the year, the pre-A1 level, the Monday by Monday calendar
@@ -343,6 +366,27 @@ inside that class's own audio and is not named anywhere on the page.
 song name. A parent who reads a German word says it with Spanish vowels, and
 that is the interference this whole course is built to avoid. Titles are
 `Clase N`, summaries describe the class in Spanish.
+
+### Groups: the recording belongs to the class, the date belongs to the group
+
+`data/alemanydu-grupos.ts` holds each group's schedule; `alemanydu-audios.ts`
+holds the recordings. **There is no `fecha` on a class.** Two groups hear the
+same class 1 recording on different days, so the date cannot live with the
+audio. Putting it there was right with one group and became a bug with two.
+
+**A group only sees the classes it has already had**, derived from its own
+dates rather than a per group switch. A counter would have to be bumped every
+week per group, and the week it is forgotten it is wrong in the dangerous
+direction: showing a family a class they have not had yet.
+
+That is why **both audios routes are `force-dynamic`**. Visibility depends on
+today's date, and deploys only happen on Mondays when the audio is published.
+Generated at build time, a Wednesday class would not appear until the following
+Monday. Do not "optimise" these back to static.
+
+A group may have more class dates than there are recordings: the Wednesday
+group has 33, the library has 32. A class with no recording shows as
+`Todavía no disponible` rather than vanishing.
 
 ### How the audio is served, and what must not be "simplified"
 
