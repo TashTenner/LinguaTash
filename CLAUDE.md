@@ -388,6 +388,30 @@ A group may have more class dates than there are recordings: the Wednesday
 group has 33, the library has 32. A class with no recording shows as
 `Todavía no disponible` rather than vanishing.
 
+### Still written as if there were one of it: the level
+
+Three bugs in two days had the same shape, and all three came from a value
+that meant two things at once while there was only one group:
+
+- `fecha` lived on the class. It was both "when class 4 was" and "when the
+  Monday group did class 4". Two groups share the recording but not the day.
+- The publish script accepted `--clase 1` to `32`. That was both "how many
+  classes" and "how many the Monday course has". Wednesday has 33.
+- A class appeared on its date. That was both "the day of the class" and "once
+  the class has happened". It never mattered while the audio was published
+  after the class; it did as soon as a second group reused an existing one.
+
+**The level is the same trap, not yet sprung.** `pre-A1` is written by hand in
+the 33 filenames, the MediaSession album in `AudioStats.tsx`, the title prefix
+in `PaginaAudios.tsx`, the whole "El nivel" section of `PaginaFamilias.tsx`,
+the ID3 tags in `publicar-clase.mjs`, and `NOMBRE_VALIDO`. Right now `clases`
+is both "the audio library" and "the pre-A1 audio library".
+
+A1.1 will have its own class 1, a different recording from pre-A1's class 1.
+When that course exists, the level has to move onto the group the way the date
+did, and the library has to be keyed by level as well as class number. Do not
+build it before then: the shape of that course is a guess until it runs.
+
 ### How the audio is served, and what must not be "simplified"
 
 Audio lives in a **private** R2 bucket, `linguatash-alemanydu-audio`, and is
