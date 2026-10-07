@@ -222,8 +222,10 @@ ${gris('El techo elegido está en TP_OBJETIVO, arriba del todo. Si se cambia,')}
   process.exit(0)
 }
 
-if (!Number.isInteger(clase) || clase < 1 || clase > 32) {
-  morir('falta --clase, o no está entre 1 y 32')
+// El tope sigue al curso más largo que haya en alemanydu-grupos.ts. Está para
+// cazar un dedazo, no para limitar: si algún grupo pasa de 33, se sube acá.
+if (!Number.isInteger(clase) || clase < 1 || clase > 33) {
+  morir('falta --clase, o no está entre 1 y 33')
 }
 if (!wav || !fs.existsSync(wav)) morir(`no encuentro el WAV: ${wav ?? '(falta --wav)'}`)
 if (!copia) morir('falta --copia, la carpeta de respaldo sincronizada con Drive')

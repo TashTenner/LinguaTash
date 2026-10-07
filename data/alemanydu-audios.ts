@@ -317,6 +317,16 @@ export const clases: AudioTrack[] = [
     duracion: 0,
     disponible: false,
   },
+  // La 33 solo la alcanza el grupo del miércoles, que tiene una clase más que
+  // el del lunes. Grabada una vez, sirve también para cursos futuros de 33.
+  {
+    clase: 33,
+    titulo: 'Clase 33',
+    resumen: '',
+    archivo: 'ayd_pre_a1_c33.mp3',
+    duracion: 0,
+    disponible: false,
+  },
 ]
 
 /**

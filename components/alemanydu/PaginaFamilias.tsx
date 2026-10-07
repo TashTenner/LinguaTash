@@ -4,37 +4,63 @@ import type { Grupo } from '@/data/alemanydu-grupos'
 import AudioPlayer from './AudioPlayer'
 import AudioStats from './AudioStats'
 import CalendarTable from './CalendarTable'
+import { nombreMes } from './format'
 import PhaseBlock from './PhaseBlock'
 
+/**
+ * Las fases del año, definidas por número de clase y no por mes.
+ *
+ * El mes se calcula para cada grupo a partir de sus propias fechas. Escrito a
+ * mano salía del calendario del lunes, y un grupo que empieza en octubre leía
+ * «Septiembre y octubre» en una fase que para ellos no tiene septiembre.
+ *
+ * `hasta: null` significa hasta el final del curso, que es lo que hace que un
+ * grupo con 33 clases meta la de más en el último bloque sin tocar nada.
+ */
 const fases = [
   {
     titulo: 'Abrir el oído',
     tituloAleman: 'Ohren auf',
-    periodo: 'Septiembre y octubre',
+    desde: 1,
+    hasta: 6,
     descripcion:
       'Escuchar. Saludos, el cuerpo, los colores y las órdenes de movimiento. Se habla desde el primer día y todo lo que salga vale.',
   },
   {
     titulo: 'Primeras palabras',
     tituloAleman: 'Erste Wörter',
-    periodo: 'Noviembre y diciembre',
+    desde: 7,
+    hasta: 13,
     descripcion: 'Primeras palabras sueltas. Números, la familia, el aula. Sankt Martin y Navidad.',
   },
   {
     titulo: 'Yo y tú',
     tituloAleman: 'Ich und du',
-    periodo: 'Enero a marzo',
+    desde: 14,
+    hasta: 22,
     descripcion:
       'Hablar de uno mismo y del otro. Animales, comida, ropa. Primeras preguntas y respuestas.',
   },
   {
     titulo: 'Señalar y hablar',
     tituloAleman: 'Zeigen und sprechen',
-    periodo: 'Abril a junio',
+    desde: 23,
+    hasta: null,
     descripcion:
       'Describir el mundo. El tiempo, la casa, la naturaleza. Conversaciones un poco más largas.',
   },
 ]
+
+/** «Octubre y noviembre», «Enero a marzo», según los meses que toque la fase. */
+function periodoDeFase(grupo: Grupo, desde: number, hasta: number | null): string {
+  const tramo = grupo.fechas.slice(desde - 1, hasta ?? undefined)
+  if (tramo.length === 0) return ''
+  const meses = [...new Set(tramo.map(nombreMes))]
+  const mayus = (m: string) => m.charAt(0).toUpperCase() + m.slice(1)
+  if (meses.length === 1) return mayus(meses[0])
+  if (meses.length === 2) return `${mayus(meses[0])} y ${meses[1]}`
+  return `${mayus(meses[0])} a ${meses[meses.length - 1]}`
+}
 
 /**
  * La página para las familias de un grupo.
@@ -194,7 +220,7 @@ export default function PaginaFamilias({ grupo }: { grupo: Grupo }) {
               key={fase.titulo}
               titulo={fase.titulo}
               tituloAleman={fase.tituloAleman}
-              periodo={fase.periodo}
+              periodo={periodoDeFase(grupo, fase.desde, fase.hasta)}
               descripcion={fase.descripcion}
             />
           ))}

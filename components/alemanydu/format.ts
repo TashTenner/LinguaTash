@@ -69,3 +69,11 @@ export function diaDelMes(iso: string): string {
   if (!iso) return ''
   return String(Number(iso.slice(8, 10)))
 }
+
+const soloMes = new Intl.DateTimeFormat('es-ES', { month: 'long', timeZone: 'UTC' })
+
+/** `2026-10-07` devuelve `octubre`, en minúscula. */
+export function nombreMes(iso: string): string {
+  if (!iso) return ''
+  return soloMes.format(new Date(`${iso}T00:00:00Z`))
+}

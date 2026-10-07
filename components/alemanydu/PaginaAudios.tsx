@@ -66,7 +66,6 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
         </div>
 
         <h1 className="text-center text-4xl font-[400] md:text-5xl">Audios</h1>
-        <p className="mt-3 text-center text-sm font-semibold text-[#B3475A]">{grupo.nombre}</p>
 
         <div className="mt-8 space-y-5 leading-relaxed opacity-90">
           <p>
