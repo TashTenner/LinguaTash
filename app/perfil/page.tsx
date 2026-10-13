@@ -3,6 +3,78 @@ import { genPageMetadata } from 'app/seo'
 
 export const metadata = genPageMetadata({ title: 'Sobre LinguaTash' })
 
+const recorrido = [
+  {
+    ciudad: 'Jena',
+    pais: 'Alemania',
+    texto: 'Donde nací y crecí, y donde más tarde estudié Lingüística y Ciencias de la Educación.',
+  },
+  {
+    ciudad: 'Ereván',
+    pais: 'Armenia',
+    texto: 'Estancias largas con mi familia, que vive allí.',
+  },
+  {
+    ciudad: 'La Habana',
+    pais: 'Cuba',
+    texto:
+      'Idiomas y estudios hispánicos en la Facultad de Lenguas Extranjeras (FLEX) de la Universidad de La Habana. Allí también empecé a bailar tango.',
+  },
+  {
+    ciudad: 'Moscú',
+    pais: 'Rusia',
+    texto: 'Estudios de ruso en la Universidad Estatal Lomonósov de Moscú.',
+  },
+  {
+    ciudad: 'San José',
+    pais: 'Costa Rica',
+    texto:
+      'Prácticas en la Fundación PANIAMOR, una ONG que defiende los derechos de la infancia y la adolescencia.',
+  },
+  {
+    ciudad: 'Minsk',
+    pais: 'Bielorrusia',
+    texto: 'Curso de lengua bielorrusa.',
+  },
+  {
+    ciudad: 'Madrid',
+    pais: 'España',
+    texto:
+      'Prácticas en la Escuela Libre Micael, la primera escuela Waldorf de España, en Las Rozas.',
+  },
+  {
+    ciudad: 'Wellington',
+    pais: 'Nueva Zelanda',
+    texto: 'Profesora de alemán en el Goethe-Institut.',
+  },
+  {
+    ciudad: 'Londres',
+    pais: 'Reino Unido',
+    texto:
+      'Traductora y profesora de alemán, y estudios de interpretación en la London Metropolitan University.',
+  },
+  {
+    ciudad: 'Venecia',
+    pais: 'Italia',
+    texto: 'Curso intensivo de italiano en el Istituto Venezia.',
+  },
+  {
+    ciudad: 'París',
+    pais: 'Francia',
+    texto: 'Profesora de alemán y curso de francés en la Alliance Française.',
+  },
+  {
+    ciudad: 'Tel Aviv',
+    pais: 'Israel',
+    texto: 'Trabajé en un hostal y estudié hebreo.',
+  },
+  {
+    ciudad: 'Barcelona',
+    pais: 'España',
+    texto: 'Mi hogar desde 2015. Aquí crecen mis hijos y aquí nació LinguaTash.',
+  },
+]
+
 export default function Page() {
   return (
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -100,7 +172,7 @@ export default function Page() {
       </section>
 
       {/* MI CONVICCIÓN */}
-      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <h2 className="text-2xl font-semibold">Mi convicción</h2>
 
         <p>
@@ -156,7 +228,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
+      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
         <h2 className="text-2xl font-semibold">Funciona</h2>
 
         <p>
@@ -222,7 +294,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]">
         <h2 className="text-2xl font-semibold">Más allá de la enseñanza de idiomas</h2>
 
         <p>
@@ -260,6 +332,30 @@ export default function Page() {
           <li>Interés profundo por los procesos naturales de desarrollo</li>
           <li>Vida vegetariana/vegana como elección ética y cotidiana</li>
         </ul>
+      </section>
+
+      {/* RECORRIDO */}
+      <section className="space-y-6 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-16 dark:bg-[#081C3C]">
+        <h2 className="text-2xl font-semibold">Mi recorrido por el mundo</h2>
+
+        <p>
+          Cada lengua que hablo la aprendí viviéndola. Estos son los lugares que me han acompañado
+          desde que nací.
+        </p>
+
+        <ol className="grid gap-4 sm:grid-cols-2">
+          {recorrido.map(({ ciudad, pais, texto }) => (
+            <li
+              key={ciudad}
+              className="rounded-xl border border-[#9A8F85]/30 bg-white/60 px-5 py-4 dark:bg-white/5"
+            >
+              <p className="font-semibold">
+                {ciudad} <span className="font-normal text-[#9A8F85]">· {pais}</span>
+              </p>
+              <p className="mt-1 text-sm">{texto}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* FINAL QUOTE */}
