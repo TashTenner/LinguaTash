@@ -34,7 +34,7 @@ const recorrido = [
   {
     ciudad: 'Minsk',
     pais: 'Bielorrusia',
-    texto: 'Curso de lengua bielorrusa.',
+    texto: 'Curso de lengua bielorrusa en la Universidad Estatal de Bielorrusia.',
   },
   {
     ciudad: 'Madrid',
