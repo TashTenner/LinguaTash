@@ -96,10 +96,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 5,
     titulo: 'Clase 5',
-    resumen: '',
+    resumen:
+      'Un sonido nuevo, los colores, preguntar y contestar que sí o que no, y más órdenes para el cuerpo.',
     archivo: 'ayd_pre_a1_c05.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 280,
+    disponible: true,
   },
   {
     clase: 6,
