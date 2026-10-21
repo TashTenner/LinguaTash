@@ -14,11 +14,14 @@
  *   happened that particular Saturday and so cannot travel with the recording.
  *
  * The content number is not the Saturday number, and neither may be derived
- * from the other. Saturdays 1 to 10 and 17 to 20 always play the same content,
- * but Fasching and Ostern move with Easter somewhere inside Saturdays 11 to 16,
- * so those six rows are reordered once a year, in July, when the school
- * confirms the dates. Parents only ever see Saturday numbers; the content
- * number picks the file and is never displayed.
+ * from the other. In practice every row is identity: the contents build on
+ * each other (song rotation, the Löwenjagd growing a station per audio), so
+ * they always play in the order 1 to 20, and in July the DATES are chosen to
+ * fit (14 before Easter, 15 after, 8 the only December date) rather than the
+ * contents being reordered. `inhalt` stays explicit anyway, so a year that
+ * needs an exception can have one without touching the recordings. Parents
+ * only ever see Saturday numbers; the content number picks the file and is
+ * never displayed.
  *
  * Import this module from server components only. Anything handed to a client
  * component must be a narrowed object built in the page.
@@ -138,7 +141,7 @@ export const entdeckerkreis2026: Jahrgang = {
   schuljahr: '2026/2027',
   name: 'Entdeckerkreis',
   endeUhrzeit: '11:30',
-  // Easter 2027 is 28 March, so the spring block plays in order this year.
+  // Contents always play in order 1 to 20; the dates are chosen to fit.
   samstage: [
     {
       datum: '2026-09-19',

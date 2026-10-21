@@ -679,9 +679,16 @@ the thing most likely to be got wrong.
   Saturdays: date, which content plays, and **«Zwischen den Samstagen»**, the
   parents' idea for the fortnight, which may talk about that particular
   Saturday and so cannot travel with the recording.
-- Saturdays 1 to 10 and 17 to 20 always play the same content. **Fasching and
-  Ostern move with Easter inside Saturdays 11 to 16**, so those six rows are
-  reordered once a year, in July, when the school confirms the dates.
+- **Contents always play in the order 1 to 20** (decided 2026-10-21), because
+  they build on each other: the song rotation, the Löwenjagd that grows a
+  station per audio, every «weißt Du noch». Reordering them for a late Easter
+  would break all of that. Instead, **in July the dates are chosen to fit**:
+  content 8 is the only December date, 14 lies before Easter and 15 after it,
+  11 as close to Fasching as the rest allows. The 1 / 3 / 3 / 1 then twice a
+  month distribution is the normal case, not a law; spring shifts when Easter
+  is late (2029/30, Easter 21 April: March 1, April 2, May 3, June 2). So every
+  row is identity, but `inhalt` stays explicit and must never be derived from
+  the position.
 - Parents only ever see Saturday numbers. The content number picks the file
   and is never shown, not even in a download: the download route names the
   file `Nordkreis · Entdeckerkreis · Samstag 2 · Der Markt.mp3` from the data,
