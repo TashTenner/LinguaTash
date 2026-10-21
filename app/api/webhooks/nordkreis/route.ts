@@ -34,26 +34,47 @@ import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-// ── Course months ─────────────────────────────────────────────────────────────
+// ── Charge numbering ──────────────────────────────────────────────────────────
 
 /** The course runs September to June. */
 const COURSE_MONTHS = 10
 
 /**
- * Which month of the course an invoice pays for: September is 1, June is 10.
+ * Which of this family's monthly charges an invoice is, and out of how many:
+ * a child who starts in November pays 1/8 in November and 8/8 in June, which
+ * is what the confirmation email promised ("× 8 Monate").
  *
- * Read from the period the first line bills, not from when the invoice was
- * created. A subscription line covers Oct 3 → Nov 3 and is October; a manual
- * line has a single instant, the day it was added. Returns undefined for July
- * and August, which are never billed, rather than inventing a number.
+ * Counted from the subscription's first charge (trial_end) to the period the
+ * invoice's first line bills, with the total taken from the subscription's
+ * totalMonths metadata, set on activation.
+ *
+ * An invoice without such a subscription (a manual one) falls back to the
+ * month of the course out of 10, September being 1. Returns undefined for
+ * July and August, which are never billed, rather than inventing a number.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function courseMonth(invoice: any): number | undefined {
+function chargeNumber(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  invoice: any,
+  sub: Stripe.Subscription | null
+): { monthNumber: number; totalMonths: number } | undefined {
   const start: number | undefined = invoice.lines?.data?.[0]?.period?.start ?? invoice.created
   if (!start) return undefined
-  const month = new Date(start * 1000).getUTCMonth() // 0 = January
-  if (month >= 8) return month - 7 // Sep..Dec → 1..4
-  if (month <= 5) return month + 5 // Jan..Jun → 5..10
+  const billed = new Date(start * 1000)
+
+  const totalMonths = Number(sub?.metadata?.totalMonths)
+  if (sub?.trial_end && totalMonths > 0) {
+    const first = new Date(sub.trial_end * 1000)
+    const monthNumber =
+      (billed.getUTCFullYear() - first.getUTCFullYear()) * 12 +
+      (billed.getUTCMonth() - first.getUTCMonth()) +
+      1
+    if (monthNumber >= 1 && monthNumber <= totalMonths) return { monthNumber, totalMonths }
+    return undefined
+  }
+
+  const month = billed.getUTCMonth() // 0 = January
+  if (month >= 8) return { monthNumber: month - 7, totalMonths: COURSE_MONTHS } // Sep..Dec → 1..4
+  if (month <= 5) return { monthNumber: month + 5, totalMonths: COURSE_MONTHS } // Jan..Jun → 5..10
   return undefined
 }
 
@@ -135,27 +156,26 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
       ? invoice.subscription
       : (invoice.subscription?.id ?? invoice.lines?.data?.[0]?.subscription ?? '')
 
-  let childName = ''
-  let childGroup = ''
-  // The number on the invoice is the month of the course, not a count of
-  // this family's charges: October is always 2/10, whether September came
-  // through the subscription, a manual invoice, or not at all.
-  const totalMonths = COURSE_MONTHS
-  const monthNumber = isEnrollment ? undefined : courseMonth(invoice)
-
-  // Which child this invoice is for. Siblings share a parent email, so the
-  // email alone can't answer it: every source that names the child comes
-  // before the sheet. The enrollment fee carries it in its own metadata.
-  childName = invoice.metadata?.childName ?? ''
-
-  if (!childName && subscriptionId) {
+  let sub: Stripe.Subscription | null = null
+  if (subscriptionId) {
     try {
-      const sub = await stripe.subscriptions.retrieve(subscriptionId)
-      childName = sub.metadata?.childName ?? ''
+      sub = await stripe.subscriptions.retrieve(subscriptionId)
     } catch (e) {
       console.error('Could not retrieve subscription:', e)
     }
   }
+
+  let childGroup = ''
+  // The number on the invoice counts this family's charges: a child who
+  // starts in November pays 1/8 first, not 3/10. See chargeNumber.
+  const numbering = isEnrollment ? undefined : chargeNumber(invoice, sub)
+  const monthNumber = numbering?.monthNumber
+  const totalMonths = numbering?.totalMonths
+
+  // Which child this invoice is for. Siblings share a parent email, so the
+  // email alone can't answer it: every source that names the child comes
+  // before the sheet. The enrollment fee carries it in its own metadata.
+  let childName: string = invoice.metadata?.childName || sub?.metadata?.childName || ''
 
   // A manual invoice has neither, only its line: "Nordkreis Monatsbeitrag — Name"
   if (!childName) childName = childNameFromDescription(firstDesc)
@@ -185,6 +205,7 @@ async function handlePaymentSucceeded(rawInvoice: Stripe.Invoice) {
     childGroup,
     isEnrollment,
     monthNumber,
+    totalMonths,
     amountEur,
     paymentDate,
   })
@@ -238,6 +259,7 @@ async function notifyDeclarandoInvoice({
   childGroup,
   isEnrollment,
   monthNumber,
+  totalMonths,
   amountEur,
   paymentDate,
 }: {
@@ -249,6 +271,7 @@ async function notifyDeclarandoInvoice({
   childGroup: string
   isEnrollment: boolean
   monthNumber?: number
+  totalMonths?: number
   amountEur: number
   paymentDate: string
 }) {
@@ -258,7 +281,7 @@ async function notifyDeclarandoInvoice({
   const alumno = `${childName || '¿alumno?'}${childGroup ? `, ${childGroup}` : ''}`
   const concepto = isEnrollment
     ? `Nordkreis: matrícula curso 2026/27. Alumno: ${alumno}`
-    : `Nordkreis: cuota mensual${monthNumber ? ` ${monthNumber} de ${COURSE_MONTHS}` : ''} (${billedMonthEs(invoice)}). Alumno: ${alumno}`
+    : `Nordkreis: cuota mensual${monthNumber ? ` ${monthNumber} de ${totalMonths}` : ''} (${billedMonthEs(invoice)}). Alumno: ${alumno}`
   const [y, m, d] = paymentDate.split('-')
   const importe = amountEur.toFixed(2).replace('.', ',')
 
