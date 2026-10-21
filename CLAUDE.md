@@ -636,6 +636,132 @@ to succeed and hand over a near empty zip. It is not a bug in the checkout.
 
 ---
 
+## Nordkreis — family audio page
+
+**Status as of 2026-10-21: live with audios 1 to 3.**
+
+`/nordkreis/audios`, German, for the parents of the Saturday school. One card
+per Saturday already held, newest first; upcoming Saturdays folded below. Not
+linked from the public site, not in the sitemap, `noindex`. Parents get the
+link and the password by email. The content (titles, Wort der Woche, scripts)
+is written in a separate planning chat and arrives as `NK_Audio_*.md` files.
+
+Unlike Alemán·y·Du, **German text on the page is wanted**: the parents are
+native speakers. Same copy rules otherwise: Ihr, Euch, Euer, Du, Dir, Dein
+capitalised, no hyphens or dashes, no emoji. The middle dot `·` is the
+separator everywhere, including file and download names.
+
+### Access: one family password, and it guards the files too
+
+`middleware.ts` gates `/nordkreis/audios` (redirect to `/nordkreis/audios/anmelden`)
+**and** `/api/nordkreis/audio` and `/api/nordkreis/download` (401). The file
+names are guessable (`nk_ent_a03.mp3`), so a password on the page alone would
+protect nothing. Do not take the API routes out of the matcher.
+
+The cookie `nordkreis_eltern_token` holds a hash of `NORDKREIS_ELTERN_PASSWORD`
+and lasts a year. Changing the variable for a new school year logs every
+family out at once, with nothing to revoke. The login accepts the password
+case insensitively and trimmed, because parents type it on a phone. It is
+separate from `NORDKREIS_ADMIN_PASSWORD`, and must stay different: the family
+one is sent to every parent.
+
+### Content number is not the Saturday number
+
+This is the Nordkreis version of "the date belongs to the group", and it is
+the thing most likely to be got wrong.
+
+- A recording belongs to **group, cycle and content number**
+  (`nk_<gruppe>_<zyklus><NN>.mp3`). A child passes through a group at most
+  three times, so content runs in cycles A, B, C, and cycle A of 2026/27 plays
+  again in 2029/30. A recording therefore carries nothing that is only true
+  this year: no date, no Saturday number, not in the tags and not spoken.
+- A school year (`Jahrgang` in `data/nordkreis-audios.ts`) holds the 20
+  Saturdays: date, which content plays, and **«Zwischen den Samstagen»**, the
+  parents' idea for the fortnight, which may talk about that particular
+  Saturday and so cannot travel with the recording.
+- Saturdays 1 to 10 and 17 to 20 always play the same content. **Fasching and
+  Ostern move with Easter inside Saturdays 11 to 16**, so those six rows are
+  reordered once a year, in July, when the school confirms the dates.
+- Parents only ever see Saturday numbers. The content number picks the file
+  and is never shown, not even in a download: the download route names the
+  file `Nordkreis · Entdeckerkreis · Samstag 2 · Der Markt.mp3` from the data,
+  never from the request or the object key.
+
+2026/27 is cycle A of the Entdeckerkreis. Kompasskreis children are in it this
+year and everything goes under `ent`; a Kompasskreis of its own later starts
+fresh at `nk_kom_a01`, never reusing `ent` files. Group codes are
+`spi ent kom nor pol den wei abs`, matching the public Nordkreis page.
+
+### What a card shows, and what must match the audio
+
+| Field                  | Lives on  | Word for word in the audio?           |
+| ---------------------- | --------- | ------------------------------------- |
+| Titel                  | recording | yes, also ID3 title and download name |
+| Wort der Woche         | recording | yes                                   |
+| the three sentences    | recording | yes, the Wort der Woche block         |
+| Buch                   | recording | yes                                   |
+| Zwischen den Samstagen | Saturday  | no, it is not in the audio            |
+
+If a script changes one of the first four, the page must follow the audio,
+not the other way round. The sentences sit directly under the word with no
+heading, on purpose. A book shows as one quiet line on the card and once in
+«Die Bücher, die wir lesen» at the foot, deduplicated (a book runs over
+several audios), only from Saturdays already held. The year shown is the
+**first edition**, never a printing: printings differ or carry no year.
+
+A card without audio looks the same as one with audio and says «Noch nicht
+verfügbar». That is the normal state for days after every Saturday, not an
+error. Cards appear at `endeUhrzeit` (11:30, when the session ends), which is
+why the route is `force-dynamic`, as on Alemán·y·Du.
+
+### Serving, same design as Alemán·y·Du
+
+Private R2 bucket `linguatash-nordkreis-audio`
+(`CLOUDFLARE_R2_NORDKREIS_AUDIO_BUCKET`), streamed through our own routes,
+Range forwarded, Node runtime. Everything in the Alemán·y·Du section about not
+"simplifying" those applies unchanged. `lib/nordkreis/audioStorage.ts` is a
+deliberate copy rather than a shared module, so a refactor here cannot break
+live Alemán·y·Du playback.
+
+Cache is `private, max-age=31536000, immutable`: `private` because the files
+sit behind a password. The consequence: **a published file is never replaced
+under the same name.** Parents' phones keep it for a year and most would never
+get the new version. If a recording really must be redone after families have
+loaded it, it needs a new object name and a code change, not a re-upload.
+
+### Publishing an audio
+
+```bash
+node scripts/publicar-nordkreis.mjs --audio 4 --wav "C:/Users/34665/Documents/Sound Recordings/Recording (33).wav" --copia "G:/My Drive/LinguaTash/Nordkreis/Audios"
+```
+
+`--audio` is the **content number**. It takes the ID3 title from
+`data/nordkreis-audios.ts` (so fill `titel` first), refuses to overwrite
+anything locally or in the bucket, and uses the same two pass loudness system
+and checks as `publicar-clase.mjs` (-16 LUFS, `TP=-5`, mono 44.1 kHz 96 kbps;
+read the Alemán·y·Du section before touching any of those numbers). Tags:
+title only, track = content number, album `Nordkreis Entdeckerkreis · Zyklus A`,
+artist `Tash Tenner`, no year. `--dry-run` copies nothing and uploads nothing.
+
+Backup goes to Google Drive, `G:\My Drive\LinguaTash\Nordkreis\Audios`, WAV
+master and MP3. Then set `dauer` and `verfuegbar: true` on that recording,
+commit, push to both branches.
+
+Before publishing, run `scripts/revisar-grabacion.mjs` on each WAV and listen
+to it, or at least to the Wort der Woche block, which is printed on the page.
+Audios run five to eleven minutes; the intro says so and tells parents they
+never have to listen to the end. If they grow past eleven, change that line.
+
+### Deploys: production is `main`
+
+Pushing to `private-prod` only builds a Vercel **preview**. linguatash.com
+builds from `main`. Every change goes to both, `private-prod` first, then
+`main` brought level with it. A page that "is pushed" but only on
+`private-prod` is not live, which is easy to miss when telling parents a link
+works.
+
+---
+
 ## Invoices: recorded in Declarando, not issued by the website
 
 **Decided 2026-09-27.** Tash is autónoma since 09/09/2026 and uses
