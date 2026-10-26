@@ -105,10 +105,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 6,
     titulo: 'Clase 6',
-    resumen: '',
+    resumen:
+      'Un repaso que cierra la primera etapa: el cuerpo y sus plurales, los colores, las vocales largas y las cortas, y las órdenes.',
     archivo: 'ayd_pre_a1_c06.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 342,
+    disponible: true,
   },
   {
     clase: 7,
