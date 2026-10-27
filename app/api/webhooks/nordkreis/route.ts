@@ -408,8 +408,10 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
     childName = sheetData?.childFullName ?? ''
   }
 
-  // 1. Email to parent
-  await fetch('https://api.mailersend.com/v1/email', {
+  // 1. Email to parent. Whether it went out is checked, not assumed: the Slack
+  //    alert below is the only place a refused email would ever surface, and
+  //    without it Tash would believe the family had been told.
+  const emailRes = await fetch('https://api.mailersend.com/v1/email', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.MAILERSEND_API_KEY}`,
@@ -426,7 +428,14 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
       html: buildPaymentFailureEmailHtml({ parentName, childName, amountEur, attemptCount }),
       text: buildPaymentFailureEmailText({ parentName, childName, amountEur, attemptCount }),
     }),
-  }).catch(console.error)
+  }).catch((err) => {
+    console.error('Payment failure email could not be sent:', err)
+    return null
+  })
+  const emailOk = !!emailRes?.ok
+  if (emailRes && !emailRes.ok) {
+    console.error('Payment failure email refused:', await emailRes.text())
+  }
 
   // 2. Slack alert to admin
   if (process.env.SLACK_WEBHOOK_URL) {
@@ -434,7 +443,7 @@ async function handlePaymentFailed(rawInvoice: Stripe.Invoice) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: `⚠️ *Nordkreis Zahlung fehlgeschlagen*\nBetrag: ${amountEur} €\nKind: ${childName} · ${parentEmail}\nVersuch: ${attemptCount}\nStripe Invoice: \`${invoice.id}\``,
+        text: `⚠️ *Nordkreis Zahlung fehlgeschlagen*\nBetrag: ${amountEur} €\nKind: ${childName} · ${parentEmail}\nVersuch: ${attemptCount}\nStripe Invoice: \`${invoice.id}\`${emailOk ? '' : '\n🚨 *E-Mail an die Familie NICHT zugestellt*: bitte selbst kontaktieren.'}`,
       }),
     }).catch(console.error)
   }
