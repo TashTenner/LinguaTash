@@ -384,9 +384,31 @@ today's date, and deploys only happen on Mondays when the audio is published.
 Generated at build time, a Wednesday class would not appear until the following
 Monday. Do not "optimise" these back to static.
 
-A group may have more class dates than there are recordings: the Wednesday
-group has 33, the library has 32. A class with no recording shows as
-`Todavía no disponible` rather than vanishing.
+A group may have more class dates than there are recordings, and a class with
+no recording shows as `Todavía no disponible` rather than vanishing. Keep that
+path: the counts move. Both groups are on 32 dates and the library holds 33
+entries, because on 28 October 2026 primaria went away on colonias and the
+Wednesday group lost a class. **Never add a date to make the numbers line up.**
+A group's dates are the days it actually meets; entry 33 simply goes unused,
+which is why `PaginaAudios` walks the group's class numbers and not the
+library.
+
+### A one off notice on a familias page
+
+`aviso?: { desde, hasta, texto }` on a group puts a note at the top of its
+familias page, and `avisoVigente` shows it only while today is inside the
+window. It is for what was not planned: a day the school takes primaria on
+colonias, a cancellation.
+
+`hasta` is not optional politeness. A note that says "hoy" and is still there
+on Thursday is worse than no note, and nobody is deploying on a Thursday to
+take it down. That is also why **both familias routes are `force-dynamic`**,
+not just the audios ones: the note has to expire by itself.
+
+Adjusting the calendar matters more than the note. Take the day out of
+`fechas` and put it in `sinClase`, and the audios page stops offering a class
+that never happened, because visibility is derived from the dates. Writing
+only the note would leave the page announcing "Clase 4" that afternoon.
 
 ### Still written as if there were one of it: the level
 
@@ -396,7 +418,9 @@ that meant two things at once while there was only one group:
 - `fecha` lived on the class. It was both "when class 4 was" and "when the
   Monday group did class 4". Two groups share the recording but not the day.
 - The publish script accepted `--clase 1` to `32`. That was both "how many
-  classes" and "how many the Monday course has". Wednesday has 33.
+  classes" and "how many the Monday course has"; Wednesday had 33 at the time.
+  It takes 33 now, and a cancelled Wednesday has since put that group back on
+  32, which is the point: the limit is headroom, not a count of anything.
 - A class appeared on its date. That was both "the day of the class" and "once
   the class has happened". It never mattered while the audio was published
   after the class; it did as soon as a second group reused an existing one.

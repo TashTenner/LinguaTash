@@ -30,6 +30,14 @@ export type Grupo = {
   sinClase: { fecha: string; motivo: string }[]
   /** Fila extra al final del calendario, si hace falta aclarar algo. */
   ultimoDia?: { fecha: string; etiqueta: string }
+  /**
+   * Nota al principio de la página de familias, mientras esté vigente.
+   *
+   * Para lo que pasa una vez y no estaba previsto, como un día que el colegio
+   * se lleva a primaria de colonias. Lleva `hasta` porque una nota que dice
+   * «hoy» y sigue puesta el jueves es peor que no tener nota.
+   */
+  aviso?: { desde: string; hasta: string; texto: string }
   /** Párrafo de cierre del calendario. */
   cierreCalendario: string
 }
@@ -101,7 +109,6 @@ export const grupoMiercoles: Grupo = {
     '2026-10-07',
     '2026-10-14',
     '2026-10-21',
-    '2026-10-28',
     '2026-11-04',
     '2026-11-11',
     '2026-11-18',
@@ -133,11 +140,18 @@ export const grupoMiercoles: Grupo = {
     '2027-06-16',
   ],
   sinClase: [
+    { fecha: '2026-10-28', motivo: 'Colonias de primaria' },
     { fecha: '2026-12-23', motivo: 'Vacaciones de Navidad' },
     { fecha: '2026-12-30', motivo: 'Vacaciones de Navidad' },
     { fecha: '2027-01-06', motivo: 'Reyes' },
     { fecha: '2027-03-24', motivo: 'Semana Santa' },
   ],
+  aviso: {
+    desde: '2026-10-28',
+    hasta: '2026-10-28',
+    texto:
+      'Hoy, miércoles 28 de octubre, no hay clase de alemán: primaria está de colonias. La clase 4 pasa al miércoles 4 de noviembre, y el resto del calendario se desplaza una semana.',
+  },
   cierreCalendario: 'La última clase del curso es el miércoles 16 de junio de 2027.',
 }
 
@@ -173,3 +187,16 @@ export const ahoraEnMadrid = () => relojMadrid.format(new Date()).replace(' ', '
  */
 export const clasesDadas = (grupo: Grupo, ahora = ahoraEnMadrid()) =>
   grupo.fechas.filter((f) => `${f}T${grupo.horaFin}` <= ahora).length
+
+/**
+ * El aviso del grupo, si hoy cae dentro de su ventana.
+ *
+ * Se mira al servir la página, como `clasesDadas`, así que la nota se va sola
+ * cuando pasa el día y no hay que acordarse de quitarla en el siguiente
+ * despliegue.
+ */
+export const avisoVigente = (grupo: Grupo, ahora = ahoraEnMadrid()) => {
+  const hoy = ahora.slice(0, 10)
+  if (!grupo.aviso) return null
+  return grupo.aviso.desde <= hoy && hoy <= grupo.aviso.hasta ? grupo.aviso : null
+}

@@ -1,6 +1,6 @@
 import Link from '@/components/Link'
 import { frasePrueba } from '@/data/alemanydu-audios'
-import type { Grupo } from '@/data/alemanydu-grupos'
+import { avisoVigente, type Grupo } from '@/data/alemanydu-grupos'
 import AudioPlayer from './AudioPlayer'
 import AudioStats from './AudioStats'
 import CalendarTable from './CalendarTable'
@@ -73,6 +73,7 @@ function periodoDeFase(grupo: Grupo, desde: number, hasta: number | null): strin
  */
 export default function PaginaFamilias({ grupo }: { grupo: Grupo }) {
   const rutaAudios = grupo.slug ? `/alemanydu/${grupo.slug}/audios` : '/alemanydu/audios'
+  const aviso = avisoVigente(grupo)
 
   return (
     <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -88,6 +89,14 @@ export default function PaginaFamilias({ grupo }: { grupo: Grupo }) {
           En clase hablo solamente en alemán desde el primer día.
         </p>
       </section>
+
+      {/* AVISO */}
+      {aviso ? (
+        <section className="rounded-2xl border border-[#B3475A]/50 bg-[#B3475A]/5 px-5 py-6 sm:px-8">
+          <p className="text-sm font-semibold tracking-wide text-[#B3475A] uppercase">Aviso</p>
+          <p className="mt-3 leading-relaxed opacity-90">{aviso.texto}</p>
+        </section>
+      ) : null}
 
       {/* POR QUÉ */}
       <section>
