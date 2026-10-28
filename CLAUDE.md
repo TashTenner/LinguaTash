@@ -393,22 +393,24 @@ A group's dates are the days it actually meets; entry 33 simply goes unused,
 which is why `PaginaAudios` walks the group's class numbers and not the
 library.
 
-### A one off notice on a familias page
+### A day that falls out of the calendar
 
-`aviso?: { desde, hasta, texto }` on a group puts a note at the top of its
-familias page, and `avisoVigente` shows it only while today is inside the
-window. It is for what was not planned: a day the school takes primaria on
-colonias, a cancellation.
+It happened on 28 October 2026: the school took primaria away on colonias and
+the Wednesday group had no class. The fix is one edit in
+`data/alemanydu-grupos.ts`, moving the date out of `fechas` and into
+`sinClase`.
 
-`hasta` is not optional politeness. A note that says "hoy" and is still there
-on Thursday is worse than no note, and nobody is deploying on a Thursday to
-take it down. That is also why **both familias routes are `force-dynamic`**,
-not just the audios ones: the note has to expire by itself.
+Everything follows from that one move. Class 4 shifts to the next Wednesday
+and the rest of the course with it, and the audios page stops offering a class
+that never happened, because what a group sees is derived from its dates.
+**Do it before the hour the class would have ended**, or the page announces a
+Clase 4 that afternoon.
 
-Adjusting the calendar matters more than the note. Take the day out of
-`fechas` and put it in `sinClase`, and the audios page stops offering a class
-that never happened, because visibility is derived from the dates. Writing
-only the note would leave the page announcing "Clase 4" that afternoon.
+A banner on the familias page saying "hoy no hay clase" was built and then
+taken out again, deliberately: the calendar row already says it. A note that
+says "hoy" is not free, it needs `force-dynamic` on the familias routes and a
+window to expire in, or it is still there on Thursday with nobody deploying to
+remove it. That is the price if one is ever actually wanted.
 
 ### Still written as if there were one of it: the level
 
