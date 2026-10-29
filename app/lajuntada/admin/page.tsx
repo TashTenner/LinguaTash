@@ -1,4 +1,4 @@
-import { fechasLaJuntada } from '@/content/lajuntada/fechas'
+import { fechasLaJuntada, linksDe } from '@/content/lajuntada/fechas'
 import { listarReservas } from '@/lib/lajuntada/reservas'
 import AdminAcciones from '@/components/lajuntada/AdminAcciones'
 
@@ -21,12 +21,14 @@ const cuando = new Intl.DateTimeFormat('es-ES', {
 })
 
 export default async function LaJuntadaAdminPage() {
-  const abiertas = fechasLaJuntada.filter((f) => f.stripeUrl)
+  // Una fecha con link propio o con reservas traspasadas de una cancelada. La
+  // cancelada no tiene sección: sus reservas están en la fecha que la reemplaza.
+  const abiertas = fechasLaJuntada.filter((f) => linksDe(f).length > 0)
 
   const porFecha = await Promise.all(
     abiertas.map(async (f) => ({
       fecha: f,
-      reservas: await listarReservas(f.stripeUrl!),
+      reservas: await listarReservas(f),
     }))
   )
 
@@ -58,7 +60,14 @@ export default async function LaJuntadaAdminPage() {
         return (
           <section key={fecha.iso} className="space-y-4">
             <div className="flex flex-wrap items-baseline justify-between gap-2 border-b-2 border-[#b3475a]/30 pb-2">
-              <h2 className="text-xl font-semibold text-[#b3475a]">{fecha.fecha}</h2>
+              <h2 className="text-xl font-semibold text-[#b3475a]">
+                {fecha.fecha}
+                {!fecha.stripeUrl && (
+                  <span className="ml-3 text-sm font-normal opacity-70">
+                    sin link de Stripe todavía
+                  </span>
+                )}
+              </h2>
               <p className="text-sm">
                 <span className={lleno ? 'font-semibold text-[#b3475a]' : 'font-semibold'}>
                   {activas.length} de {CUPO} familias
@@ -109,6 +118,11 @@ export default async function LaJuntadaAdminPage() {
                               {devuelta && (
                                 <span className="inline-block w-fit rounded-full bg-[#b3475a] px-2 py-0.5 text-xs font-medium text-[#f4efe8]">
                                   Devuelta
+                                </span>
+                              )}
+                              {r.traspasadaDe && (
+                                <span className="inline-block w-fit rounded-full bg-[#9a8f85]/20 px-2 py-0.5 text-xs font-medium">
+                                  Traspasada del {r.traspasadaDe}
                                 </span>
                               )}
                             </div>

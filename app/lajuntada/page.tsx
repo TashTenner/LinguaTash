@@ -54,14 +54,16 @@ export default async function LaJuntadaPage() {
   const hoy = new Date().toISOString().slice(0, 10)
   // La primera fecha que todavía no pasó y ya tiene link. El hero se actualiza
   // solo cuando se abre la reserva de la siguiente.
-  const proximaAbierta = fechasLaJuntada.find((f) => f.iso >= hoy && f.stripeUrl)
+  const proximaAbierta = fechasLaJuntada.find(
+    (f) => f.iso >= hoy && f.stripeUrl && f.estado !== 'cancelada'
+  )
 
   // Una consulta por fecha abierta, no una por fila: hoy es una sola.
   const reservadas = new Map<string, number | null>()
   await Promise.all(
     fechasLaJuntada
-      .filter((f) => f.iso >= hoy && f.stripeUrl)
-      .map(async (f) => reservadas.set(f.iso, await contarFamilias(f.stripeUrl)))
+      .filter((f) => f.iso >= hoy && f.stripeUrl && f.estado !== 'cancelada')
+      .map(async (f) => reservadas.set(f.iso, await contarFamilias(f)))
   )
   const proximaCompleta = !!proximaAbierta && completa(reservadas.get(proximaAbierta.iso))
 
@@ -100,8 +102,10 @@ export default async function LaJuntadaPage() {
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
           {proximaCompleta
-            ? 'La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Ya se completaron los 15 lugares: escribime y te anoto en la lista de espera.'
-            : 'La primera juntada es el domingo 18 de octubre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas ya están abiertas.'}
+            ? 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Ya se completaron los 15 lugares: escribime y te anoto en la lista de espera.'
+            : proximaAbierta
+              ? 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas ya están abiertas.'
+              : 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas se abren en estos días.'}
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -290,7 +294,21 @@ export default async function LaJuntadaPage() {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-col items-start gap-2">
-                        {pasada ? (
+                        {f.estado === 'cancelada' ? (
+                          <>
+                            <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
+                              Cancelada
+                            </span>
+                            {f.traspasadaA && (
+                              <span className="text-xs opacity-70">
+                                Se pasó al{' '}
+                                {fechasLaJuntada
+                                  .find((g) => g.iso === f.traspasadaA)
+                                  ?.fecha.replace(/^Domingo /, '')}
+                              </span>
+                            )}
+                          </>
+                        ) : pasada ? (
                           <span className="inline-block rounded-full bg-[#9A8F85]/15 px-3 py-1 text-xs font-medium text-[#9A8F85]">
                             Pasada
                           </span>

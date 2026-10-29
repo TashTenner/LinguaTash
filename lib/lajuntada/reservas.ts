@@ -7,10 +7,13 @@
  * verdad que puede desincronizarse.
  *
  * Una fecha y su payment link ya están emparejados en content/lajuntada/fechas.ts.
- * De ahí sale todo: buscamos el link por su URL y contamos lo que cobró.
+ * De ahí sale todo: buscamos el link por su URL y contamos lo que cobró. Una
+ * fecha cancelada y traspasada suma su link al de la fecha que la reemplaza
+ * (ver `linksDe`).
  */
 
 import Stripe from 'stripe'
+import { linksDe, type FechaLaJuntada } from '@/content/lajuntada/fechas'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -32,6 +35,8 @@ export interface ReservaLaJuntada {
   importe: number
   /** Una devuelta ya no ocupa lugar, pero sigue siendo parte del historial. */
   estado: 'pagada' | 'devuelta'
+  /** La fecha cancelada en la que se pagó, si vino traspasada. Null si es de esta fecha. */
+  traspasadaDe: string | null
 }
 
 /**
@@ -119,43 +124,53 @@ function adultosDe(session: Stripe.Checkout.Session): number {
 }
 
 /**
- * Cuántas familias reservaron una fecha. Devuelve null si la fecha no tiene
- * link todavía, o si Stripe no contesta: la página distingue "ninguna reserva"
- * de "no lo pudimos averiguar", y no debe inventar un cero.
+ * Cuántas familias reservaron una fecha, contando las traspasadas. Devuelve
+ * null si la fecha no tiene link todavía, o si Stripe no contesta: la página
+ * distingue "ninguna reserva" de "no lo pudimos averiguar", y no debe inventar
+ * un cero.
  */
-export async function contarFamilias(stripeUrl: string | null): Promise<number | null> {
-  if (!stripeUrl) return null
+export async function contarFamilias(fecha: FechaLaJuntada): Promise<number | null> {
+  if (!fecha.stripeUrl) return null
   try {
-    const id = await idDelLink(stripeUrl)
-    if (!id) return null
-    const sesiones = await sesionesPagadas(id)
-    return sesiones.filter((s) => !estaDevuelta(s)).length
+    let familias = 0
+    for (const { stripeUrl } of linksDe(fecha)) {
+      const id = await idDelLink(stripeUrl)
+      if (!id) return null
+      const sesiones = await sesionesPagadas(id)
+      familias += sesiones.filter((s) => !estaDevuelta(s)).length
+    }
+    return familias
   } catch (err) {
     console.error('[La Juntada] No se pudo contar las reservas:', err)
     return null
   }
 }
 
-/** Las reservas de una fecha, con sus datos, para el panel. */
-export async function listarReservas(stripeUrl: string): Promise<ReservaLaJuntada[]> {
-  const id = await idDelLink(stripeUrl)
-  if (!id) return []
+/** Las reservas de una fecha, traspasadas incluidas, con sus datos, para el panel. */
+export async function listarReservas(fecha: FechaLaJuntada): Promise<ReservaLaJuntada[]> {
+  const reservas: ReservaLaJuntada[] = []
+  for (const { stripeUrl, traspasadaDe } of linksDe(fecha)) {
+    const id = await idDelLink(stripeUrl)
+    if (!id) continue
+    const sesiones = await sesionesPagadas(id)
+    reservas.push(...sesiones.map((s) => aReserva(s, traspasadaDe?.fecha ?? null)))
+  }
+  return reservas.sort((a, b) => a.creada.localeCompare(b.creada))
+}
 
-  const sesiones = await sesionesPagadas(id)
-
-  return sesiones
-    .map((s) => ({
-      sessionId: s.id,
-      creada: new Date(s.created * 1000).toISOString(),
-      nombre: s.customer_details?.name ?? null,
-      email: s.customer_details?.email ?? null,
-      telefono: s.customer_details?.phone ?? null,
-      adultos: adultosDe(s),
-      chicos: campo(s, 'chicos'),
-      edades: campo(s, 'edades'),
-      origen: campo(s, 'parte'),
-      importe: (s.amount_total ?? 0) / 100,
-      estado: estaDevuelta(s) ? ('devuelta' as const) : ('pagada' as const),
-    }))
-    .sort((a, b) => a.creada.localeCompare(b.creada))
+function aReserva(s: Stripe.Checkout.Session, traspasadaDe: string | null): ReservaLaJuntada {
+  return {
+    sessionId: s.id,
+    creada: new Date(s.created * 1000).toISOString(),
+    nombre: s.customer_details?.name ?? null,
+    email: s.customer_details?.email ?? null,
+    telefono: s.customer_details?.phone ?? null,
+    adultos: adultosDe(s),
+    chicos: campo(s, 'chicos'),
+    edades: campo(s, 'edades'),
+    origen: campo(s, 'parte'),
+    importe: (s.amount_total ?? 0) / 100,
+    estado: estaDevuelta(s) ? ('devuelta' as const) : ('pagada' as const),
+    traspasadaDe,
+  }
 }

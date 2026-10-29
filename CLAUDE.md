@@ -887,6 +887,20 @@ The website reads them; it never creates them. For each new date:
    "Completo" state and the admin panel find the link by that URL, so **never
    replace a link that already has bookings**: edit it instead.
 
+### A date that is cancelled and its bookings move
+
+It happened on 18 October 2026 (rain alert); the families moved to 15
+November. A Stripe session cannot be moved to another payment link, so the
+move lives in `fechas.ts`: the cancelled date gets `estado: 'cancelada'` and
+`traspasadaA: '<iso of the new date>'`, and keeps its `stripeUrl`. From then
+on every non refunded booking of that link counts for the new date, in the
+admin panel (marked "Traspasada") and in the public counter. A family that
+prefers the money back is simply refunded in Stripe and stops counting.
+
+Stripe's 15 payment limit is per link and knows nothing of this: set the new
+date's link to **15 minus the bookings moved in**, or it will sell more places
+than there are.
+
 Each booking posts to the La Juntada Slack channel with the Declarando data:
 **con factura simplificada**, activity _Otros servicios culturales NCOP_,
 21 % VAT included in the price (30 € = 24,79 € + 5,21 €). A refund posts the
