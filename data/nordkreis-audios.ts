@@ -161,7 +161,12 @@ export const entdeckerkreis2026: Jahrgang = {
       zwischenDenSamstagen:
         'Sucht Euch eine einzige Sache aus, die bei Euch sowieso jeden Tag passiert: die Hände nach dem Waschen, das Geschirr, das Abtrocknen nach dem Baden. Sprecht sie auf Deutsch mit, während sie gerade geschieht. Euer Kind muss nichts sagen und nichts können, es hört den Satz einfach, während die Sache passiert. Genau da bleibt Sprache am leichtesten hängen.',
     },
-    { datum: '2026-10-31', inhalt: 4 },
+    {
+      datum: '2026-10-31',
+      inhalt: 4,
+      zwischenDenSamstagen:
+        'Teilen passiert bei Euch sowieso mehrmals am Tag: ein Keks, ein Apfel, der Platz auf dem Sofa. Sprecht den Satz mit, während es gerade geschieht. Eine Hälfte für Dich, eine Hälfte für mich. Und fragt auch einmal umgekehrt, Teilst Du mit mir, damit Euer Kind der Große sein darf, der gibt. Am Samstag haben wir die Legende von Sankt Martin gehört, der genau das tut. An den nächsten beiden Samstagen werden die Kinder sie selbst erzählen.',
+    },
     { datum: '2026-11-07', inhalt: 5 },
     { datum: '2026-11-14', inhalt: 6 },
     { datum: '2026-11-28', inhalt: 7 },
@@ -247,7 +252,19 @@ export const aufnahmen: Aufnahme[] = [
     dauer: 499,
     verfuegbar: true,
   },
-  ...Array.from({ length: 17 }, (_, i) => leer(i + 4)),
+  {
+    ...leer(4),
+    titel: 'Der halbe Mantel',
+    wortDerWoche: 'teilen',
+    formeln: [
+      'Teilst Du mit mir?',
+      'Wir teilen den Apfel. Eine Hälfte für Dich, eine Hälfte für mich.',
+      'Sankt Martin hat seinen Mantel geteilt.',
+    ],
+    dauer: 754,
+    verfuegbar: true,
+  },
+  ...Array.from({ length: 16 }, (_, i) => leer(i + 5)),
 ]
 
 /**

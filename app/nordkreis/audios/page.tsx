@@ -105,7 +105,7 @@ export default function Seite() {
           <p>
             Zu jedem Samstag gibt es hier ein Audio. Darin steckt das Wichtigste aus der Stunde: die
             Lieder, die Rituale, die Sätze und das Wort der Woche, und wenn wir gerade ein Buch
-            lesen, auch das Buch. Die Audios sind unterschiedlich lang, zwischen fünf und elf
+            lesen, auch das Buch. Die Audios sind unterschiedlich lang, zwischen vier und dreizehn
             Minuten, je nachdem wie viel an dem Samstag dran war.
           </p>
           <p>
