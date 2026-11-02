@@ -37,9 +37,8 @@ export default function AudioTrackCard({
           : 'border-[#9A8F85]/25 bg-[#F4EFE8]/50 dark:bg-[#081C3C]/50'
       }`}
     >
-      <p className="text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">
-        Clase {clase} · {formatFecha(fecha)}
-      </p>
+      {/* Solo la fecha: el número de clase ya es el título, justo debajo. */}
+      <p className="text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">{formatFecha(fecha)}</p>
 
       <h3 className={`mt-1 text-xl font-semibold ${listo ? '' : 'opacity-70'}`}>{titulo}</h3>
 
