@@ -114,10 +114,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 7,
     titulo: 'Clase 7',
-    resumen: '',
+    resumen:
+      'Los números del uno al diez, el primer vehículo de la bolsa y un sonido nuevo que se hace con los labios como para dar un beso.',
     archivo: 'ayd_pre_a1_c07.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 312,
+    disponible: true,
   },
   {
     clase: 8,
