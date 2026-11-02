@@ -64,6 +64,11 @@ export type Aufnahme = {
    * consecutive contents, so the same object repeats; the page lists it once.
    */
   buch?: Buch
+  /**
+   * What is read instead when there is no book, e.g. a story Tash tells in her
+   * own words. Shown in the same line on the card, never in the book list.
+   */
+  stattBuch?: string
   /** Duration in seconds. 0 when not recorded. */
   dauer: number
   /** Controls playable vs pending state. */
@@ -261,6 +266,7 @@ export const aufnahmen: Aufnahme[] = [
       'Wir teilen den Apfel. Eine Hälfte für Dich, eine Hälfte für mich.',
       'Sankt Martin hat seinen Mantel geteilt.',
     ],
+    stattBuch: 'eine freie Nacherzählung der Martinslegende',
     dauer: 754,
     verfuegbar: true,
   },

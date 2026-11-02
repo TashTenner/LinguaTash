@@ -144,6 +144,7 @@ export default function Seite() {
                 formeln={x.aufnahme?.formeln ?? []}
                 zwischenDenSamstagen={x.samstag.zwischenDenSamstagen ?? ''}
                 buch={x.aufnahme?.buch?.titel ?? ''}
+                stattBuch={x.aufnahme?.stattBuch ?? ''}
                 datei={x.datei}
                 dauer={x.aufnahme?.dauer ?? 0}
                 verfuegbar={Boolean(x.datei && x.aufnahme?.verfuegbar)}

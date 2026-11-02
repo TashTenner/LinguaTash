@@ -13,6 +13,8 @@ type SamstagKarteProps = {
   zwischenDenSamstagen: string
   /** Title only, as a quiet line. The full credit is at the foot of the page. */
   buch: string
+  /** What is read when there is no book. Ignored when `buch` is set. */
+  stattBuch: string
   datei: string
   dauer: number
   verfuegbar: boolean
@@ -26,6 +28,7 @@ export default function SamstagKarte({
   formeln,
   zwischenDenSamstagen,
   buch,
+  stattBuch,
   datei,
   dauer,
   verfuegbar,
@@ -71,6 +74,10 @@ export default function SamstagKarte({
       {buch ? (
         <p className="mt-5 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">
           Wir lesen: <span className="italic">{buch}</span>
+        </p>
+      ) : stattBuch ? (
+        <p className="mt-5 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">
+          Wir lesen: kein Buch diesmal, sondern {stattBuch}
         </p>
       ) : null}
 
