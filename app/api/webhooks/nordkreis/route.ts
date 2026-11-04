@@ -48,6 +48,12 @@ const COURSE_MONTHS = 10
  * invoice's first line bills, with the total taken from the subscription's
  * totalMonths metadata, set on activation.
  *
+ * A child activated after the 3rd has that month charged by hand, before the
+ * subscription's first charge. That invoice says its own number in its
+ * monthNumber and totalMonths metadata, and the subscription's
+ * monthsChargedManually moves its charges up by as many: November by hand is
+ * 1/8, so the subscription's first charge in December is 2/8.
+ *
  * An invoice without such a subscription (a manual one) falls back to the
  * month of the course out of 10, September being 1. Returns undefined for
  * July and August, which are never billed, rather than inventing a number.
@@ -57,6 +63,10 @@ function chargeNumber(
   invoice: any,
   sub: Stripe.Subscription | null
 ): { monthNumber: number; totalMonths: number } | undefined {
+  const ownNumber = Number(invoice.metadata?.monthNumber)
+  const ownTotal = Number(invoice.metadata?.totalMonths)
+  if (ownNumber > 0 && ownTotal > 0) return { monthNumber: ownNumber, totalMonths: ownTotal }
+
   const start: number | undefined = invoice.lines?.data?.[0]?.period?.start ?? invoice.created
   if (!start) return undefined
   const billed = new Date(start * 1000)
@@ -64,10 +74,12 @@ function chargeNumber(
   const totalMonths = Number(sub?.metadata?.totalMonths)
   if (sub?.trial_end && totalMonths > 0) {
     const first = new Date(sub.trial_end * 1000)
+    const monthsChargedManually = Number(sub.metadata?.monthsChargedManually) || 0
     const monthNumber =
       (billed.getUTCFullYear() - first.getUTCFullYear()) * 12 +
       (billed.getUTCMonth() - first.getUTCMonth()) +
-      1
+      1 +
+      monthsChargedManually
     if (monthNumber >= 1 && monthNumber <= totalMonths) return { monthNumber, totalMonths }
     return undefined
   }
