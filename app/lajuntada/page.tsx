@@ -3,6 +3,7 @@ import { genPageMetadata } from 'app/seo'
 import { fechasLaJuntada } from '@/content/lajuntada/fechas'
 import { contarFamilias } from '@/lib/lajuntada/reservas'
 import FaqAccordion from '@/components/lajuntada/FaqAccordion'
+import FlyerAmpliable from '@/components/lajuntada/FlyerAmpliable'
 
 export const metadata = genPageMetadata({
   title: 'La Juntada',
@@ -299,6 +300,7 @@ export default async function LaJuntadaPage() {
                 <th className="px-4 py-3 font-medium">Tema</th>
                 <th className="px-4 py-3 font-medium">Fecha argentina</th>
                 <th className="px-4 py-3 font-medium">Estado</th>
+                <th className="px-4 py-3 font-medium">Flyer</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#9A8F85]/15">
@@ -383,6 +385,13 @@ export default async function LaJuntadaPage() {
                           </span>
                         )}
                       </div>
+                    </td>
+                    <td className="px-4 py-4">
+                      {f.flyer ? (
+                        <FlyerAmpliable src={f.flyer.src} alt={f.flyer.alt} />
+                      ) : (
+                        <span className="opacity-40">—</span>
+                      )}
                     </td>
                   </tr>
                 )

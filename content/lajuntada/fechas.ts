@@ -23,6 +23,13 @@ export interface FechaLaJuntada {
    * tal como lo pidieron: el crédito en la promoción es parte del acuerdo.
    */
   aCargoDe?: { nombre: string; descripcion: string; url: string }
+  /**
+   * El flyer de esa fecha, en public/static/images/lajuntada, en el formato
+   * 4:5. Cuando la fecha cambia de estado (cancelada, pasada) se reemplaza por
+   * el flyer que lo dice, con otro nombre de archivo para no servir el viejo
+   * desde la caché. El alt dice lo mismo que el flyer.
+   */
+  flyer?: { src: string; alt: string }
 }
 
 export const fechasLaJuntada: FechaLaJuntada[] = [
@@ -35,6 +42,10 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     estado: 'cancelada',
     stripeUrl: 'https://buy.stripe.com/bJe00keki7vs6Hn7hs5gc01',
     traspasadaA: '2026-11-15',
+    flyer: {
+      src: '/static/images/lajuntada/flyer-2026-10-18.png',
+      alt: 'Flyer de La Juntada del domingo 18 de octubre, cancelada por alerta de lluvia',
+    },
   },
   {
     fecha: 'Domingo 15 de noviembre 2026',
@@ -46,6 +57,10 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
       nombre: 'ARGENFOLK',
       descripcion: 'la escuela Argentina de Tango y Folklore',
       url: 'https://www.instagram.com/argenfolk/',
+    },
+    flyer: {
+      src: '/static/images/lajuntada/flyer-2026-11-15.png',
+      alt: 'Flyer de La Juntada del domingo 15 de noviembre, de 15h a 17h en La Salle Gràcia: chacarera para chicos y grandes, clase a cargo de ARGENFOLK, la escuela Argentina de Tango y Folklore. Una familia, 30 euros; 35 si vienen los dos progenitores.',
     },
     // Limitado a 13 pagos: las 2 familias traspasadas del 18 de octubre completan los 15.
     stripeUrl: 'https://buy.stripe.com/dRmaEY5NM5nkghX7hs5gc02',
