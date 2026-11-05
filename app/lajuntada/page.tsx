@@ -66,6 +66,9 @@ export default async function LaJuntadaPage() {
       .map(async (f) => reservadas.set(f.iso, await contarFamilias(f)))
   )
   const proximaCompleta = !!proximaAbierta && completa(reservadas.get(proximaAbierta.iso))
+  // La próxima que se va a hacer, tenga o no link: el crédito de quien la da va
+  // en el hero desde antes de abrir las reservas.
+  const proxima = fechasLaJuntada.find((f) => f.iso >= hoy && f.estado !== 'cancelada')
 
   return (
     <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -107,6 +110,22 @@ export default async function LaJuntadaPage() {
               ? 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas ya están abiertas.'
               : 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas se abren en estos días.'}
         </p>
+
+        {proxima?.aCargoDe && (
+          <div className="mx-auto mt-8 max-w-xl rounded-xl border-2 border-[#081C3C] px-6 py-6 dark:border-[#F4EFE8]">
+            <p className="text-xl font-semibold">{proxima.tema}</p>
+            <p className="mt-3 text-sm opacity-80">Clase a cargo de</p>
+            <a
+              href={proxima.aCargoDe.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-block text-4xl font-bold tracking-wide text-[#B3475A] hover:text-[#9f3f50] md:text-5xl"
+            >
+              {proxima.aCargoDe.nombre}
+            </a>
+            <p className="mt-1 text-sm opacity-80">{proxima.aCargoDe.descripcion}</p>
+          </div>
+        )}
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           {proximaAbierta && proximaCompleta ? (
@@ -288,7 +307,23 @@ export default async function LaJuntadaPage() {
                 return (
                   <tr key={f.iso} className={pasada ? 'opacity-50' : undefined}>
                     <td className="px-4 py-4 font-medium whitespace-nowrap">{f.fecha}</td>
-                    <td className="px-4 py-4 opacity-90">{f.tema}</td>
+                    <td className="px-4 py-4 opacity-90">
+                      {f.tema}
+                      {f.aCargoDe && (
+                        <span className="mt-1 block text-xs opacity-80">
+                          Clase a cargo de{' '}
+                          <a
+                            href={f.aCargoDe.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+                          >
+                            {f.aCargoDe.nombre}
+                          </a>
+                          , {f.aCargoDe.descripcion}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-4 opacity-90">
                       {f.fechaArgentina ?? <span className="opacity-40">—</span>}
                     </td>

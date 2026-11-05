@@ -18,6 +18,11 @@ export interface FechaLaJuntada {
    * Quien prefirió la devolución se reembolsa en Stripe y deja de contar sola.
    */
   traspasadaA?: string
+  /**
+   * Quien da la actividad, si no la doy yo. El nombre y la descripción van
+   * tal como lo pidieron: el crédito en la promoción es parte del acuerdo.
+   */
+  aCargoDe?: { nombre: string; descripcion: string; url: string }
 }
 
 export const fechasLaJuntada: FechaLaJuntada[] = [
@@ -37,6 +42,11 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     tema: 'Chacarera para chicos y grandes',
     fechaArgentina: 'Cerca del Día de la Tradición (10 de noviembre)',
     estado: 'confirmada',
+    aCargoDe: {
+      nombre: 'ARGENFOLK',
+      descripcion: 'la escuela Argentina de Tango y Folklore',
+      url: 'https://www.instagram.com/argenfolk/',
+    },
     // Limitado a 13 pagos: las 2 familias traspasadas del 18 de octubre completan los 15.
     stripeUrl: 'https://buy.stripe.com/dRmaEY5NM5nkghX7hs5gc02',
   },
