@@ -284,6 +284,7 @@ export const aufnahmen: Aufnahme[] = [
       'Die Sterne leuchten.',
       'Wir leuchten mit der Taschenlampe unter den Tisch.',
     ],
+    stattBuch: 'eine freie Nacherzählung der Martinslegende',
     dauer: 609,
     verfuegbar: true,
   },
