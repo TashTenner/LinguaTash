@@ -172,7 +172,12 @@ export const entdeckerkreis2026: Jahrgang = {
       zwischenDenSamstagen:
         'Teilen passiert bei Euch sowieso mehrmals am Tag: ein Keks, ein Apfel, der Platz auf dem Sofa. Sprecht den Satz mit, während es gerade geschieht. Eine Hälfte für Dich, eine Hälfte für mich. Und fragt auch einmal umgekehrt, Teilst Du mit mir, damit Euer Kind der Große sein darf, der gibt. Am Samstag haben wir die Legende von Sankt Martin gehört, der genau das tut. An den nächsten beiden Samstagen werden die Kinder sie selbst erzählen.',
     },
-    { datum: '2026-11-07', inhalt: 5 },
+    {
+      datum: '2026-11-07',
+      inhalt: 5,
+      zwischenDenSamstagen:
+        'Im November wird es früh dunkel, und das ist die beste Zeit für dieses Wort. Gebt Eurem Kind eine Taschenlampe in die Hand und lasst es damit machen, was es will: unter den Tisch leuchten, in den Schrank, an die Decke. Sprecht dabei einfach mit, was gerade passiert. Jetzt leuchtet es unter dem Tisch. Jetzt leuchten die Sterne an der Decke. Ein Wort bleibt da hängen, wo ein Kind es selbst braucht, und nicht da, wo es nur stimmt. Und wenn Ihr abends am Fenster steht: schaut, ob Ihr einen Stern findet, der leuchtet.',
+    },
     { datum: '2026-11-14', inhalt: 6 },
     { datum: '2026-11-28', inhalt: 7 },
     { datum: '2026-12-12', inhalt: 8 },
@@ -270,7 +275,19 @@ export const aufnahmen: Aufnahme[] = [
     dauer: 754,
     verfuegbar: true,
   },
-  ...Array.from({ length: 16 }, (_, i) => leer(i + 5)),
+  {
+    ...leer(5),
+    titel: 'Unsere Laternen',
+    wortDerWoche: 'leuchten',
+    formeln: [
+      'Meine Laterne leuchtet.',
+      'Die Sterne leuchten.',
+      'Wir leuchten mit der Taschenlampe unter den Tisch.',
+    ],
+    dauer: 609,
+    verfuegbar: true,
+  },
+  ...Array.from({ length: 15 }, (_, i) => leer(i + 6)),
 ]
 
 /**
