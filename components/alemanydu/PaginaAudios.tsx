@@ -1,7 +1,8 @@
 import Image from 'next/image'
-import { audioUrl, clases } from '@/data/alemanydu-audios'
-import { clasesDadas, type Grupo } from '@/data/alemanydu-grupos'
+import { audioUrl, clases, sueltos } from '@/data/alemanydu-audios'
+import { clasesDadas, sueltosVisibles, type Grupo } from '@/data/alemanydu-grupos'
 import AudioStats from './AudioStats'
+import AudioSueltoCard from './AudioSueltoCard'
 import AudioTrackCard from './AudioTrackCard'
 import { formatFecha } from './format'
 import ReproducirTodo from './ReproducirTodo'
@@ -33,10 +34,18 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
 
   const conAudio = yaDadas.filter((x) => x.audio?.disponible && x.audio.archivo)
 
+  // Los audios sueltos de este grupo, los que ya cantó. No entran en `cola`:
+  // «Reproducir todo» recorre el curso en orden y el repertorio de una fiesta
+  // no es un punto de ese recorrido.
+  const visibles = new Set(sueltosVisibles(grupo))
+  const sueltosDelGrupo = sueltos.filter((x) => visibles.has(x.id) && x.disponible && x.archivo)
+
   // Estrechado a propósito: esto cruza a un componente de cliente.
-  const titulos = Object.fromEntries(
-    conAudio.map((x) => [x.audio!.archivo, `pre-A1 · ${x.audio!.titulo}`])
-  )
+  const titulos = Object.fromEntries([
+    ...conAudio.map((x) => [x.audio!.archivo, `pre-A1 · ${x.audio!.titulo}`]),
+    // Sin nivel: estas canciones no son de pre-A1, son de la fiesta.
+    ...sueltosDelGrupo.map((x) => [x.archivo, x.titulo]),
+  ])
 
   const cola = [...conAudio]
     .reverse()
@@ -135,6 +144,17 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
           </details>
         ) : null}
       </section>
+
+      {/* AUDIOS SUELTOS, fuera de la lista numerada */}
+      {sueltosDelGrupo.map((x) => (
+        <AudioSueltoCard
+          key={x.id}
+          titulo={x.titulo}
+          resumen={x.resumen}
+          archivo={x.archivo}
+          duracion={x.duracion}
+        />
+      ))}
     </main>
   )
 }

@@ -124,6 +124,8 @@ const wav = opcion('wav')
 const copia = opcion('copia')
 const enSeco = bandera('dry-run')
 const calibrar = bandera('calibrar')
+const suelta = opcion('suelta')
+const tituloSuelta = opcion('titulo')
 
 // ── calibrar ─────────────────────────────────────────────────────────────────
 //
@@ -222,10 +224,29 @@ ${gris('El techo elegido está en TP_OBJETIVO, arriba del todo. Si se cambia,')}
   process.exit(0)
 }
 
-// El tope sigue al curso más largo que haya en alemanydu-grupos.ts. Está para
-// cazar un dedazo, no para limitar: si algún grupo pasa de 33, se sube acá.
-if (!Number.isInteger(clase) || clase < 1 || clase > 33) {
-  morir('falta --clase, o no está entre 1 y 33')
+// Dos modos. Una clase numerada, o un audio **suelto**, que no es una clase.
+//
+// Suelto es el repertorio de una fiesta: lo cantan los dos grupos, vuelve el
+// noviembre siguiente y no pertenece a ninguna clase de ningún grupo. Con
+// número quedaría atado a la clase 8 de este grupo y de este año, y la
+// secuencia de pistas dejaría de ser la secuencia del curso.
+//
+// El tope de 33 sigue al curso más largo que haya en alemanydu-grupos.ts. Está
+// para cazar un dedazo, no para limitar: si algún grupo pasa de 33, se sube acá.
+if (suelta && Number.isFinite(clase)) {
+  morir('--clase y --suelta son excluyentes: o la pista es una clase, o no lo es')
+}
+if (!suelta && (!Number.isInteger(clase) || clase < 1 || clase > 33)) {
+  morir('falta --clase, entre 1 y 33, o --suelta <nombre>')
+}
+// El nombre del objeto es el nombre con el que el archivo aterriza en el móvil
+// de una familia al descargarlo. Es la única vía por la que una palabra alemana
+// llegaría a un padre desde esta página, así que se escribe en castellano.
+if (suelta && !/^[a-z0-9_]+$/.test(suelta)) {
+  morir('--suelta solo admite minúsculas, números y guión bajo')
+}
+if (suelta && !tituloSuelta) {
+  morir('falta --titulo, que es lo que se ve en la pantalla de bloqueo del móvil')
 }
 if (!wav || !fs.existsSync(wav)) morir(`no encuentro el WAV: ${wav ?? '(falta --wav)'}`)
 if (!copia) morir('falta --copia, la carpeta de respaldo sincronizada con Drive')
@@ -233,7 +254,9 @@ if (!fs.existsSync(copia)) morir(`la carpeta de respaldo no existe: ${copia}`)
 if (!fs.existsSync(CARATULA)) morir(`falta la carátula: ${CARATULA}`)
 
 const nn = String(clase).padStart(2, '0')
-const nombre = `ayd_pre_a1_c${nn}.mp3`
+const nombre = suelta ? `ayd_${suelta}.mp3` : `ayd_pre_a1_c${nn}.mp3`
+const queEs = suelta ? tituloSuelta : `Clase ${clase}`
+const destino = suelta ? 'sueltos' : `la clase ${clase}`
 
 // ── 1. no pisar nada ─────────────────────────────────────────────────────────
 
@@ -258,7 +281,7 @@ const r2 = new S3Client({
 
 const destinoCopia = path.join(copia, nombre)
 if (fs.existsSync(destinoCopia)) {
-  morir(`ya existe ${destinoCopia}. Si de verdad querés rehacer la clase ${clase}, borralo a mano.`)
+  morir(`ya existe ${destinoCopia}. Si de verdad querés rehacer ${queEs}, borralo a mano.`)
 }
 
 try {
@@ -274,7 +297,7 @@ try {
   }
 }
 
-console.log(`\nClase ${clase}  ->  ${nombre}`)
+console.log(`\n${queEs}  ->  ${nombre}`)
 console.log(gris(`  origen   ${wav}`))
 console.log(gris(`  respaldo ${copia}`))
 if (enSeco) console.log(gris('  (dry-run: no se sube nada)'))
@@ -325,14 +348,18 @@ let r = correr('ffmpeg', [
   'libmp3lame',
   '-b:a',
   '96k',
-  '-metadata',
-  `title=pre-A1 · Clase ${clase}`,
+  ...(suelta
+    ? ['-metadata', `title=${tituloSuelta}`, '-metadata', 'album=Alemán y Du']
+    : [
+        '-metadata',
+        `title=pre-A1 · Clase ${clase}`,
+        '-metadata',
+        'album=Alemán y Du · pre-A1',
+        '-metadata',
+        `track=${clase}`,
+      ]),
   '-metadata',
   'artist=LinguaTash',
-  '-metadata',
-  'album=Alemán y Du · pre-A1',
-  '-metadata',
-  `track=${clase}`,
   sinArte,
 ])
 if (r.code !== 0) morir(`la codificación falló:\n${r.err.slice(-1200)}`)
@@ -441,8 +468,13 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 // ── 8. qué pegar ─────────────────────────────────────────────────────────────
 
-console.log(`\n${verde('Listo.')} Pegá esto en data/alemanydu-audios.ts, en la clase ${clase}:\n`)
-console.log(`    titulo: 'Clase ${clase}',`)
+console.log(`\n${verde('Listo.')} Pegá esto en data/alemanydu-audios.ts, en ${destino}:\n`)
+if (suelta) {
+  console.log(`    id: '${suelta.replace(/_/g, '-')}',`)
+  console.log(`    titulo: '${tituloSuelta}',`)
+} else {
+  console.log(`    titulo: 'Clase ${clase}',`)
+}
 console.log(`    resumen: '',`)
 console.log(`    archivo: '${nombre}',`)
 console.log(`    duracion: ${Math.round(duracion)},`)

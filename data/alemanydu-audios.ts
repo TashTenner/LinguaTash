@@ -123,10 +123,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 8,
     titulo: 'Clase 8',
-    resumen: '',
+    resumen:
+      'Contamos hasta doce, aprendimos una rima alemana con los números y salió el segundo vehículo de la bolsa.',
     archivo: 'ayd_pre_a1_c08.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 430,
+    disponible: true,
   },
   {
     clase: 9,
@@ -339,6 +340,37 @@ export const clases: AudioTrack[] = [
  * `Wo ist der Kopf?` will say it with Spanish vowels, which is the exact thing
  * the course is trying to avoid. The child hears it in Tash's voice instead.
  */
+/**
+ * Un audio que no es una clase.
+ *
+ * Es repertorio, no recorrido. Las canciones de una fiesta las cantan los dos
+ * grupos, vuelven el noviembre siguiente y no pertenecen a la clase 8 de
+ * nadie. Con número quedarían atadas a un grupo y a un año, y la secuencia de
+ * pistas dejaría de ser la secuencia del curso. Por eso van aparte de la lista
+ * numerada y fuera de «Reproducir todo», que recorre el curso en orden.
+ */
+export type AudioSuelto = {
+  /** Con este id un grupo dice desde cuándo lo tiene. Ver `sueltos` en el grupo. */
+  id: string
+  titulo: string
+  resumen: string
+  archivo: string
+  duracion: number
+  disponible: boolean
+}
+
+export const sueltos: AudioSuelto[] = [
+  {
+    id: 'san-martin',
+    titulo: 'Las canciones de San Martín',
+    resumen:
+      'Las dos canciones de la fiesta alemana de los faroles, para cantar en casa y en el desfile.',
+    archivo: 'ayd_san_martin.mp3',
+    duracion: 224,
+    disponible: true,
+  },
+]
+
 export const frasePrueba: FraseTrack = {
   archivo: 'ayd_frase_prueba.mp3',
   duracion: 12,

@@ -359,8 +359,24 @@ shared.
   **Reproducir todo** button that plays every published class in order
 
 **One audio per class, and that is the whole model.** There is no cumulative
-track and no separate songs track. When a class teaches a song, the song is
-inside that class's own audio and is not named anywhere on the page.
+track. A song taught in a class lives inside that class's own audio and is not
+named anywhere on the page.
+
+The one exception is a **suelto**, an audio that belongs to no class. The first
+is the Sankt Martin songs, published 9 November 2026. It is repertoire, not
+route: both groups sing it, it returns the following November, and a number
+would tie it to one group's class 8 of one year. A suelto carries no level and
+no track number, sits in its own section outside the numbered list, and stays
+out of «Reproducir todo», which walks the course in order. To add one: publish
+with `--suelta <nombre> --titulo "<what shows on the lock screen>"`, add it to
+`sueltos` in `alemanydu-audios.ts`, give each group its own `{ id, desde }` in
+`alemanydu-grupos.ts` so it appears the day that group sings it and not before,
+and add the name to `NOMBRE_VALIDO` and to `ESCRITO_UNA_VEZ`.
+
+**The object name is what lands in a parent's phone when they download it.**
+That is the only route by which a German word reaches a family from this page,
+so it is written in Spanish: `ayd_san_martin.mp3`, never `ayd_sankt_martin.mp3`.
+The publish script accepts lowercase, digits and underscore and nothing else.
 
 **No German on the audios page.** Not in a title, not in a summary, not as a
 song name. A parent who reads a German word says it with Spanish vowels, and
