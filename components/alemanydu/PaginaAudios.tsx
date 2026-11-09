@@ -1,8 +1,7 @@
 import Image from 'next/image'
-import { audioUrl, clases, sueltos } from '@/data/alemanydu-audios'
-import { clasesDadas, sueltosVisibles, type Grupo } from '@/data/alemanydu-grupos'
+import { audioUrl, clases, sueltos, type AudioSuelto } from '@/data/alemanydu-audios'
+import { clasesDadas, type Grupo } from '@/data/alemanydu-grupos'
 import AudioStats from './AudioStats'
-import AudioSueltoCard from './AudioSueltoCard'
 import AudioTrackCard from './AudioTrackCard'
 import { formatFecha } from './format'
 import ReproducirTodo from './ReproducirTodo'
@@ -34,11 +33,16 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
 
   const conAudio = yaDadas.filter((x) => x.audio?.disponible && x.audio.archivo)
 
-  // Los audios sueltos de este grupo, los que ya cantó. No entran en `cola`:
-  // «Reproducir todo» recorre el curso en orden y el repertorio de una fiesta
-  // no es un punto de ese recorrido.
-  const visibles = new Set(sueltosVisibles(grupo))
-  const sueltosDelGrupo = sueltos.filter((x) => visibles.has(x.id) && x.disponible && x.archivo)
+  // Los audios sueltos, colgados de la clase en la que este grupo los cantó.
+  // No entran en `cola`: «Reproducir todo» recorre el curso en orden y el
+  // repertorio de una fiesta no es un punto de ese recorrido.
+  const sueltosPorClase = new Map<number, AudioSuelto[]>()
+  for (const asignado of grupo.sueltos ?? []) {
+    const suelto = sueltos.find((x) => x.id === asignado.id)
+    if (!suelto?.disponible || !suelto.archivo) continue
+    sueltosPorClase.set(asignado.clase, [...(sueltosPorClase.get(asignado.clase) ?? []), suelto])
+  }
+  const sueltosDelGrupo = yaDadas.flatMap((x) => sueltosPorClase.get(x.n) ?? [])
 
   // Estrechado a propósito: esto cruza a un componente de cliente.
   const titulos = Object.fromEntries([
@@ -119,6 +123,7 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
               archivo={x.audio?.archivo ?? ''}
               duracion={x.audio?.duracion ?? 0}
               disponible={Boolean(x.audio?.disponible)}
+              sueltos={sueltosPorClase.get(x.n) ?? []}
             />
           ))}
         </div>
@@ -144,17 +149,6 @@ export default function PaginaAudios({ grupo }: { grupo: Grupo }) {
           </details>
         ) : null}
       </section>
-
-      {/* AUDIOS SUELTOS, fuera de la lista numerada */}
-      {sueltosDelGrupo.map((x) => (
-        <AudioSueltoCard
-          key={x.id}
-          titulo={x.titulo}
-          resumen={x.resumen}
-          archivo={x.archivo}
-          duracion={x.duracion}
-        />
-      ))}
     </main>
   )
 }

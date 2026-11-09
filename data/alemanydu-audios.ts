@@ -347,12 +347,20 @@ export const clases: AudioTrack[] = [
  * grupos, vuelven el noviembre siguiente y no pertenecen a la clase 8 de
  * nadie. Con número quedarían atadas a un grupo y a un año, y la secuencia de
  * pistas dejaría de ser la secuencia del curso. Por eso van aparte de la lista
- * numerada y fuera de «Reproducir todo», que recorre el curso en orden.
+ * numerada.
+ *
+ * Se escucha **dentro de la tarjeta de la clase en la que ese grupo lo cantó**,
+ * que es cosa del grupo y no de la grabación: el lunes en la 8, el miércoles en
+ * la 5. De ahí sale gratis cuándo aparece, porque esa tarjeta ya sabe su fecha.
+ * Fuera de «Reproducir todo», eso sí, que recorre el curso en orden.
  */
 export type AudioSuelto = {
   /** Con este id un grupo dice desde cuándo lo tiene. Ver `sueltos` en el grupo. */
   id: string
+  /** Para la pantalla de bloqueo y los lectores de pantalla. */
   titulo: string
+  /** Lo que se lee encima de los controles, dentro de la tarjeta de la clase. */
+  etiqueta: string
   resumen: string
   archivo: string
   duracion: number
@@ -361,11 +369,12 @@ export type AudioSuelto = {
 
 export const sueltos: AudioSuelto[] = [
   {
-    id: 'san-martin',
+    id: 'sankt-martin',
     titulo: 'Las canciones de San Martín',
+    etiqueta: 'Las canciones',
     resumen:
       'Las dos canciones de la fiesta alemana de los faroles, para cantar en casa y en el desfile.',
-    archivo: 'ayd_san_martin.mp3',
+    archivo: 'ayd_sankt_martin.mp3',
     duracion: 224,
     disponible: true,
   },

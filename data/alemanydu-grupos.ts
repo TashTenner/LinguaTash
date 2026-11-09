@@ -31,13 +31,18 @@ export type Grupo = {
   /** Fila extra al final del calendario, si hace falta aclarar algo. */
   ultimoDia?: { fecha: string; etiqueta: string }
   /**
-   * Audios sueltos que este grupo ya tiene, y desde qué día.
+   * Audios sueltos de este grupo, y **en qué clase los cantó**.
    *
-   * La grabación es la misma para los dos grupos; la fecha es del grupo, igual
-   * que con las clases. Cada grupo canta en la fiesta el día que le toca, así
-   * que una familia del miércoles no se encuentra las canciones el lunes.
+   * La grabación es la misma para los dos grupos; el número de clase es del
+   * grupo, igual que la fecha. San Martín es la clase 8 del lunes y la 5 del
+   * miércoles, y la misma grabación vuelve el noviembre que viene colgada de
+   * otra clase, sin regrabar nada.
+   *
+   * No hace falta una fecha acá. Se escucha dentro de la tarjeta de esa clase,
+   * que no existe hasta que la clase termina, así que una familia no puede
+   * toparse con las canciones antes de cantarlas.
    */
-  sueltos?: { id: string; desde: string }[]
+  sueltos?: { id: string; clase: number }[]
   /** Párrafo de cierre del calendario. */
   cierreCalendario: string
 }
@@ -93,7 +98,7 @@ export const grupoLunes: Grupo = {
     { fecha: '2027-03-29', motivo: 'Semana Santa' },
     { fecha: '2027-05-17', motivo: 'Festivo local de Barcelona' },
   ],
-  sueltos: [{ id: 'san-martin', desde: '2026-11-09' }],
+  sueltos: [{ id: 'sankt-martin', clase: 8 }],
   ultimoDia: { fecha: '2027-06-21', etiqueta: 'Último día de colegio' },
   cierreCalendario:
     'La última clase prevista es el lunes 14 de junio de 2027. El curso escolar termina el 21 de junio, que también cae en lunes. Todavía no sé si ese día habrá clase: otros años el colegio cerró a las 13:00 el último día, así que lo más probable es que no. En cuanto lo confirmen, mandaré un aviso.',
@@ -147,7 +152,7 @@ export const grupoMiercoles: Grupo = {
     { fecha: '2027-01-06', motivo: 'Reyes' },
     { fecha: '2027-03-24', motivo: 'Semana Santa' },
   ],
-  sueltos: [{ id: 'san-martin', desde: '2026-11-11' }],
+  sueltos: [{ id: 'sankt-martin', clase: 5 }],
   cierreCalendario: 'La última clase del curso es el miércoles 16 de junio de 2027.',
 }
 
@@ -183,13 +188,3 @@ export const ahoraEnMadrid = () => relojMadrid.format(new Date()).replace(' ', '
  */
 export const clasesDadas = (grupo: Grupo, ahora = ahoraEnMadrid()) =>
   grupo.fechas.filter((f) => `${f}T${grupo.horaFin}` <= ahora).length
-
-/**
- * Los ids de los audios sueltos que este grupo ya puede ver.
- *
- * Se compara contra el **final** de la clase, como `clasesDadas`, y no contra
- * el día: si no, las canciones del miércoles aparecerían a las 00:00 de ese
- * miércoles, catorce horas antes de que el grupo las cante.
- */
-export const sueltosVisibles = (grupo: Grupo, ahora = ahoraEnMadrid()) =>
-  (grupo.sueltos ?? []).filter((s) => `${s.desde}T${grupo.horaFin}` <= ahora).map((s) => s.id)

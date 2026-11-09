@@ -16,7 +16,7 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
  */
 // Un audio suelto nuevo se añade acá a mano, de forma explícita. Esta lista
 // es un límite de seguridad, no una comodidad: se lee de un vistazo o no sirve.
-export const NOMBRE_VALIDO = /^ayd_(pre_a1_c\d{2}|frase_prueba|san_martin)\.mp3$/
+export const NOMBRE_VALIDO = /^ayd_(pre_a1_c\d{2}|frase_prueba|sankt_martin)\.mp3$/
 
 /**
  * How long a given object may be cached.
@@ -28,7 +28,7 @@ export const NOMBRE_VALIDO = /^ayd_(pre_a1_c\d{2}|frase_prueba|san_martin)\.mp3$
  * re-recorded under the same name, so it gets a short cache and a new version
  * reaches everyone within a day.
  */
-const ESCRITO_UNA_VEZ = /^ayd_(pre_a1_c\d{2}|san_martin)\.mp3$/
+const ESCRITO_UNA_VEZ = /^ayd_(pre_a1_c\d{2}|sankt_martin)\.mp3$/
 
 export const cacheControlPara = (archivo: string) =>
   ESCRITO_UNA_VEZ.test(archivo) ? 'public, max-age=31536000, immutable' : 'public, max-age=86400'

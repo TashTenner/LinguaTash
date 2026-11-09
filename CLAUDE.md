@@ -366,17 +366,28 @@ The one exception is a **suelto**, an audio that belongs to no class. The first
 is the Sankt Martin songs, published 9 November 2026. It is repertoire, not
 route: both groups sing it, it returns the following November, and a number
 would tie it to one group's class 8 of one year. A suelto carries no level and
-no track number, sits in its own section outside the numbered list, and stays
-out of «Reproducir todo», which walks the course in order. To add one: publish
-with `--suelta <nombre> --titulo "<what shows on the lock screen>"`, add it to
-`sueltos` in `alemanydu-audios.ts`, give each group its own `{ id, desde }` in
-`alemanydu-grupos.ts` so it appears the day that group sings it and not before,
-and add the name to `NOMBRE_VALIDO` and to `ESCRITO_UNA_VEZ`.
+no track number, and it stays out of «Reproducir todo», which walks the course
+in order.
 
-**The object name is what lands in a parent's phone when they download it.**
-That is the only route by which a German word reaches a family from this page,
-so it is written in Spanish: `ayd_san_martin.mp3`, never `ayd_sankt_martin.mp3`.
-The publish script accepts lowercase, digits and underscore and nothing else.
+**It plays inside the card of the class in which that group sang it**, not in a
+box of its own. A box at the foot of the page is a box nobody scrolls to. Which
+class is a property of the group, like the date: Sankt Martin is the Monday
+group's class 8 and the Wednesday group's class 5. That is also why a suelto
+needs no date of its own. The card that carries it does not exist until that
+class has ended, so no family can meet the songs before singing them.
+
+To add one: publish with `--suelta <nombre> --titulo "<what shows on the lock
+screen>"`, add it to `sueltos` in `alemanydu-audios.ts` with an `etiqueta` for
+the line above the controls, give each group a `{ id, clase }` in
+`alemanydu-grupos.ts`, and add the name to `NOMBRE_VALIDO` and `ESCRITO_UNA_VEZ`.
+
+**The object name is what lands in a parent's phone when they download it**,
+and that download is the only route by which a German word reaches a family
+from this page. It went up as `ayd_san_martin.mp3` for that reason and was
+renamed to `ayd_sankt_martin.mp3` the same evening, on Tash's call: the
+festival has a name and the file may as well carry it. Raise the point once
+for a new suelto, then do as asked. The old object is still in the bucket,
+orphaned and out of the allowlist.
 
 **No German on the audios page.** Not in a title, not in a summary, not as a
 song name. A parent who reads a German word says it with Spanish vowels, and

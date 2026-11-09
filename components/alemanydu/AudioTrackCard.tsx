@@ -16,6 +16,18 @@ type AudioTrackCardProps = {
   archivo: string
   duracion: number
   disponible: boolean
+  /**
+   * Audios que no son esta clase pero se escucharon en ella, como el
+   * repertorio de una fiesta. Van dentro de esta tarjeta y no en una caja
+   * aparte al final de la página, que es donde no los ve nadie.
+   */
+  sueltos?: {
+    titulo: string
+    etiqueta: string
+    resumen: string
+    archivo: string
+    duracion: number
+  }[]
 }
 
 export default function AudioTrackCard({
@@ -26,6 +38,7 @@ export default function AudioTrackCard({
   archivo,
   duracion,
   disponible,
+  sueltos = [],
 }: AudioTrackCardProps) {
   const listo = disponible && Boolean(archivo)
 
@@ -60,6 +73,23 @@ export default function AudioTrackCard({
       ) : (
         <p className="mt-6 text-sm text-[#9A8F85] dark:text-[#F4EFE8]/60">Todavía no disponible</p>
       )}
+
+      {sueltos.map((suelto) => (
+        <div key={suelto.archivo} className="mt-8 border-t border-[#9A8F85]/30 pt-6">
+          {suelto.resumen ? <p className="leading-relaxed opacity-90">{suelto.resumen}</p> : null}
+
+          <div className="mt-6">
+            <AudioPlayer
+              archivo={suelto.archivo}
+              etiqueta={suelto.etiqueta}
+              duracion={suelto.duracion}
+              ariaLabel={suelto.titulo}
+            />
+            <DownloadButton archivo={suelto.archivo} ariaLabel={`Descargar ${suelto.titulo}`} />
+            <MarcaEscuchado archivo={suelto.archivo} />
+          </div>
+        </div>
+      ))}
     </article>
   )
 }
