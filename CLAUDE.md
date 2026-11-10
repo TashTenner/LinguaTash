@@ -338,7 +338,8 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 
 ## Alemán·y·Du — familias and audios pages
 
-**Status as of 2026-09-28: live. Classes 1, 2 and 3 published.**
+**Status as of 2026-11-10: live. Classes 1 to 8 published, plus the Sankt
+Martin songs. The Monday group is on class 8, the Wednesday group on class 5.**
 
 Unlisted pages for the families, **one pair per group**. All are `noindex`,
 absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
