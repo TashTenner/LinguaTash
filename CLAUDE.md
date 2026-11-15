@@ -810,8 +810,8 @@ commit, push to both branches.
 
 Before publishing, run `scripts/revisar-grabacion.mjs` on each WAV and listen
 to it, or at least to the Wort der Woche block, which is printed on the page.
-Audios run five to eleven minutes; the intro says so and tells parents they
-never have to listen to the end. If they grow past eleven, change that line.
+Audios run four to thirteen minutes; the intro says so and tells parents they
+never have to listen to the end. If they grow past thirteen, change that line.
 
 ### Deploys: production is `main`
 

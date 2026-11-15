@@ -178,7 +178,12 @@ export const entdeckerkreis2026: Jahrgang = {
       zwischenDenSamstagen:
         'Im November wird es früh dunkel, und das ist die beste Zeit für dieses Wort. Gebt Eurem Kind eine Taschenlampe in die Hand und lasst es damit machen, was es will: unter den Tisch leuchten, in den Schrank, an die Decke. Sprecht dabei einfach mit, was gerade passiert. Jetzt leuchtet es unter dem Tisch. Jetzt leuchten die Sterne an der Decke. Ein Wort bleibt da hängen, wo ein Kind es selbst braucht, und nicht da, wo es nur stimmt. Und wenn Ihr abends am Fenster steht: schaut, ob Ihr einen Stern findet, der leuchtet.',
     },
-    { datum: '2026-11-14', inhalt: 6 },
+    {
+      datum: '2026-11-14',
+      inhalt: 6,
+      zwischenDenSamstagen:
+        'helfen ist ein Wort, das man nicht erklären muss, sondern tun lässt. Gib Eurem Kind eine echte Aufgabe, keine erfundene: den Tisch decken, die Wäsche aussortieren, den Einkauf tragen. Und dann sprecht mit, was passiert. Du hilfst mir mit den Tellern. Jetzt hast Du mir geholfen. Mehr braucht es nicht. Eine Sache noch, weil sie zweisprachigen Kindern fast immer verlorengeht: helfen steht mit dem Dativ. Ich helfe Dir, nicht ich helfe Dich. Korrigiert das nicht, sondern sagt den richtigen Satz einfach daneben. Das reicht, wenn es oft genug passiert.',
+    },
     { datum: '2026-11-28', inhalt: 7 },
     { datum: '2026-12-12', inhalt: 8 },
     { datum: '2027-01-16', inhalt: 9 },
@@ -288,7 +293,19 @@ export const aufnahmen: Aufnahme[] = [
     dauer: 609,
     verfuegbar: true,
   },
-  ...Array.from({ length: 15 }, (_, i) => leer(i + 6)),
+  {
+    ...leer(6),
+    titel: 'Eine Hälfte für Dich',
+    wortDerWoche: 'helfen',
+    formeln: [
+      'Hilfst Du mir bitte?',
+      'Ich helfe Dir beim Anziehen.',
+      'Sankt Martin hat dem armen Mann geholfen.',
+    ],
+    dauer: 685,
+    verfuegbar: true,
+  },
+  ...Array.from({ length: 14 }, (_, i) => leer(i + 7)),
 ]
 
 /**
