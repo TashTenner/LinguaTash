@@ -302,6 +302,7 @@ export const aufnahmen: Aufnahme[] = [
       'Ich helfe Dir beim Anziehen.',
       'Sankt Martin hat dem armen Mann geholfen.',
     ],
+    stattBuch: 'eine freie Nacherzählung der Martinslegende',
     dauer: 685,
     verfuegbar: true,
   },
