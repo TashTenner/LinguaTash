@@ -132,10 +132,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 9,
     titulo: 'Clase 9',
-    resumen: '',
+    resumen:
+      'Contar del trece al veinte, los dos sonidos que el alemán comparte con el castellano, el tren, y las cuatro cosas del aula.',
     archivo: 'ayd_pre_a1_c09.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 444,
+    disponible: true,
   },
   {
     clase: 10,
