@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { genPageMetadata } from 'app/seo'
-import { fechasLaJuntada, type FechaLaJuntada } from '@/content/lajuntada/fechas'
+import { diaDe, fechasLaJuntada } from '@/content/lajuntada/fechas'
 import { contarFamilias } from '@/lib/lajuntada/reservas'
 import FaqAccordion from '@/components/lajuntada/FaqAccordion'
 import FlyerAmpliable from '@/components/lajuntada/FlyerAmpliable'
@@ -36,11 +36,6 @@ function listaDeEspera(fecha: string): string {
     'https://wa.me/34644886723?text=' +
     encodeURIComponent(`Hola Tash, ¿me anotás en la lista de espera de La Juntada del ${fecha}?`)
   )
-}
-
-/** "domingo 13 de diciembre", de "Domingo 13 de diciembre 2026". */
-function diaDe(f: FechaLaJuntada): string {
-  return f.fecha.replace(/^Domingo/, 'domingo').replace(/ [0-9]{4}$/, '')
 }
 
 /**
@@ -399,7 +394,11 @@ export default async function LaJuntadaPage() {
                     </td>
                     <td className="px-4 py-4">
                       {f.flyer ? (
-                        <FlyerAmpliable src={f.flyer.src} alt={f.flyer.alt} />
+                        <FlyerAmpliable
+                          src={f.flyer.src}
+                          alt={f.flyer.alt}
+                          pasada={pasada && !f.flyer.final}
+                        />
                       ) : (
                         <span className="opacity-40">—</span>
                       )}

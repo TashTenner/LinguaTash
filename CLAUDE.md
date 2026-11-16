@@ -943,6 +943,26 @@ Stripe's 15 payment limit is per link and knows nothing of this: set the new
 date's link to **15 minus the bookings moved in**, or it will sell more places
 than there are.
 
+### After a date: what happens on its own
+
+Two things used to be a to-do after every juntada and are now automatic:
+
+- **The Stripe link is switched off** the night of the juntada by
+  `app/api/lajuntada/cerrar-links` (Vercel cron, 21:00 UTC, `CRON_SECRET`).
+  A payment link has no expiry date, so without this anyone with the link in
+  an old WhatsApp could pay for a date that is over. It sets an inactive
+  message pointing to the next date, posts one line per closed link to the La
+  Juntada Slack channel, and a ⚠️ if one could not be closed. `?probar=1`
+  says what it would close without closing anything.
+- **The flyer turns "pasada"** on the page: faded, with a navy "PASADA" band
+  over the booking footer, drawn by `FlyerAmpliable`. No new image is needed.
+  A flyer that already says how its date ended (a cancelled one, or a pasada
+  made by hand because something had to be hidden, as with ARGENFOLK) carries
+  `final: true` and gets no band.
+
+The hero text needs nothing either: it names the next date from `fechas.ts`.
+What still needs a person each month is the next link and its flyer.
+
 The admin panel has one tab per date with bookings, past ones included, and
 opens on the next date. Its two copy buttons give the emails of the next date
 and of every family that ever booked, refunded bookings left out, comma

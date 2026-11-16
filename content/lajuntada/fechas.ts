@@ -31,8 +31,13 @@ export interface FechaLaJuntada {
    * 4:5. Cuando la fecha cambia de estado (cancelada, pasada) se reemplaza por
    * el flyer que lo dice, con otro nombre de archivo para no servir el viejo
    * desde la caché. El alt dice lo mismo que el flyer.
+   *
+   * Cuando la fecha pasa, la página lo muestra desvaído y con una banda
+   * "Pasada" encima, sola, sin que haga falta otro flyer. `final` es para el
+   * flyer que ya dice cómo terminó la fecha (uno cancelado, o un pasado hecho
+   * a mano porque había que tapar algo), que no lleva la banda otra vez.
    */
-  flyer?: { src: string; alt: string }
+  flyer?: { src: string; alt: string; final?: boolean }
 }
 
 export const fechasLaJuntada: FechaLaJuntada[] = [
@@ -48,6 +53,7 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     motivoCancelacion: 'alerta de lluvia',
     flyer: {
       src: '/static/images/lajuntada/flyer-2026-10-18.png',
+      final: true,
       alt: 'Flyer de La Juntada del domingo 18 de octubre, cancelada por alerta de lluvia',
     },
   },
@@ -61,6 +67,7 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     stripeUrl: 'https://buy.stripe.com/dRmaEY5NM5nkghX7hs5gc02',
     flyer: {
       src: '/static/images/lajuntada/flyer-2026-11-15-pasada.png',
+      final: true,
       alt: 'Flyer de La Juntada del domingo 15 de noviembre, chacarera para chicos y grandes: pasada. Gracias a las familias que vinieron.',
     },
   },
@@ -183,4 +190,9 @@ export function fuentesDe(fecha: FechaLaJuntada): FechaLaJuntada[] {
         f.traspasadaA === fecha.iso ||
         reservasMovidas.some((m) => m.desde === f.iso && m.a === fecha.iso))
   )
+}
+
+/** "domingo 13 de diciembre", de "Domingo 13 de diciembre 2026". */
+export function diaDe(f: FechaLaJuntada): string {
+  return f.fecha.replace(/^Domingo/, 'domingo').replace(/ [0-9]{4}$/, '')
 }

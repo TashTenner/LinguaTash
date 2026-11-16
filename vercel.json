@@ -3,6 +3,10 @@
     {
       "path": "/api/nordkreis/finalize-enrollment-fees",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/lajuntada/cerrar-links",
+      "schedule": "0 21 * * *"
     }
   ]
 }
