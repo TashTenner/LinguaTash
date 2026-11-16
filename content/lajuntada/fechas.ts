@@ -67,10 +67,11 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     tema: 'Navidad a la argentina',
     fechaArgentina: null,
     estado: 'confirmada',
-    stripeUrl: null,
+    // Limitado a 14 pagos: Ana, movida desde octubre, ocupa el lugar 15.
+    stripeUrl: 'https://buy.stripe.com/dRm00k6RQ7vs7LratE5gc03',
     flyer: {
-      src: '/static/images/lajuntada/flyer-2026-12-13.png',
-      alt: 'Flyer de La Juntada del domingo 13 de diciembre, de 15h a 17h en La Salle Gràcia: Navidad a la argentina. Para familias argentinas con hijos en Barcelona, chicos de 3 a 8 años y sus hermanos. Una familia, 30 euros, vengan uno o los dos progenitores.',
+      src: '/static/images/lajuntada/flyer-2026-12-13-v2.png',
+      alt: 'Flyer de La Juntada del domingo 13 de diciembre, de 15h a 17h en La Salle Gràcia: Navidad a la argentina. Para familias argentinas con hijos en Barcelona, chicos de 3 a 8 años y sus hermanos. Una familia, 30 euros, vengan uno o los dos progenitores. Reservá tu lugar en linguatash.com/lajuntada, @lajuntada.bcn.',
     },
   },
   {

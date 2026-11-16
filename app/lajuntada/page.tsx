@@ -471,17 +471,17 @@ export default async function LaJuntadaPage() {
           </p>
 
           <p className="mx-auto mt-4 max-w-md text-sm opacity-90">
-            La escuela está en la Plaça del Nord, pero la entrada es por el portón de Carrer de Sant
-            Salvador.
+            La escuela está en la Plaça del Nord, pero la entrada es por Carrer de Sant Salvador
+            36‑50: el portón negro entre los muros azules, no la puerta principal.
           </p>
 
           <a
-            href="https://maps.google.com/?q=La+Salle+Gràcia,+Plaça+del+Nord+14,+08024+Barcelona"
+            href="https://maps.google.com/?q=Carrer+de+Sant+Salvador+36,+08024+Barcelona"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-4 inline-block text-sm text-[#B3475A] underline underline-offset-4 transition-colors hover:text-[#9f3f50]"
           >
-            Ver en Google Maps →
+            Ver la entrada en Google Maps →
           </a>
         </section>
       )}
