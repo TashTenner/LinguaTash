@@ -566,12 +566,10 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
     .join('\n')
 
   const importe = (session.amount_total ?? 0) / 100
-  // La base es una familia con un adulto; por encima de 30 vino el otro progenitor.
-  const adultos = (session.amount_total ?? 0) > 3000 ? 2 : 1
   const iva = desgloseIva(session.amount_total ?? 0)
   const fecha = fechaJuntada(session)
   const nombre = (d?.name ?? '').trim().replace(/\s+/g, ' ') || '—'
-  const concepto = `La Juntada${fecha ? ` del ${fecha}` : ''}: tarde familiar de cultura argentina, ${adultos === 2 ? 'dos adultos' : 'un adulto'} con sus hijos`
+  const concepto = `La Juntada${fecha ? ` del ${fecha}` : ''}: tarde familiar de cultura argentina, una familia con sus hijos`
 
   return [
     {
@@ -582,7 +580,6 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
       type: 'section',
       fields: [
         { type: 'mrkdwn', text: `*Familia*\n${d?.name ?? '—'}` },
-        { type: 'mrkdwn', text: `*Adultos*\n${adultos}` },
         { type: 'mrkdwn', text: `*Email*\n${d?.email ?? '—'}` },
         { type: 'mrkdwn', text: `*Teléfono*\n${d?.phone ?? '—'}` },
       ],

@@ -19,8 +19,9 @@ export interface FechaLaJuntada {
    */
   traspasadaA?: string
   /**
-   * Quien da la actividad, si no la doy yo. El nombre y la descripción van
-   * tal como lo pidieron: el crédito en la promoción es parte del acuerdo.
+   * Quien da la actividad, si no la doy yo. Se muestra en el hero y en la fila
+   * del calendario, y se quita si el acuerdo deja de estar en pie, aunque la
+   * fecha ya haya pasado.
    */
   aCargoDe?: { nombre: string; descripcion: string; url: string }
   /**
@@ -53,15 +54,6 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     tema: 'Chacarera para chicos y grandes',
     fechaArgentina: 'Cerca del Día de la Tradición (10 de noviembre)',
     estado: 'confirmada',
-    aCargoDe: {
-      nombre: 'ARGENFOLK',
-      descripcion: 'la escuela Argentina de Tango y Folklore',
-      url: 'https://www.instagram.com/argenfolk/',
-    },
-    flyer: {
-      src: '/static/images/lajuntada/flyer-2026-11-15.png',
-      alt: 'Flyer de La Juntada del domingo 15 de noviembre, de 15h a 17h en La Salle Gràcia: chacarera para chicos y grandes, clase a cargo de ARGENFOLK, la escuela Argentina de Tango y Folklore. Una familia, 30 euros; 35 si vienen los dos progenitores.',
-    },
     // Limitado a 13 pagos: las 2 familias traspasadas del 18 de octubre completan los 15.
     stripeUrl: 'https://buy.stripe.com/dRmaEY5NM5nkghX7hs5gc02',
   },
@@ -124,19 +116,48 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
 ]
 
 /**
- * Los payment links cuyas reservas cuentan para una fecha: el suyo, más el de
- * cada fecha cancelada que se traspasó a ella. Una fecha traspasada no tiene
- * reservas propias: ya son de la otra.
+ * Una reserva que se pasa a otra fecha sola, sin el resto de su fecha. La
+ * familia pagó en el link de `desde` y se presenta el día `a`. Como con
+ * `traspasadaA`, el pago no se toca: lo que cambia es para qué fecha cuenta.
  */
-export function linksDe(
-  fecha: FechaLaJuntada
-): { stripeUrl: string; traspasadaDe: FechaLaJuntada | null }[] {
+export interface ReservaMovida {
+  /** El id de la Checkout Session en Stripe (cs_live_…). */
+  sessionId: string
+  /** El `iso` de la fecha en cuyo link pagó. */
+  desde: string
+  /** El `iso` de la fecha para la que cuenta ahora. */
+  a: string
+}
+
+export const reservasMovidas: ReservaMovida[] = [
+  // Pagó para el 18 de octubre, pasó con el resto al 15 de noviembre y pidió
+  // posponer otra vez, al 13 de diciembre.
+  {
+    sessionId: 'cs_live_a11Y7eppf7IwPLWBh6ieFFcjl0YtdULNLR6CyfaQS1OZDyi8B5aEXf4P3O',
+    desde: '2026-10-18',
+    a: '2026-12-13',
+  },
+]
+
+/** La fecha para la que cuenta una reserva pagada en el link de `fechaDelLink`. */
+export function destinoDe(sessionId: string, fechaDelLink: FechaLaJuntada): string {
+  const movida = reservasMovidas.find((m) => m.sessionId === sessionId)
+  return movida?.a ?? fechaDelLink.traspasadaA ?? fechaDelLink.iso
+}
+
+/**
+ * Las fechas cuyos payment links pueden tener reservas para `fecha`: la suya,
+ * cada fecha cancelada que se traspasó a ella y cada fecha de la que se movió
+ * una reserva suelta hacia ella. Quien lea esos links filtra con `destinoDe`,
+ * porque no todo lo cobrado en ellos es de esta fecha.
+ */
+export function fuentesDe(fecha: FechaLaJuntada): FechaLaJuntada[] {
   if (fecha.traspasadaA) return []
-  const links: { stripeUrl: string; traspasadaDe: FechaLaJuntada | null }[] = []
-  for (const f of fechasLaJuntada) {
-    if (f.traspasadaA === fecha.iso && f.stripeUrl)
-      links.push({ stripeUrl: f.stripeUrl, traspasadaDe: f })
-  }
-  if (fecha.stripeUrl) links.push({ stripeUrl: fecha.stripeUrl, traspasadaDe: null })
-  return links
+  return fechasLaJuntada.filter(
+    (f) =>
+      !!f.stripeUrl &&
+      (f.iso === fecha.iso ||
+        f.traspasadaA === fecha.iso ||
+        reservasMovidas.some((m) => m.desde === f.iso && m.a === fecha.iso))
+  )
 }

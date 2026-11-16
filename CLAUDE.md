@@ -905,7 +905,10 @@ metadata. Nordkreis subscriptions go to their own endpoint.
 Bookings are Stripe **payment links**, one per date, created in the Dashboard.
 The website reads them; it never creates them. For each new date:
 
-1. **Payment link** with the €30 price and the optional +€5 other parent.
+1. **Payment link** with the €30 price, one line item and nothing else.
+   Since December 2026 a family pays 30 whether one parent comes or both;
+   links up to 15 November had a +€5 "otro progenitor" add-on, which is why
+   older bookings show 35. Nothing reads the amount to count adults any more.
    Payment methods: instant only (card and the like), **never SEPA**, or
    "Nueva reserva" would reach Slack before the money does.
 2. **Metadata `evento` = `la-juntada-YYYY-MM-DD`.** This tag is how the
@@ -931,9 +934,19 @@ on every non refunded booking of that link counts for the new date, in the
 admin panel (marked "Traspasada") and in the public counter. A family that
 prefers the money back is simply refunded in Stripe and stops counting.
 
+A single family can also move on its own: add its Checkout Session id to
+`reservasMovidas` in `fechas.ts`, with the date it paid for and the date it now
+counts for. Ana's booking went that way, 18 October (via 15 November) to 13
+December 2026. The admin panel marks it with the date it was paid for.
+
 Stripe's 15 payment limit is per link and knows nothing of this: set the new
 date's link to **15 minus the bookings moved in**, or it will sell more places
 than there are.
+
+The admin panel has one tab per date with bookings, past ones included, and
+opens on the next date. Its two copy buttons give the emails of the next date
+and of every family that ever booked, refunded bookings left out, comma
+separated for Gmail's BCC.
 
 Each booking posts to the La Juntada Slack channel with the Declarando data:
 **con factura simplificada**, activity _Otros servicios culturales NCOP_,

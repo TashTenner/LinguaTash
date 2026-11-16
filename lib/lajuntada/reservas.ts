@@ -7,18 +7,17 @@
  * verdad que puede desincronizarse.
  *
  * Una fecha y su payment link ya están emparejados en content/lajuntada/fechas.ts.
- * De ahí sale todo: buscamos el link por su URL y contamos lo que cobró. Una
- * fecha cancelada y traspasada suma su link al de la fecha que la reemplaza
- * (ver `linksDe`).
+ * De ahí sale todo: buscamos el link por su URL y contamos lo que cobró. Un
+ * pago cuenta para la fecha que diga `destinoDe`, que casi siempre es la de
+ * su link: una fecha cancelada pasa sus reservas a otra, y una reserva suelta
+ * se puede mover sola.
  */
 
+import { cache } from 'react'
 import Stripe from 'stripe'
-import { linksDe, type FechaLaJuntada } from '@/content/lajuntada/fechas'
+import { destinoDe, fuentesDe, type FechaLaJuntada } from '@/content/lajuntada/fechas'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-/** Lo que cuesta una familia con un adulto, en céntimos. Ver `adultosDe`. */
-const BASE_CENTIMOS = 3000
 
 export interface ReservaLaJuntada {
   sessionId: string
@@ -26,8 +25,6 @@ export interface ReservaLaJuntada {
   nombre: string | null
   email: string | null
   telefono: string | null
-  /** 1, o 2 si sumó al otro progenitor. */
-  adultos: number
   chicos: string | null
   edades: string | null
   origen: string | null
@@ -35,7 +32,7 @@ export interface ReservaLaJuntada {
   importe: number
   /** Una devuelta ya no ocupa lugar, pero sigue siendo parte del historial. */
   estado: 'pagada' | 'devuelta'
-  /** La fecha cancelada en la que se pagó, si vino traspasada. Null si es de esta fecha. */
+  /** La fecha en cuyo link se pagó, si vino de otra. Null si es de esta fecha. */
   traspasadaDe: string | null
 }
 
@@ -72,8 +69,14 @@ function estaDevuelta(session: Stripe.Checkout.Session): boolean {
   return charge.refunded
 }
 
-/** Las sesiones efectivamente cobradas: una abandonada no es una reserva. */
-async function sesionesPagadas(paymentLinkId: string): Promise<Stripe.Checkout.Session[]> {
+/**
+ * Las sesiones efectivamente cobradas de un link: una abandonada no es una
+ * reserva. Memorizado por petición, porque un link puede alimentar a varias
+ * fechas y el panel las pide todas a la vez.
+ */
+const sesionesPagadas = cache(async (stripeUrl: string): Promise<Stripe.Checkout.Session[]> => {
+  const paymentLinkId = await idDelLink(stripeUrl)
+  if (!paymentLinkId) return []
   const pagadas: Stripe.Checkout.Session[] = []
   for await (const session of stripe.checkout.sessions.list({
     payment_link: paymentLinkId,
@@ -83,6 +86,18 @@ async function sesionesPagadas(paymentLinkId: string): Promise<Stripe.Checkout.S
     if (session.payment_status === 'paid') pagadas.push(session)
   }
   return pagadas
+})
+
+/** Las sesiones pagadas que cuentan para `fecha`, cada una con la fecha de su link. */
+async function sesionesDe(
+  fecha: FechaLaJuntada
+): Promise<{ session: Stripe.Checkout.Session; delLink: FechaLaJuntada }[]> {
+  const todas = await Promise.all(
+    fuentesDe(fecha).map(async (delLink) =>
+      (await sesionesPagadas(delLink.stripeUrl!)).map((session) => ({ session, delLink }))
+    )
+  )
+  return todas.flat().filter(({ session, delLink }) => destinoDe(session.id, delLink) === fecha.iso)
 }
 
 /** Quita acentos y deja solo letras, para comparar etiquetas sin depender de cómo estén escritas. */
@@ -113,17 +128,6 @@ function campo(session: Stripe.Checkout.Session, palabra: string): string | null
 }
 
 /**
- * Cuántos adultos vienen, deducido del importe.
- *
- * El checkout no marca esto en ningún campo: la base es una familia con un
- * adulto y el add-on suma al otro, así que el total lo dice. Queda atado al
- * precio: si la base deja de ser 30, hay que cambiar BASE_CENTIMOS.
- */
-function adultosDe(session: Stripe.Checkout.Session): number {
-  return (session.amount_total ?? 0) > BASE_CENTIMOS ? 2 : 1
-}
-
-/**
  * Cuántas familias reservaron una fecha, contando las traspasadas. Devuelve
  * null si la fecha no tiene link todavía, o si Stripe no contesta: la página
  * distingue "ninguna reserva" de "no lo pudimos averiguar", y no debe inventar
@@ -132,30 +136,22 @@ function adultosDe(session: Stripe.Checkout.Session): number {
 export async function contarFamilias(fecha: FechaLaJuntada): Promise<number | null> {
   if (!fecha.stripeUrl) return null
   try {
-    let familias = 0
-    for (const { stripeUrl } of linksDe(fecha)) {
-      const id = await idDelLink(stripeUrl)
-      if (!id) return null
-      const sesiones = await sesionesPagadas(id)
-      familias += sesiones.filter((s) => !estaDevuelta(s)).length
-    }
-    return familias
+    const sesiones = await sesionesDe(fecha)
+    return sesiones.filter(({ session }) => !estaDevuelta(session)).length
   } catch (err) {
     console.error('[La Juntada] No se pudo contar las reservas:', err)
     return null
   }
 }
 
-/** Las reservas de una fecha, traspasadas incluidas, con sus datos, para el panel. */
+/** Las reservas de una fecha, las que vinieron de otra incluidas, con sus datos, para el panel. */
 export async function listarReservas(fecha: FechaLaJuntada): Promise<ReservaLaJuntada[]> {
-  const reservas: ReservaLaJuntada[] = []
-  for (const { stripeUrl, traspasadaDe } of linksDe(fecha)) {
-    const id = await idDelLink(stripeUrl)
-    if (!id) continue
-    const sesiones = await sesionesPagadas(id)
-    reservas.push(...sesiones.map((s) => aReserva(s, traspasadaDe?.fecha ?? null)))
-  }
-  return reservas.sort((a, b) => a.creada.localeCompare(b.creada))
+  const sesiones = await sesionesDe(fecha)
+  return sesiones
+    .map(({ session, delLink }) =>
+      aReserva(session, delLink.iso === fecha.iso ? null : delLink.fecha)
+    )
+    .sort((a, b) => a.creada.localeCompare(b.creada))
 }
 
 function aReserva(s: Stripe.Checkout.Session, traspasadaDe: string | null): ReservaLaJuntada {
@@ -165,7 +161,6 @@ function aReserva(s: Stripe.Checkout.Session, traspasadaDe: string | null): Rese
     nombre: s.customer_details?.name ?? null,
     email: s.customer_details?.email ?? null,
     telefono: s.customer_details?.phone ?? null,
-    adultos: adultosDe(s),
     chicos: campo(s, 'chicos'),
     edades: campo(s, 'edades'),
     origen: campo(s, 'parte'),

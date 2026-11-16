@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { genPageMetadata } from 'app/seo'
-import { fechasLaJuntada } from '@/content/lajuntada/fechas'
+import { fechasLaJuntada, type FechaLaJuntada } from '@/content/lajuntada/fechas'
 import { contarFamilias } from '@/lib/lajuntada/reservas'
 import FaqAccordion from '@/components/lajuntada/FaqAccordion'
 import FlyerAmpliable from '@/components/lajuntada/FlyerAmpliable'
@@ -23,6 +23,8 @@ export const revalidate = 600
 const MINIMO_PARA_CONTAR = 3
 const CUPO = 15
 
+const INSTAGRAM_LA_JUNTADA = 'https://www.instagram.com/lajuntadaargentina/'
+
 // El mismo número que ya usan el header, el footer y las páginas de Alemán·y·Du.
 const WHATSAPP_LA_JUNTADA =
   'https://wa.me/34644886723?text=' +
@@ -36,6 +38,11 @@ function listaDeEspera(fecha: string): string {
   )
 }
 
+/** "domingo 13 de diciembre", de "Domingo 13 de diciembre 2026". */
+function diaDe(f: FechaLaJuntada): string {
+  return f.fecha.replace(/^Domingo/, 'domingo').replace(/ [0-9]{4}$/, '')
+}
+
 /**
  * Si una fecha ya no tiene lugar. Null (Stripe no contestó) cuenta como que
  * sí hay lugar: el link de Stripe tiene su propio tope de 15 pagos, así que
@@ -46,8 +53,8 @@ function completa(reservas: number | null | undefined): boolean {
 }
 
 const PRECIOS_PUBLICADOS = true
-const PRECIO_BASE = 30
-const PRECIO_OTRO_PROGENITOR = 5
+// Uno o los dos progenitores, el mismo precio (desde diciembre de 2026).
+const PRECIO_FAMILIA = 30
 
 const UBICACION_PUBLICADA = true
 
@@ -105,11 +112,15 @@ export default async function LaJuntadaPage() {
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl leading-relaxed opacity-80">
-          {proximaCompleta
-            ? 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Ya se completaron los 15 lugares: escribime y te anoto en la lista de espera.'
-            : proximaAbierta
-              ? 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas ya están abiertas.'
-              : 'La primera juntada es el domingo 15 de noviembre, de 15h a 17h, en La Salle Gràcia. Hay lugar para 15 familias y las reservas se abren en estos días.'}
+          {!proxima
+            ? 'Las próximas fechas se anuncian pronto.'
+            : `La próxima juntada es el ${diaDe(proxima)}, de 15h a 17h, en La Salle Gràcia. ${
+                proximaCompleta
+                  ? 'Ya se completaron los 15 lugares: escribime y te anoto en la lista de espera.'
+                  : proximaAbierta
+                    ? 'Hay lugar para 15 familias y las reservas ya están abiertas.'
+                    : 'Hay lugar para 15 familias y las reservas se abren en estos días.'
+              }`}
         </p>
 
         {proxima?.aCargoDe && (
@@ -401,7 +412,7 @@ export default async function LaJuntadaPage() {
         </div>
 
         <p className="text-sm opacity-70">
-          Todas las juntadas son de 15h a 17h. Por ahora se reserva solo la primera; las demás se
+          Todas las juntadas son de 15h a 17h. Por ahora se reserva solo la próxima; las demás se
           abren más adelante. Las fechas previstas se confirman con antelación. Los temas son una
           intención y pueden cambiar: la chacarera, el locro o los juegos de patio dependen de quién
           nos acompañe ese día.
@@ -414,8 +425,9 @@ export default async function LaJuntadaPage() {
           <h2 className="mb-6 text-2xl font-semibold">Precio</h2>
 
           <ul className="ml-6 list-disc space-y-2 opacity-90">
-            <li>Un progenitor y sus hijos: {PRECIO_BASE} euros</li>
-            <li>El otro progenitor: {PRECIO_OTRO_PROGENITOR} euros más</li>
+            <li>
+              Una familia, {PRECIO_FAMILIA} euros, venga uno de los progenitores o vengan los dos
+            </li>
           </ul>
 
           <p className="mt-4 text-justify leading-relaxed opacity-90">
@@ -490,7 +502,16 @@ export default async function LaJuntadaPage() {
         </div>
 
         <p className="mt-6 text-sm opacity-70">
-          También podés escribirnos a lajuntada@linguatash.com
+          También podés escribirnos a lajuntada@linguatash.com o seguir La Juntada en Instagram,{' '}
+          <a
+            href={INSTAGRAM_LA_JUNTADA}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+          >
+            @lajuntadaargentina
+          </a>
+          .
         </p>
       </section>
 
