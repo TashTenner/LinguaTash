@@ -23,7 +23,7 @@ export const revalidate = 600
 const MINIMO_PARA_CONTAR = 3
 const CUPO = 15
 
-const INSTAGRAM_LA_JUNTADA = 'https://www.instagram.com/lajuntadaargentina/'
+const INSTAGRAM_LA_JUNTADA = 'https://www.instagram.com/lajuntada.bcn/'
 
 // El mismo número que ya usan el header, el footer y las páginas de Alemán·y·Du.
 const WHATSAPP_LA_JUNTADA =
@@ -470,6 +470,11 @@ export default async function LaJuntadaPage() {
             08024 Barcelona
           </p>
 
+          <p className="mx-auto mt-4 max-w-md text-sm opacity-90">
+            La escuela está en la Plaça del Nord, pero la entrada es por el portón de Carrer de Sant
+            Salvador.
+          </p>
+
           <a
             href="https://maps.google.com/?q=La+Salle+Gràcia,+Plaça+del+Nord+14,+08024+Barcelona"
             target="_blank"
@@ -509,7 +514,7 @@ export default async function LaJuntadaPage() {
             rel="noopener noreferrer"
             className="font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
           >
-            @lajuntadaargentina
+            @lajuntada.bcn
           </a>
           .
         </p>

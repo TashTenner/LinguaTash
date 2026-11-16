@@ -56,6 +56,10 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     estado: 'confirmada',
     // Limitado a 13 pagos: las 2 familias traspasadas del 18 de octubre completan los 15.
     stripeUrl: 'https://buy.stripe.com/dRmaEY5NM5nkghX7hs5gc02',
+    flyer: {
+      src: '/static/images/lajuntada/flyer-2026-11-15-pasada.png',
+      alt: 'Flyer de La Juntada del domingo 15 de noviembre, chacarera para chicos y grandes: pasada. Gracias a las familias que vinieron.',
+    },
   },
   {
     fecha: 'Domingo 13 de diciembre 2026',
@@ -64,6 +68,10 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     fechaArgentina: null,
     estado: 'confirmada',
     stripeUrl: null,
+    flyer: {
+      src: '/static/images/lajuntada/flyer-2026-12-13.png',
+      alt: 'Flyer de La Juntada del domingo 13 de diciembre, de 15h a 17h en La Salle Gràcia: Navidad a la argentina. Para familias argentinas con hijos en Barcelona, chicos de 3 a 8 años y sus hermanos. Una familia, 30 euros, vengan uno o los dos progenitores.',
+    },
   },
   {
     fecha: 'Domingo 17 de enero 2027',
