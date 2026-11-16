@@ -39,7 +39,8 @@ export default async function LaJuntadaAdminPage(props: {
   const hoy = new Date().toISOString().slice(0, 10)
 
   // Toda fecha con link propio o con reservas que le llegaron de otra. Una
-  // cancelada no tiene pestaña: sus reservas están en la fecha que la reemplaza.
+  // cancelada tiene pestaña, pero solo con lo devuelto: lo demás se fue a la
+  // fecha que la reemplaza y se ve allá.
   const conReservas = fechasLaJuntada.filter((f) => fuentesDe(f).length > 0)
 
   // Todas a la vez, aunque se vea una: los dos botones de emails las necesitan.
@@ -47,7 +48,7 @@ export default async function LaJuntadaAdminPage(props: {
     conReservas.map(async (f) => ({ fecha: f, reservas: await listarReservas(f) }))
   )
 
-  const proxima = porFecha.find(({ fecha }) => fecha.iso >= hoy)
+  const proxima = porFecha.find(({ fecha }) => fecha.iso >= hoy && fecha.estado !== 'cancelada')
   const actual = porFecha.find(({ fecha }) => fecha.iso === elegida) ?? proxima ?? porFecha.at(-1)
 
   return (
@@ -97,7 +98,9 @@ export default async function LaJuntadaAdminPage(props: {
                   } ${fecha.iso < hoy && !activa ? 'opacity-60' : ''}`}
                 >
                   {corta.format(new Date(fecha.iso))}
-                  <span className="ml-2 opacity-80">· {familias}</span>
+                  <span className="ml-2 opacity-80">
+                    · {fecha.estado === 'cancelada' ? 'cancelada' : familias}
+                  </span>
                   {fecha.iso === proxima?.fecha.iso && (
                     <span className="ml-2 text-xs uppercase">Próxima</span>
                   )}
@@ -137,30 +140,48 @@ function Detalle({
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b-2 border-[#b3475a]/30 pb-2">
         <h2 className="text-xl font-semibold text-[#b3475a]">
           {fecha.fecha}
-          {pasada && <span className="ml-3 text-sm font-normal opacity-70">pasada</span>}
+          {pasada && fecha.estado !== 'cancelada' && (
+            <span className="ml-3 text-sm font-normal opacity-70">pasada</span>
+          )}
           {!fecha.stripeUrl && (
             <span className="ml-3 text-sm font-normal opacity-70">sin link de Stripe todavía</span>
           )}
         </h2>
-        <p className="text-sm">
-          <span className={lleno ? 'font-semibold text-[#b3475a]' : 'font-semibold'}>
-            {activas.length} de {CUPO} familias
-          </span>
-          <span className="opacity-70">
-            {' · '}
-            {chicos} chicos · {euros.format(recaudado)}
-          </span>
-          {devueltas.length > 0 && (
+        {fecha.estado !== 'cancelada' && (
+          <p className="text-sm">
+            <span className={lleno ? 'font-semibold text-[#b3475a]' : 'font-semibold'}>
+              {activas.length} de {CUPO} familias
+            </span>
             <span className="opacity-70">
               {' · '}
-              {devueltas.length} devuelta{devueltas.length > 1 ? 's' : ''}
+              {chicos} chicos · {euros.format(recaudado)}
             </span>
-          )}
-        </p>
+            {devueltas.length > 0 && (
+              <span className="opacity-70">
+                {' · '}
+                {devueltas.length} devuelta{devueltas.length > 1 ? 's' : ''}
+              </span>
+            )}
+          </p>
+        )}
       </div>
 
+      {fecha.estado === 'cancelada' && (
+        <p className="rounded-xl border border-[#b3475a]/40 bg-[#b3475a]/10 px-4 py-3 text-sm">
+          Cancelada{fecha.motivoCancelacion ? ` por ${fecha.motivoCancelacion}` : ''}.
+          {fecha.traspasadaA &&
+            ` Las familias que no pidieron la devolución pasaron al ${
+              fechasLaJuntada
+                .find((f) => f.iso === fecha.traspasadaA)
+                ?.fecha.replace(/^Domingo/, 'domingo') ?? fecha.traspasadaA
+            } y figuran en esa pestaña.`}
+        </p>
+      )}
+
       {reservas.length === 0 ? (
-        <p className="text-sm opacity-70">Sin reservas todavía.</p>
+        <p className="text-sm opacity-70">
+          {fecha.estado === 'cancelada' ? 'No quedó ninguna reserva acá.' : 'Sin reservas todavía.'}
+        </p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-[#9a8f85]/30">
           <table className="w-full text-left text-sm">

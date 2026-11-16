@@ -18,6 +18,8 @@ export interface FechaLaJuntada {
    * Quien prefirió la devolución se reembolsa en Stripe y deja de contar sola.
    */
   traspasadaA?: string
+  /** Solo en una fecha cancelada: por qué, para el panel. "alerta de lluvia". */
+  motivoCancelacion?: string
   /**
    * Quien da la actividad, si no la doy yo. Se muestra en el hero y en la fila
    * del calendario, y se quita si el acuerdo deja de estar en pie, aunque la
@@ -43,6 +45,7 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     estado: 'cancelada',
     stripeUrl: 'https://buy.stripe.com/bJe00keki7vs6Hn7hs5gc01',
     traspasadaA: '2026-11-15',
+    motivoCancelacion: 'alerta de lluvia',
     flyer: {
       src: '/static/images/lajuntada/flyer-2026-10-18.png',
       alt: 'Flyer de La Juntada del domingo 18 de octubre, cancelada por alerta de lluvia',
@@ -70,8 +73,8 @@ export const fechasLaJuntada: FechaLaJuntada[] = [
     // Limitado a 14 pagos: Ana, movida desde octubre, ocupa el lugar 15.
     stripeUrl: 'https://buy.stripe.com/dRm00k6RQ7vs7LratE5gc03',
     flyer: {
-      src: '/static/images/lajuntada/flyer-2026-12-13-v2.png',
-      alt: 'Flyer de La Juntada del domingo 13 de diciembre, de 15h a 17h en La Salle Gràcia: Navidad a la argentina. Para familias argentinas con hijos en Barcelona, chicos de 3 a 8 años y sus hermanos. Una familia, 30 euros, vengan uno o los dos progenitores. Reservá tu lugar en linguatash.com/lajuntada, @lajuntada.bcn.',
+      src: '/static/images/lajuntada/flyer-2026-12-13-v3.png',
+      alt: 'Flyer de La Juntada del domingo 13 de diciembre, de 15h a 17h en La Salle Gràcia: Navidad a la argentina. Para familias argentinas con hijos en Barcelona, chicos de 3 a 8 años y sus hermanos. Una familia, 30 euros, vengan uno o los dos progenitores. Reservá tu lugar en linguatash.com/lajuntada, con un código QR que lleva ahí. Seguime en Instagram, @lajuntada.bcn.',
     },
   },
   {
@@ -148,8 +151,18 @@ export const reservasMovidas: ReservaMovida[] = [
   },
 ]
 
-/** La fecha para la que cuenta una reserva pagada en el link de `fechaDelLink`. */
-export function destinoDe(sessionId: string, fechaDelLink: FechaLaJuntada): string {
+/**
+ * La fecha para la que cuenta una reserva pagada en el link de `fechaDelLink`.
+ *
+ * Lo devuelto de una fecha cancelada se queda en ella: es quien prefirió la
+ * plata a otra fecha, y su fila es el rastro de la cancelación en el panel.
+ */
+export function destinoDe(
+  sessionId: string,
+  fechaDelLink: FechaLaJuntada,
+  devuelta: boolean
+): string {
+  if (devuelta && fechaDelLink.estado === 'cancelada') return fechaDelLink.iso
   const movida = reservasMovidas.find((m) => m.sessionId === sessionId)
   return movida?.a ?? fechaDelLink.traspasadaA ?? fechaDelLink.iso
 }
@@ -161,7 +174,8 @@ export function destinoDe(sessionId: string, fechaDelLink: FechaLaJuntada): stri
  * porque no todo lo cobrado en ellos es de esta fecha.
  */
 export function fuentesDe(fecha: FechaLaJuntada): FechaLaJuntada[] {
-  if (fecha.traspasadaA) return []
+  // Una cancelada solo lee su propio link, y de él solo le queda lo devuelto.
+  if (fecha.traspasadaA) return fecha.stripeUrl ? [fecha] : []
   return fechasLaJuntada.filter(
     (f) =>
       !!f.stripeUrl &&

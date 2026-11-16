@@ -97,7 +97,11 @@ async function sesionesDe(
       (await sesionesPagadas(delLink.stripeUrl!)).map((session) => ({ session, delLink }))
     )
   )
-  return todas.flat().filter(({ session, delLink }) => destinoDe(session.id, delLink) === fecha.iso)
+  return todas
+    .flat()
+    .filter(
+      ({ session, delLink }) => destinoDe(session.id, delLink, estaDevuelta(session)) === fecha.iso
+    )
 }
 
 /** Quita acentos y deja solo letras, para comparar etiquetas sin depender de cómo estén escritas. */
