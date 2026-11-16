@@ -652,7 +652,13 @@ which is deliberately general across years and groups.
 
 The level also goes in the ID3 title (`pre-A1 · Clase 3`) and album
 (`Alemán y Du · pre-A1`), because a downloaded file shows up in a flat list
-where `Clase 3` alone says nothing. It stays **out** of the card titles on the
+where `Clase 3` alone says nothing. A handoff may offer a descriptive title
+instead; class 9 arrived with «Los números hasta el veinte» on 16 November 2026
+and it was declined. Nine descriptive names in a downloads folder no longer
+sort into a course, and the page's own MediaSession would still say
+`pre-A1 · Clase 9`, naming one track two ways depending on how it is played. A
+suelto is the opposite case: with no number and no position, the descriptive
+title is the only thing identifying it. It stays **out** of the card titles on the
 page: the whole page is one course, and the familias page already explains what
 pre-A1 means.
 
