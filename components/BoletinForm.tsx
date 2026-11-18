@@ -1,8 +1,9 @@
 'use client'
 
-// Signup for a project's boletín, in Spanish. Each project brings its own
-// register: La Juntada speaks in vos, Alemán·y·Du in tú. Posts to
-// /api/newsletter, which subscribes to that project's Kit form and tag.
+// Signup for a project's boletín. Each project brings its own register: La
+// Juntada speaks in vos, the others in tú, and 1P2L is English and Spanish like
+// its page. Posts to /api/newsletter, which subscribes to that project's Kit
+// form and tag. Nordkreis has its own bilingual form in components/nordkreis.
 
 import { useState } from 'react'
 import Link from './Link'
@@ -12,41 +13,59 @@ type Status = 'idle' | 'loading' | 'success' | 'error'
 
 interface Textos {
   nombre: string
+  opcional: string
   email: string
   boton: string
   enviando: string
   exito: string
   error: string
   pie: string
+  privacidad: string
+}
+
+/** The Spanish form in tú, for any project, with its own address for problems. */
+function enTu(direccion: string): Textos {
+  return {
+    nombre: 'Tu nombre',
+    opcional: '(opcional)',
+    email: 'Tu email',
+    boton: 'Quiero el boletín',
+    enviando: 'Un momento…',
+    exito: '¡Casi listo! Revisa tu correo y confirma la suscripción con el botón del email.',
+    error: `No se ha podido. Inténtalo de nuevo o escríbeme a ${direccion}.`,
+    pie: 'Puedes darte de baja cuando quieras, con un clic.',
+    privacidad: 'Privacidad',
+  }
 }
 
 const TEXTOS: Partial<Record<Lista, Textos>> = {
   lajuntada: {
     nombre: 'Tu nombre',
+    opcional: '(opcional)',
     email: 'Tu email',
     boton: 'Quiero el boletín',
     enviando: 'Un momento…',
     exito: '¡Casi listo! Revisá tu correo y confirmá la suscripción con el botón del mail.',
     error: 'No se pudo. Probá de nuevo o escribime a lajuntada@linguatash.com.',
     pie: 'Te podés dar de baja cuando quieras, con un clic.',
+    privacidad: 'Privacidad',
   },
-  alemanydu: {
-    nombre: 'Tu nombre',
-    email: 'Tu email',
-    boton: 'Quiero el boletín',
-    enviando: 'Un momento…',
-    exito: '¡Casi listo! Revisa tu correo y confirma la suscripción con el botón del email.',
-    error: 'No se ha podido. Inténtalo de nuevo o escríbeme a alemanydu@linguatash.com.',
-    pie: 'Puedes darte de baja cuando quieras, con un clic.',
-  },
-  fonetikas: {
-    nombre: 'Tu nombre',
-    email: 'Tu email',
-    boton: 'Quiero el boletín',
-    enviando: 'Un momento…',
-    exito: '¡Casi listo! Revisa tu correo y confirma la suscripción con el botón del email.',
-    error: 'No se ha podido. Inténtalo de nuevo o escríbeme a fonetikas@linguatash.com.',
-    pie: 'Puedes darte de baja cuando quieras, con un clic.',
+  alemanydu: enTu('alemanydu@linguatash.com'),
+  fonetikas: enTu('fonetikas@linguatash.com'),
+  resuena: enTu('resuena@linguatash.com'),
+  linguatash: enTu('info@linguatash.com'),
+  '1p2l': {
+    nombre: 'Name · Nombre',
+    opcional: '(optional · opcional)',
+    email: 'Email',
+    boton: 'Subscribe · Suscribirme',
+    enviando: 'One moment…',
+    exito:
+      'Almost done! Check your inbox and confirm with the button in the email. · ¡Casi listo! Revisa tu correo y confirma la suscripción.',
+    error:
+      'Something went wrong. Please try again or write to 1p2l@linguatash.com. · No se ha podido, inténtalo de nuevo.',
+    pie: 'Unsubscribe any time with one click. · Puedes darte de baja cuando quieras.',
+    privacidad: 'Privacy · Privacidad',
   },
 }
 
@@ -94,7 +113,7 @@ export default function BoletinForm({ lista }: { lista: Lista }) {
     <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-4 text-left">
       <div>
         <label htmlFor={`boletin-${lista}-nombre`} className="mb-1 block text-sm font-medium">
-          {t.nombre} <span className="font-normal opacity-60">(opcional)</span>
+          {t.nombre} <span className="font-normal opacity-60">{t.opcional}</span>
         </label>
         <input
           id={`boletin-${lista}-nombre`}
@@ -151,7 +170,7 @@ export default function BoletinForm({ lista }: { lista: Lista }) {
       <p className="text-center text-xs leading-relaxed opacity-70">
         {t.pie}{' '}
         <Link href="/politica-de-privacidad" className="underline underline-offset-4">
-          Privacidad
+          {t.privacidad}
         </Link>
       </p>
     </form>

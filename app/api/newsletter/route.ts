@@ -1,26 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { esLista, suscribirAKit } from '@/lib/newsletter/kit'
+import { esLista, suscribirAKit, type Lista } from '@/lib/newsletter/kit'
 
 export const dynamic = 'force-dynamic'
 
-// A request with `lista` subscribes to that project's newsletter (see
-// lib/newsletter/kit.ts). No `lista` keeps the original behaviour: the
-// homepage waitlist form.
+// Subscribes to one list's newsletter (see lib/newsletter/kit.ts). `tambien`
+// adds other lists' tags through the same confirmation: the homepage form
+// signs up to the LinguaTash boletín plus the projects ticked there. A request
+// without `lista` is treated as the LinguaTash boletín, which is what the
+// homepage form used to send before it named its list.
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
   let email: string | undefined
-  let projects: string[] = []
   let lista: unknown
+  let tambien: unknown
   let nombre: string | undefined
   let trampa: string | undefined
 
   try {
     const body = await req.json()
     email = typeof body?.email === 'string' ? body.email.trim() : undefined
-    projects = Array.isArray(body?.projects) ? body.projects : []
-    lista = body?.lista
+    lista = body?.lista ?? 'linguatash'
+    tambien = body?.tambien
     nombre = typeof body?.nombre === 'string' ? body.nombre.trim().slice(0, 100) : undefined
     trampa = typeof body?.website === 'string' ? body.website : undefined
   } catch {
@@ -37,41 +39,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   }
 
-  if (lista !== undefined) {
-    if (!esLista(lista)) {
-      return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
-    }
-    const { ok, status } = await suscribirAKit({ lista, email, nombre, origen: 'web' })
-    return ok
-      ? NextResponse.json({ message: 'Subscribed' }, { status: 201 })
-      : NextResponse.json({ error: 'Error subscribing' }, { status })
+  if (!esLista(lista)) {
+    return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
   }
 
-  // The homepage waitlist.
-  const FORM_ID = process.env.CONVERTKIT_FORM_ID
-  const API_KEY = process.env.CONVERTKIT_API_KEY
+  const extras: Lista[] = Array.isArray(tambien) ? tambien.filter(esLista) : []
 
-  if (!FORM_ID || !API_KEY) {
-    console.error('Missing CONVERTKIT_FORM_ID or CONVERTKIT_API_KEY')
-    return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
-  }
-
-  const payload: Record<string, unknown> = { email, api_key: API_KEY }
-  if (projects.length > 0) {
-    payload.fields = { projects: projects.join(', ') }
-  }
-
-  const res = await fetch(`https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+  const { ok, status } = await suscribirAKit({
+    lista,
+    email,
+    nombre,
+    origen: 'web',
+    tambien: extras,
   })
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    console.error('ConvertKit error', res.status, body)
-    return NextResponse.json({ error: 'Error subscribing' }, { status: res.status })
-  }
-
-  return NextResponse.json({ message: 'Subscribed' }, { status: 201 })
+  return ok
+    ? NextResponse.json({ message: 'Subscribed' }, { status: 201 })
+    : NextResponse.json({ error: 'Error subscribing' }, { status })
 }

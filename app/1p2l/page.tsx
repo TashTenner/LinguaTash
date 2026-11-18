@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import BoletinForm from '@/components/BoletinForm'
+import NewsletterTexto from '@/components/1p2l/NewsletterTexto'
 
 export default function OnePersonTwoLanguagesPage() {
   return (
@@ -393,6 +395,17 @@ export default function OnePersonTwoLanguagesPage() {
             <p>It is a horizontal community space.</p>
             <p>It is also a place to learn from others.</p>
           </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section
+        id="newsletter"
+        className="scroll-mt-20 rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-6 py-12 dark:bg-[#081C3C]"
+      >
+        <NewsletterTexto />
+        <div className="mt-10">
+          <BoletinForm lista="1p2l" />
         </div>
       </section>
 

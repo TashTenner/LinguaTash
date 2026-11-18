@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import BoletinForm from '@/components/BoletinForm'
+import BoletinTexto from '@/components/resuena/BoletinTexto'
 
 export default function ResuenaPage() {
   return (
@@ -153,6 +155,17 @@ export default function ResuenaPage() {
               experiencia que refleja cómo conviven ambos idiomas en su aprendizaje y desarrollo.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* BOLETÍN */}
+      <section
+        id="boletin"
+        className="scroll-mt-20 rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-6 py-12 dark:bg-[#081C3C]"
+      >
+        <BoletinTexto />
+        <div className="mt-8">
+          <BoletinForm lista="resuena" />
         </div>
       </section>
 

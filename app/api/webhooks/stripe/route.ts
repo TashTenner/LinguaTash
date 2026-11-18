@@ -306,20 +306,6 @@ async function addToNewsletter(email: string, nombre: string): Promise<void> {
   }
 }
 
-// ── Add to Kit (ConvertKit) newsletter ───────────────────────────────────────
-async function addToKit(email: string): Promise<void> {
-  const formId = process.env.CONVERTKIT_FORM_ID
-  const apiKey = process.env.CONVERTKIT_API_KEY
-  if (!formId || !apiKey) return
-  const res = await fetch(`https://api.convertkit.com/v3/forms/${formId}/subscribe`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, api_key: apiKey }),
-  })
-  if (res.ok) console.log('[Webhook] ✓ Added to Kit:', email)
-  else console.warn('[Webhook] Kit add failed:', await res.text())
-}
-
 // ── Slack notifications ───────────────────────────────────────────────────────
 // Posts order events to #linguatash-orders channel for real-time monitoring.
 // Each event shows exactly what happened — email sent, PDF saved, errors, etc.
@@ -1020,9 +1006,14 @@ export async function POST(req: NextRequest) {
     // 7. Add to newsletter if buyer opted in
     if (newsletter === 'true') {
       await addToNewsletter(customerEmail, nombre)
-      await addToKit(customerEmail).catch((err) =>
-        console.warn('[Webhook] Kit add error (non-fatal):', err)
-      )
+      await suscribirAKit({
+        lista: 'linguatash',
+        email: customerEmail,
+        nombre: nombre.trim().split(/\s+/)[0],
+        // The checkbox says "novedades de LinguaTash": the general boletín and
+        // nothing more, so no Resuena tag even though Salten is a Resuena game.
+        origen: 'compra de Salten',
+      }).catch((err) => console.warn('[Webhook] Kit add error (non-fatal):', err))
     }
 
     // 8. Send Slack notification — summary of everything that happened

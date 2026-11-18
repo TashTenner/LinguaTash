@@ -831,9 +831,9 @@ works.
 
 ## Newsletters: one Kit account, one form and one tag per project
 
-**Status as of 2026-11-18: the Nordkreis Newsletter is live.** Signup at
-`/nordkreis/newsletter` (the QR code target) and in the `#newsletter` section of
-`/nordkreis`. After confirming, Kit redirects to `/nordkreis/newsletter/bestaetigt`.
+**Status as of 2026-11-18: seven newsletters live**, one per project plus the
+general LinguaTash boletín. The Nordkreis signup at `/nordkreis/newsletter` is
+a printed QR code target.
 
 Each project newsletter is its own Kit **form** (own double opt-in email, own
 language) plus a **tag** to send broadcasts to. One subscriber list underneath,
@@ -842,24 +842,37 @@ unsubscribe link removes someone from everything, not just one project.
 
 `lib/newsletter/kit.ts` holds `LISTAS` and `suscribirAKit`, used by
 `app/api/newsletter/route.ts` (the site forms, `lista` in the body) and by the
-Stripe webhook. Without `lista` the route is the homepage waitlist, unchanged.
-A new project newsletter is one more entry in `LISTAS`, two env vars, a Kit
-form and tag, and its copy in `components/BoletinForm.tsx` (Spanish) or its
-own form (Nordkreis is bilingual, in `components/nordkreis/`).
+Stripe webhook. A request without `lista` is the LinguaTash boletín. A new
+newsletter is one more entry in `LISTAS`, two env vars and a Slack webhook, a
+Kit form and tag, its texts in `components/BoletinForm.tsx`, and a
+`BoletinTexto` for the project. Nordkreis has its own bilingual form in
+`components/nordkreis/`.
 
-| Lista       | Kit form | Kit tag  | Signup                                                  | Kit redirects to                   | Register               |
-| ----------- | -------- | -------- | ------------------------------------------------------- | ---------------------------------- | ---------------------- |
-| `nordkreis` | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                   | `/nordkreis/newsletter/bestaetigt` | German, Du             |
-| `lajuntada` | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe              | `/lajuntada/boletin/confirmado`    | Spanish, **vos**       |
-| `alemanydu` | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every familias page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German |
-| `fonetikas` | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                      | `/fonetikas/boletin/confirmado`    | Spanish, tú            |
+**The general LinguaTash boletín** is the homepage form
+(`components/WaitlistForm.tsx`, also on `/boletin`). It uses the Kit form that
+was "LinguaTash Waitlist", renamed, so it keeps `CONVERTKIT_FORM_ID`. The
+project chips under it send `tambien`: each ticked project adds that project's
+tag through the one LinguaTash confirmation email, so its broadcasts reach them
+too. The Salten checkout's "novedades de LinguaTash" box subscribes to the
+LinguaTash boletín only, no Resuena tag: that is all the box says.
+
+| Lista        | Kit form | Kit tag  | Signup                                                  | Kit redirects to                   | Register                               |
+| ------------ | -------- | -------- | ------------------------------------------------------- | ---------------------------------- | -------------------------------------- |
+| `nordkreis`  | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                   | `/nordkreis/newsletter/bestaetigt` | German, Du                             |
+| `lajuntada`  | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe              | `/lajuntada/boletin/confirmado`    | Spanish, **vos**                       |
+| `alemanydu`  | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every familias page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German                 |
+| `fonetikas`  | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                      | `/fonetikas/boletin/confirmado`    | Spanish, tú                            |
+| `resuena`    | 10210245 | 26136454 | `/resuena/boletin`, `/resuena`                          | `/resuena/boletin/confirmado`      | Spanish, tú                            |
+| `1p2l`       | 10210291 | 26136479 | `/1p2l/newsletter`, `/1p2l`                             | `/1p2l/newsletter/confirmed`       | English emails, page English · Spanish |
+| `linguatash` | 9385501  | 26136488 | `/`, `/boletin`, Salten checkout                        | `/boletin/confirmado`              | Spanish, tú                            |
 
 La Juntada also asks while booking: the payment link's `boletin` dropdown,
 and a "Sí" makes the webhook subscribe the family (Kit still sends the
 confirmation email). The answer shows in Slack and in the admin panel.
 
 Every signup posts one line to Slack ("📬 … Falta que confirme") in the
-project's channel: `#logs-nordkreis`, `#logs-lajuntada`, `#logs-alemanydu`, `#logs-fonetikas`
+project's channel: `#logs-nordkreis`, `#logs-lajuntada`, `#logs-alemanydu`, `#logs-fonetikas`,
+`#logs-resuena`, `#logs-1p2l`, `#logs-linguatash`
 (`slackEnv` in `LISTAS`, falling back to `SLACK_WEBHOOK_URL`, which is itself
 the `#logs-nordkreis` webhook). It is
 sent at signup, not at confirmation. A family that says "Sí" again on a later
@@ -867,7 +880,9 @@ booking produces another line and nothing changes in Kit. A "No" on a later
 booking does **not** unsubscribe: leaving is only through the link in each
 email, so a habitual "No" never silently drops someone who wanted it.
 
-In Kit: sender `Nordkreis <nordkreis@linguatash.com>`, double opt-in on, and
+In Kit: each form sends from its project's address (`nordkreis@`, `lajuntada@`,
+`alemanydu@`, `fonetikas@`, `resuena@`, `1p2l@`, `info@` for LinguaTash),
+double opt-in on, and
 **Auto-confirm must stay off**: the confirmation is the proof of consent. The
 sending domain linguatash.com is verified in Kit (records `ckespa`,
 `cka._domainkey`, `cka2._domainkey` and `_dmarc` with `p=none` in Vercel DNS).
