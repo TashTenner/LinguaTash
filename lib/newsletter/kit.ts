@@ -21,6 +21,12 @@ export const LISTAS = {
     tagEnv: 'CONVERTKIT_ALEMANYDU_TAG_ID',
     slackEnv: 'SLACK_WEBHOOK_URL_ALEMANYDU',
   },
+  fonetikas: {
+    nombre: 'Boletín de Fonetikas',
+    formEnv: 'CONVERTKIT_FONETIKAS_FORM_ID',
+    tagEnv: 'CONVERTKIT_FONETIKAS_TAG_ID',
+    slackEnv: 'SLACK_WEBHOOK_URL_FONETIKAS',
+  },
   lajuntada: {
     nombre: 'Boletín de La Juntada',
     formEnv: 'CONVERTKIT_LAJUNTADA_FORM_ID',

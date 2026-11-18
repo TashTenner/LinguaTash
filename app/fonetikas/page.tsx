@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import { genPageMetadata } from 'app/seo'
 import Link from '@/components/Link'
+import BoletinForm from '@/components/BoletinForm'
+import BoletinTexto from '@/components/fonetikas/BoletinTexto'
 
 export const metadata = genPageMetadata({ title: 'Fonetikas' })
 
@@ -366,6 +368,17 @@ export default function FonetikasPage() {
             height={32}
             className="hidden h-8 w-auto dark:block"
           />
+        </div>
+      </section>
+
+      {/* BOLETÍN */}
+      <section
+        id="boletin"
+        className="scroll-mt-20 rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-6 py-12 dark:bg-[#081C3C]"
+      >
+        <BoletinTexto />
+        <div className="mt-8">
+          <BoletinForm lista="fonetikas" />
         </div>
       </section>
 
