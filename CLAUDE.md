@@ -902,8 +902,30 @@ metadata. Nordkreis subscriptions go to their own endpoint.
 
 ## La Juntada: opening the next date
 
-Bookings are Stripe **payment links**, one per date, created in the Dashboard.
-The website reads them; it never creates them. For each new date:
+Bookings are Stripe **payment links**, one per date. The website reads them;
+it never creates them at runtime. **Open a date with the script**:
+
+```bash
+node scripts/abrir-juntada.mjs --fecha 2027-01-17 --dry-run   # look first
+node scripts/abrir-juntada.mjs --fecha 2027-01-17             # then open
+```
+
+The date must already be in `fechas.ts` with its theme. The room defaults to
+`I4` (`--aula` otherwise) and listed dates count as confirmed, both on Tash's
+word of 16 November 2026. The script refuses a past, cancelled or already
+linked date, and refuses if Stripe already has an active link with that
+`evento`. It counts the places taken by bookings moved in, copies the form
+from the latest Juntada link, builds the confirmation message (the Sant
+Salvador gate, the room, refunds until five days before, checked against
+Stripe's 500 character cap) and writes the URL into `fechas.ts`. Then commit
+and push. It is a command and not a cron on purpose: opening is when money
+starts to come in, and it needs the room confirmed. Closing is the cron.
+
+The flyer comes from the `flyer-la-juntada` skill in Tash's account, not
+from this repo; its 4:5 version with the QR goes in the date's `flyer`.
+
+What the script does, and what to check by hand if it ever has to be done in
+the Dashboard instead:
 
 1. **Payment link** with the €30 price, one line item and nothing else.
    Since December 2026 a family pays 30 whether one parent comes or both;
