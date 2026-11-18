@@ -13,11 +13,11 @@ import { getAudioObjekt } from '@/lib/nordkreis/audioStorage'
  */
 
 /**
- * Exactly four files. This is what keeps the route from becoming a public
+ * Exactly three files. This is what keeps the route from becoming a public
  * window onto the password protected Nordkreis recordings in the same bucket.
  * Do not widen it.
  */
-const NOMBRE_VALIDO = /^piepundbrumm-0[1-4]\.mp3$/
+const NOMBRE_VALIDO = /^piepundbrumm-0[1-3]\.mp3$/
 
 /** Public and written once: a family replaying an audio all week loads it once. */
 const CACHE_CONTROL = 'public, max-age=31536000, immutable'

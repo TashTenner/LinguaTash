@@ -13,11 +13,11 @@ import { AUDIOS_READY, piepUndBrummAudios, piepUndBrummUrl } from '@/data/piepun
 export const metadata = genPageMetadata({
   title: 'Piep und Brumm zum Nachhören',
   description:
-    'Vier kurze Audios auf Deutsch für Kinder von 3 bis 6 Jahren, zum Vorlesefest am Goethe-Institut Barcelona.',
+    'Drei kurze Audios auf Deutsch für Kinder von 3 bis 6 Jahren, zum Vorlesefest am Goethe-Institut Barcelona.',
   openGraph: {
     title: 'Piep und Brumm zum Nachhören | LinguaTash',
     description:
-      'Vier kurze Audios auf Deutsch für Kinder von 3 bis 6 Jahren, zum Vorlesefest am Goethe-Institut Barcelona.',
+      'Drei kurze Audios auf Deutsch für Kinder von 3 bis 6 Jahren, zum Vorlesefest am Goethe-Institut Barcelona.',
     url: './',
     siteName: 'LinguaTash',
     locale: 'de_DE',
@@ -45,12 +45,12 @@ export default function PiepUndBrummSeite() {
         <p className="mt-5 text-lg leading-relaxed opacity-90">
           Beim Vorlesefest am Goethe-Institut Barcelona haben wir zwei Tiergeschichten gehört: vom
           kleinen Spatz, der überall singt, und vom großen Bären, der sich nicht ins Wasser traut.
-          Mit diesen vier Audios könnt Ihr zu Hause wiederholen, was die Kinder gehört haben. So
+          Mit diesen drei Audios könnt Ihr zu Hause wiederholen, was die Kinder gehört haben. So
           bleibt es hängen.
         </p>
       </section>
 
-      <section aria-label="Die vier Audios" className="space-y-4">
+      <section aria-label="Die drei Audios" className="space-y-4">
         {!AUDIOS_READY ? (
           <p className="rounded-2xl border-l-4 border-[#B3475A] bg-[#E3DED7] px-5 py-4 font-semibold dark:bg-[#081C3C]">
             Die Audios sind ab Montag, 23. November, hier zu hören.

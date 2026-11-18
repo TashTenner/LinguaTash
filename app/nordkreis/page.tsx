@@ -264,7 +264,7 @@ export default function NordkreisPage() {
               Zum Ausprobieren: Piep und Brumm zum Nachhören
             </h2>
             <p className="mt-3 leading-relaxed opacity-90">
-              So klingt meine Arbeit mit Audios: Vier kurze Hörspiele für Kinder von 3 bis 6 Jahren,
+              So klingt meine Arbeit mit Audios: Drei kurze Hörspiele für Kinder von 3 bis 6 Jahren,
               entstanden zum Vorlesefest am Goethe-Institut Barcelona.
             </p>
             <Link
@@ -277,9 +277,8 @@ export default function NordkreisPage() {
           <div lang="es">
             <h2 className="text-lg font-semibold">Para probar: Piep und Brumm para escuchar</h2>
             <p className="mt-3 leading-relaxed opacity-90">
-              Así suena mi trabajo con audios: cuatro audios cortos en alemán para niñas y niños de
-              3 a 6 años, creados para la fiesta de lectura en voz alta del Goethe-Institut
-              Barcelona.
+              Así suena mi trabajo con audios: tres audios cortos en alemán para niñas y niños de 3
+              a 6 años, creados para la fiesta de lectura en voz alta del Goethe-Institut Barcelona.
             </p>
             <Link
               href="/piepundbrumm"

@@ -1,5 +1,5 @@
 /**
- * Piep und Brumm zum Nachhören: four short audios for the Vorlesefest at the
+ * Piep und Brumm zum Nachhören: three short audios for the Vorlesefest at the
  * Goethe-Institut Barcelona, Saturday 21 November 2026.
  *
  * The page is public and its address is printed on a QR card, so
@@ -38,12 +38,6 @@ export const piepUndBrummAudios: PiepUndBrummAudio[] = [
   },
   {
     nummer: 3,
-    titel: 'Laut und leise',
-    beschreibung: 'Der Spatz piepst leise, der Bär brummt laut. Wer passt gut auf?',
-    dauer: 0,
-  },
-  {
-    nummer: 4,
     titel: 'Ab ins Wasser!',
     beschreibung: 'Schwimmflügel aufpusten, springen, tauchen und Blasen zählen.',
     dauer: 0,

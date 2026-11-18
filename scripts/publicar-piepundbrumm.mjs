@@ -1,5 +1,5 @@
 /**
- * Publishes one of the four Piep und Brumm audios (/piepundbrumm).
+ * Publishes one of the three Piep und Brumm audios (/piepundbrumm).
  *
  *   node scripts/publicar-piepundbrumm.mjs --audio 1 --wav "D:/…/pub_01_wer_macht_das.wav" \
  *        --copia "G:/My Drive/LinguaTash/Nordkreis/Audios"
@@ -108,8 +108,8 @@ const wav = option('wav')
 const kopie = option('copia')
 const trocken = args.includes('--dry-run')
 
-if (!Number.isInteger(nummer) || nummer < 1 || nummer > 4) {
-  abbruch('--audio fehlt oder liegt nicht zwischen 1 und 4')
+if (!Number.isInteger(nummer) || nummer < 1 || nummer > 3) {
+  abbruch('--audio fehlt oder liegt nicht zwischen 1 und 3')
 }
 if (!wav || !fs.existsSync(wav)) abbruch(`WAV nicht gefunden: ${wav ?? '(--wav fehlt)'}`)
 if (!kopie) abbruch('--copia fehlt, der Sicherungsordner außerhalb von Cloudflare')
@@ -248,7 +248,7 @@ r = laufen('ffmpeg', [
   '-metadata',
   'album=Piep und Brumm zum Nachhören',
   '-metadata',
-  `track=${nummer}/4`,
+  `track=${nummer}/3`,
   ohneCover,
 ])
 if (r.code !== 0) abbruch(`Kodierung fehlgeschlagen:\n${r.err.slice(-1200)}`)
