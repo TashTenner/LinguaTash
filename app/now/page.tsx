@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { formatDate } from '../../lib/formatDate'
 
 export default function NowPage() {
-  const lastUpdated = '2026-09-26'
+  const lastUpdated = '2026-11-18'
 
   return (
     <main className="mx-auto max-w-5xl space-y-20 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
@@ -33,12 +33,8 @@ export default function NowPage() {
         <h2 className="text-2xl font-semibold">Enfoque profesional</h2>
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
-          <li>Empezar Alemán·y·Du: alemán extraescolar en La Salle Gràcia</li>
-          <li>Abrir Nordkreis, la escuela de alemán de los sábados</li>
-          <li>
-            Preparar La Juntada, que empieza en octubre: un domingo al mes para familias argentinas
-            en Barcelona
-          </li>
+          <li>Trabajar a fondo en el código de la web de LinguaTash</li>
+          <li>Leer libros infantiles en el Goethe-Institut Barcelona el 21 de noviembre</li>
         </ul>
       </section>
 
@@ -47,14 +43,8 @@ export default function NowPage() {
         <h2 className="text-2xl font-semibold">Enfoque personal</h2>
 
         <ul className="ml-6 list-disc space-y-3 opacity-90">
-          <li>
-            Aprender en Empower, un curso Erasmus+ sobre aprendizaje socioemocional y autodirigido,
-            y llevar lo que aprendo a mis clases
-          </li>
-          <li>
-            Volver con energía después de cinco semanas en Jena y unas vacaciones con amigos y
-            familia
-          </li>
+          <li>Estar en contacto con la Iglesia Evangélica Alemana en Gràcia</li>
+          <li>Hice un job shadowing en LearnLife, una escuela de Barcelona</li>
         </ul>
       </section>
 

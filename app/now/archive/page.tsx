@@ -3,6 +3,18 @@ import { formatDate } from '../../../lib/formatDate'
 
 const updates = [
   {
+    date: '2026-09-26',
+    profesional: [
+      'Empezar Alemán·y·Du: alemán extraescolar en La Salle Gràcia',
+      'Abrir Nordkreis, la escuela de alemán de los sábados',
+      'Preparar La Juntada, que empieza en octubre: un domingo al mes para familias argentinas en Barcelona',
+    ],
+    personal: [
+      'Aprender en Empower, un curso Erasmus+ sobre aprendizaje socioemocional y autodirigido, y llevar lo que aprendo a mis clases',
+      'Volver con energía después de cinco semanas en Jena y unas vacaciones con amigos y familia',
+    ],
+  },
+  {
     date: '2026-04-30',
     profesional: [
       'Aprender cómo funciona Instagram y subir las primeras publicaciones para LinguaTash',
