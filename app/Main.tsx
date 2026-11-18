@@ -24,9 +24,9 @@ export default function Home() {
             <strong>Resuena</strong> · <strong>1P2L</strong> · <strong>La Juntada</strong>
           </p>
           <div className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-8 dark:bg-[#081C3C]">
-            <h2 className="mb-1 text-xl font-semibold">Mantente al día</h2>
+            <h2 className="mb-1 text-xl font-semibold">Los boletines de LinguaTash</h2>
             <p className="mb-5 text-sm opacity-70">
-              Apúntate para recibir novedades sobre proyectos, recursos y fechas de inicio.
+              Elige los que quieras: el general, el de uno o varios proyectos, o todos.
             </p>
             <WaitlistForm />
           </div>

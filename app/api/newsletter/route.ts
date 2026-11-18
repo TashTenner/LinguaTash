@@ -3,35 +3,33 @@ import { esLista, suscribirAKit, type Lista } from '@/lib/newsletter/kit'
 
 export const dynamic = 'force-dynamic'
 
-// Subscribes to one list's newsletter (see lib/newsletter/kit.ts). `tambien`
-// adds other lists' tags through the same confirmation: the homepage form
-// signs up to the LinguaTash boletín plus the projects ticked there. A request
-// without `lista` is treated as the LinguaTash boletín, which is what the
-// homepage form used to send before it named its list.
+// Two shapes of request (see lib/newsletter/kit.ts):
+//
+// - `lista`: a project's own signup form. Subscribes to that list.
+// - `listas`: the homepage box, where people tick any of the seven boletines.
+//   One ticked: that project's own form, so its confirmation email comes in
+//   its own language and from its own sender. Several: the LinguaTash form,
+//   one confirmation email for all, tagged with exactly what was ticked.
+//
+// A request with `tambien` is the homepage as it was deployed for a few hours
+// on 2026-11-18 (the general boletín plus projects), still in some browsers.
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
-  let email: string | undefined
-  let lista: unknown
-  let tambien: unknown
-  let nombre: string | undefined
-  let trampa: string | undefined
-
+  let body: Record<string, unknown>
   try {
-    const body = await req.json()
-    email = typeof body?.email === 'string' ? body.email.trim() : undefined
-    lista = body?.lista ?? 'linguatash'
-    tambien = body?.tambien
-    nombre = typeof body?.nombre === 'string' ? body.nombre.trim().slice(0, 100) : undefined
-    trampa = typeof body?.website === 'string' ? body.website : undefined
+    body = await req.json()
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
 
+  const email = typeof body.email === 'string' ? body.email.trim() : undefined
+  const nombre = typeof body.nombre === 'string' ? body.nombre.trim().slice(0, 100) : undefined
+
   // Honeypot: a field people never see. A bot that fills it gets a success
   // response and nothing is sent to Kit.
-  if (trampa) {
+  if (typeof body.website === 'string' && body.website) {
     return NextResponse.json({ message: 'Subscribed' }, { status: 201 })
   }
 
@@ -39,19 +37,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   }
 
-  if (!esLista(lista)) {
-    return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
+  let lista: Lista
+  let etiquetas: Lista[] | undefined
+
+  if (Array.isArray(body.listas)) {
+    const elegidas = [...new Set(body.listas.filter(esLista))]
+    if (elegidas.length === 0) {
+      return NextResponse.json({ error: 'Choose at least one list' }, { status: 400 })
+    }
+    lista = elegidas.length === 1 ? elegidas[0] : 'linguatash'
+    etiquetas = elegidas
+  } else if (Array.isArray(body.tambien)) {
+    lista = 'linguatash'
+    etiquetas = ['linguatash', ...body.tambien.filter(esLista)]
+  } else {
+    const pedida = body.lista ?? 'linguatash'
+    if (!esLista(pedida)) {
+      return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
+    }
+    lista = pedida
   }
 
-  const extras: Lista[] = Array.isArray(tambien) ? tambien.filter(esLista) : []
-
-  const { ok, status } = await suscribirAKit({
-    lista,
-    email,
-    nombre,
-    origen: 'web',
-    tambien: extras,
-  })
+  const { ok, status } = await suscribirAKit({ lista, email, nombre, origen: 'web', etiquetas })
   return ok
     ? NextResponse.json({ message: 'Subscribed' }, { status: 201 })
     : NextResponse.json({ error: 'Error subscribing' }, { status })

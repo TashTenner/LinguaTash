@@ -848,13 +848,18 @@ Kit form and tag, its texts in `components/BoletinForm.tsx`, and a
 `BoletinTexto` for the project. Nordkreis has its own bilingual form in
 `components/nordkreis/`.
 
-**The general LinguaTash boletín** is the homepage form
-(`components/WaitlistForm.tsx`, also on `/boletin`). It uses the Kit form that
-was "LinguaTash Waitlist", renamed, so it keeps `CONVERTKIT_FORM_ID`. The
-project chips under it send `tambien`: each ticked project adds that project's
-tag through the one LinguaTash confirmation email, so its broadcasts reach them
-too. The Salten checkout's "novedades de LinguaTash" box subscribes to the
-LinguaTash boletín only, no Resuena tag: that is all the box says.
+**The homepage box** (`components/WaitlistForm.tsx`, also on `/boletin`)
+offers all seven boletines as chips, "LinguaTash general" among them. None is
+ticked in advance and at least one is required. **One** ticked goes through
+that project's own form, so its confirmation comes in its own language and
+from its own sender. **Several** go through the LinguaTash form (the old
+"LinguaTash Waitlist", renamed, hence `CONVERTKIT_FORM_ID`) with one
+confirmation for all, tagged with exactly what was ticked, which need not
+include `linguatash`.
+
+So **always send a broadcast to a tag, never to "subscribers of a form"**: the
+LinguaTash form holds people who only chose, say, Nordkreis and Resuena. The
+Salten checkout's "novedades de LinguaTash" box tags `linguatash` only.
 
 | Lista        | Kit form | Kit tag  | Signup                                                  | Kit redirects to                   | Register                               |
 | ------------ | -------- | -------- | ------------------------------------------------------- | ---------------------------------- | -------------------------------------- |
@@ -864,7 +869,7 @@ LinguaTash boletín only, no Resuena tag: that is all the box says.
 | `fonetikas`  | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                      | `/fonetikas/boletin/confirmado`    | Spanish, tú                            |
 | `resuena`    | 10210245 | 26136454 | `/resuena/boletin`, `/resuena`                          | `/resuena/boletin/confirmado`      | Spanish, tú                            |
 | `1p2l`       | 10210291 | 26136479 | `/1p2l/newsletter`, `/1p2l`                             | `/1p2l/newsletter/confirmed`       | English emails, page English · Spanish |
-| `linguatash` | 9385501  | 26136488 | `/`, `/boletin`, Salten checkout                        | `/boletin/confirmado`              | Spanish, tú                            |
+| `linguatash` | 9385501  | 26136488 | `/`, `/boletin` (with several chips), Salten checkout   | `/boletin/confirmado`              | Spanish, tú                            |
 
 La Juntada also asks while booking: the payment link's `boletin` dropdown,
 and a "Sí" makes the webhook subscribe the family (Kit still sends the

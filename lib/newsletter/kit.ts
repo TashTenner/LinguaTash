@@ -64,12 +64,15 @@ export function esLista(valor: unknown): valor is Lista {
 }
 
 /**
- * Subscribes an address to a list's Kit form, with its tag. Kit then sends the
+ * Subscribes an address through a list's Kit form. Kit then sends that form's
  * confirmation email; until it is clicked the person receives nothing.
  *
- * `tambien` adds other lists' tags through the same confirmation: the homepage
- * signs up to the LinguaTash boletín and, with the projects ticked there, to
- * those projects' newsletters too. Their own forms are not involved.
+ * The form decides which confirmation email goes out (language, sender). The
+ * tags decide which newsletters the person gets, and by default they are just
+ * the list's own. The homepage, when several boletines are ticked, goes
+ * through the LinguaTash form with exactly the ticked tags, which may not
+ * include `linguatash`: that is why the general boletín is always sent to the
+ * tag and never to "subscribers of the form".
  *
  * Returns Kit's HTTP status (500 if this deployment is missing its config).
  */
@@ -78,14 +81,14 @@ export async function suscribirAKit({
   email,
   nombre,
   origen,
-  tambien = [],
+  etiquetas = [lista],
 }: {
   lista: Lista
   email: string
   nombre?: string
   /** Where the signup came from, for the Slack message: "web", "reserva del 13/12"… */
   origen: string
-  tambien?: Lista[]
+  etiquetas?: Lista[]
 }): Promise<{ ok: boolean; status: number }> {
   const formId = process.env[LISTAS[lista].formEnv]
   const apiKey = process.env.CONVERTKIT_API_KEY
@@ -95,7 +98,7 @@ export async function suscribirAKit({
     return { ok: false, status: 500 }
   }
 
-  const tags = [lista, ...tambien.filter((l) => l !== lista)]
+  const tags = [...new Set(etiquetas)]
     .map((l) => Number(process.env[LISTAS[l].tagEnv]))
     .filter((id) => id > 0)
 
@@ -113,7 +116,7 @@ export async function suscribirAKit({
     const body = await res.json().catch(() => ({}))
     console.error(`[Kit] Subscribe to ${lista} failed`, res.status, body)
   } else {
-    await avisarEnSlack({ lista, email, nombre, origen, tambien })
+    await avisarEnSlack({ lista, email, nombre, origen, etiquetas })
   }
   return { ok: res.ok, status: res.status }
 }
@@ -130,26 +133,27 @@ async function avisarEnSlack({
   email,
   nombre,
   origen,
-  tambien,
+  etiquetas,
 }: {
   lista: Lista
   email: string
   nombre?: string
   origen: string
-  tambien: Lista[]
+  etiquetas: Lista[]
 }): Promise<void> {
   const url = process.env[LISTAS[lista].slackEnv] ?? process.env.SLACK_WEBHOOK_URL
   if (!url) return
   const quien = nombre ? `${nombre} · ${email}` : email
-  const extra = tambien.length
-    ? ` También: ${tambien.map((l) => LISTAS[l].nombre).join(', ')}.`
-    : ''
+  const unaSola = etiquetas.length === 1 && etiquetas[0] === lista
+  const que = unaSola
+    ? LISTAS[lista].nombre
+    : `Varios boletines (${etiquetas.map((l) => LISTAS[l].nombre).join(', ')})`
   try {
     await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: `📬 ${LISTAS[lista].nombre}: ${quien} (${origen}).${extra} Falta que confirme desde el mail de Kit.`,
+        text: `📬 ${que}: ${quien} (${origen}). Falta que confirme desde el mail de Kit.`,
       }),
     })
   } catch (err) {

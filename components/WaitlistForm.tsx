@@ -1,8 +1,10 @@
 'use client'
 
-// The homepage signup: the LinguaTash boletín, plus the newsletter of every
-// project ticked here (each one is a Kit tag, all confirmed by the one
-// LinguaTash confirmation email). See lib/newsletter/kit.ts.
+// The homepage box: any of the seven boletines, ticked by the reader. None is
+// ticked in advance (a pre-ticked box is not consent) and at least one is
+// needed. One ticked goes through that project's own form, so the
+// confirmation comes in its language; several go through the LinguaTash form
+// with one confirmation for all. See app/api/newsletter/route.ts.
 
 import { useState } from 'react'
 import Link from './Link'
@@ -10,7 +12,8 @@ import type { Lista } from '@/lib/newsletter/kit'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-const PROJECTS: { nombre: string; lista: Lista }[] = [
+const BOLETINES: { nombre: string; lista: Lista }[] = [
+  { nombre: 'LinguaTash general', lista: 'linguatash' },
   { nombre: 'Fonetikas', lista: 'fonetikas' },
   { nombre: 'Nordkreis', lista: 'nordkreis' },
   { nombre: 'Alemán·y·Du', lista: 'alemanydu' },
@@ -20,6 +23,7 @@ const PROJECTS: { nombre: string; lista: Lista }[] = [
 ]
 
 const ERROR = 'Ha ocurrido un error. Inténtalo de nuevo o escríbeme a info@linguatash.com.'
+const NINGUNO = 'Elige al menos un boletín.'
 
 export default function WaitlistForm() {
   const [email, setEmail] = useState('')
@@ -27,17 +31,26 @@ export default function WaitlistForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  function toggle(project: Lista) {
+  function toggle(lista: Lista) {
     setSelected((prev) => {
       const next = new Set(prev)
-      if (next.has(project)) next.delete(project)
-      else next.add(project)
+      if (next.has(lista)) next.delete(lista)
+      else next.add(lista)
       return next
     })
+    if (errorMsg === NINGUNO) {
+      setErrorMsg('')
+      setStatus('idle')
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (selected.size === 0) {
+      setErrorMsg(NINGUNO)
+      setStatus('error')
+      return
+    }
     const form = e.currentTarget
     const campo = (name: string) =>
       (form.elements.namedItem(name) as HTMLInputElement | null)?.value ?? ''
@@ -49,9 +62,8 @@ export default function WaitlistForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          lista: 'linguatash',
+          listas: [...selected],
           email: campo('email'),
-          tambien: [...selected],
           website: campo('website'),
         }),
       })
@@ -80,6 +92,36 @@ export default function WaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-5">
+      {/* The boletines */}
+      <fieldset>
+        <legend className="mb-2 w-full text-center text-sm text-[#9A8F85]">
+          ¿Qué boletines quieres recibir?
+        </legend>
+        <div className="flex flex-wrap justify-center gap-2">
+          {BOLETINES.map(({ nombre, lista }) => {
+            const checked = selected.has(lista)
+            return (
+              <button
+                key={lista}
+                type="button"
+                aria-pressed={checked}
+                onClick={() => toggle(lista)}
+                className={`rounded-full border px-4 py-1.5 text-sm transition-all duration-150 ${
+                  checked
+                    ? 'border-[#B3475A] bg-[#B3475A] text-white'
+                    : 'border-[#9A8F85]/40 text-[#081C3C] hover:border-[#B3475A] dark:text-[#F4EFE8]'
+                }`}
+              >
+                {nombre}
+              </button>
+            )
+          })}
+        </div>
+        <p className="mt-2 text-center text-xs opacity-60">
+          LinguaTash general: novedades de todos los proyectos, 3 o 4 veces al año.
+        </p>
+      </fieldset>
+
       {/* Email row */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="waitlist-email" className="sr-only">
@@ -103,34 +145,6 @@ export default function WaitlistForm() {
         >
           {status === 'loading' ? 'Enviando…' : 'Apuntarme'}
         </button>
-      </div>
-
-      {/* Project checkboxes */}
-      <div>
-        <p className="mb-2 text-center text-sm text-[#9A8F85]">
-          ¿Quieres también el boletín de algún proyecto?{' '}
-          <span className="opacity-60">(opcional)</span>
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {PROJECTS.map(({ nombre, lista }) => {
-            const checked = selected.has(lista)
-            return (
-              <button
-                key={lista}
-                type="button"
-                aria-pressed={checked}
-                onClick={() => toggle(lista)}
-                className={`rounded-full border px-4 py-1.5 text-sm transition-all duration-150 ${
-                  checked
-                    ? 'border-[#B3475A] bg-[#B3475A] text-white'
-                    : 'border-[#9A8F85]/40 text-[#081C3C] hover:border-[#B3475A] dark:text-[#F4EFE8]'
-                }`}
-              >
-                {nombre}
-              </button>
-            )
-          })}
-        </div>
       </div>
 
       {/* Honeypot: hidden from people and screen readers, filled only by bots. */}

@@ -1,14 +1,13 @@
-// /boletin: the general LinguaTash boletín on its own, with the same form as the
-// homepage (the projects ticked there add their newsletters too).
+// /boletin: the homepage box on its own page: any of the seven boletines.
 
 import Link from '@/components/Link'
 import { genPageMetadata } from 'app/seo'
 import WaitlistForm from '@/components/WaitlistForm'
 
 export const metadata = genPageMetadata({
-  title: 'Boletín de LinguaTash',
+  title: 'Boletines de LinguaTash',
   description:
-    'El boletín de LinguaTash: novedades de todos los proyectos en un solo correo, y el de cada proyecto si te interesa.',
+    'Los boletines de LinguaTash: el general, con las novedades de todos los proyectos, y el de cada proyecto.',
 })
 
 export default function BoletinPage() {
@@ -16,11 +15,10 @@ export default function BoletinPage() {
     <main className="mx-auto max-w-3xl px-4 py-12 font-['Noto_Sans'] text-[#081C3C] sm:px-6 dark:text-[#F4EFE8]">
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-12 dark:bg-[#081C3C]">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="mb-4 text-2xl font-semibold">El boletín de LinguaTash</h1>
+          <h1 className="mb-4 text-2xl font-semibold">Los boletines de LinguaTash</h1>
           <p className="leading-relaxed opacity-90">
-            Novedades de todos los proyectos en un solo correo: qué empieza, qué se abre y qué estoy
-            preparando. Y si un proyecto te interesa en especial, márcalo y recibirás también su
-            boletín.
+            El general reúne las novedades de todos los proyectos, tres o cuatro veces al año. Cada
+            proyecto tiene además el suyo. Elige los que quieras, uno o varios.
           </p>
         </div>
         <div className="mt-10">
