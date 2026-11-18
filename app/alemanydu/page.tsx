@@ -152,7 +152,7 @@ export default function AlemanYDuPage() {
 
             <h3 className="mt-8 mb-3 font-semibold">Nuevos grupos desde febrero de 2027</h3>
             <ul className="ml-6 list-disc space-y-3 opacity-90">
-              <li>Dos sesiones semanales</li>
+              <li>Dos sesiones semanales de 60 minutos</li>
               <li>Un grupo a mediodía y otro por la tarde, a las 17:00</li>
               <li>
                 Días: <strong>por confirmar</strong>
@@ -196,9 +196,10 @@ export default function AlemanYDuPage() {
             </ul>
 
             <h3 className="mt-8 mb-3 font-semibold">Dos sesiones semanales</h3>
-            <p className="opacity-90">
-              <strong>Por confirmar</strong>
-            </p>
+            <ul className="ml-6 list-disc space-y-3 opacity-90">
+              <li>80 € — Alumnos de La Salle Gràcia</li>
+              <li>90 € — Alumnos externos</li>
+            </ul>
 
             <p className="mt-6 text-justify opacity-90">
               Los nuevos grupos empezarán al alcanzarse el número mínimo de alumnos.
