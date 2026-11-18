@@ -852,13 +852,14 @@ own form (Nordkreis is bilingual, in `components/nordkreis/`).
 | `nordkreis` | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                   | `/nordkreis/newsletter/bestaetigt` | German, Du             |
 | `lajuntada` | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe              | `/lajuntada/boletin/confirmado`    | Spanish, **vos**       |
 | `alemanydu` | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every familias page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German |
+| `fonetikas` | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                      | `/fonetikas/boletin/confirmado`    | Spanish, tú            |
 
 La Juntada also asks while booking: the payment link's `boletin` dropdown,
 and a "Sí" makes the webhook subscribe the family (Kit still sends the
 confirmation email). The answer shows in Slack and in the admin panel.
 
 Every signup posts one line to Slack ("📬 … Falta que confirme") in the
-project's channel: `#logs-nordkreis`, `#logs-lajuntada`, `#logs-alemanydu`
+project's channel: `#logs-nordkreis`, `#logs-lajuntada`, `#logs-alemanydu`, `#logs-fonetikas`
 (`slackEnv` in `LISTAS`, falling back to `SLACK_WEBHOOK_URL`, which is itself
 the `#logs-nordkreis` webhook). It is
 sent at signup, not at confirmation. A family that says "Sí" again on a later
