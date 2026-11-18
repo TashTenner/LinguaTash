@@ -30,6 +30,15 @@ const TEXTOS: Partial<Record<Lista, Textos>> = {
     error: 'No se pudo. Probá de nuevo o escribime a lajuntada@linguatash.com.',
     pie: 'Te podés dar de baja cuando quieras, con un clic.',
   },
+  alemanydu: {
+    nombre: 'Tu nombre',
+    email: 'Tu email',
+    boton: 'Quiero el boletín',
+    enviando: 'Un momento…',
+    exito: '¡Casi listo! Revisa tu correo y confirma la suscripción con el botón del email.',
+    error: 'No se ha podido. Inténtalo de nuevo o escríbeme a alemanydu@linguatash.com.',
+    pie: 'Puedes darte de baja cuando quieras, con un clic.',
+  },
 }
 
 export default function BoletinForm({ lista }: { lista: Lista }) {

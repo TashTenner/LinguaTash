@@ -847,17 +847,20 @@ A new project newsletter is one more entry in `LISTAS`, two env vars, a Kit
 form and tag, and its copy in `components/BoletinForm.tsx` (Spanish) or its
 own form (Nordkreis is bilingual, in `components/nordkreis/`).
 
-| Lista       | Kit form | Kit tag  | Signup                                     | Kit redirects to                   | Register         |
-| ----------- | -------- | -------- | ------------------------------------------ | ---------------------------------- | ---------------- |
-| `nordkreis` | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`      | `/nordkreis/newsletter/bestaetigt` | German, Du       |
-| `lajuntada` | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe | `/lajuntada/boletin/confirmado`    | Spanish, **vos** |
+| Lista       | Kit form | Kit tag  | Signup                                                  | Kit redirects to                   | Register               |
+| ----------- | -------- | -------- | ------------------------------------------------------- | ---------------------------------- | ---------------------- |
+| `nordkreis` | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                   | `/nordkreis/newsletter/bestaetigt` | German, Du             |
+| `lajuntada` | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe              | `/lajuntada/boletin/confirmado`    | Spanish, **vos**       |
+| `alemanydu` | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every familias page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German |
 
 La Juntada also asks while booking: the payment link's `boletin` dropdown,
 and a "Sí" makes the webhook subscribe the family (Kit still sends the
 confirmation email). The answer shows in Slack and in the admin panel.
 
-Every signup posts one line to Slack ("📬 … Falta que confirme"), La Juntada to
-its own channel, Nordkreis to the general one (`slackEnv` in `LISTAS`). It is
+Every signup posts one line to Slack ("📬 … Falta que confirme") in the
+project's channel: `#logs-nordkreis`, `#logs-lajuntada`, `#logs-alemanydu`
+(`slackEnv` in `LISTAS`, falling back to `SLACK_WEBHOOK_URL`, which is itself
+the `#logs-nordkreis` webhook). It is
 sent at signup, not at confirmation. A family that says "Sí" again on a later
 booking produces another line and nothing changes in Kit. A "No" on a later
 booking does **not** unsubscribe: leaving is only through the link in each

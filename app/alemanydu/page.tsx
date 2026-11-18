@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import Link from '../../components/Link'
+import BoletinForm from '@/components/BoletinForm'
+import BoletinTexto from '@/components/alemanydu/BoletinTexto'
 
 export default function AlemanYDuPage() {
   return (
@@ -140,20 +142,35 @@ export default function AlemanYDuPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Información práctica</h2>
 
+            <h3 className="mb-3 font-semibold">Grupos en marcha</h3>
             <ul className="ml-6 list-disc space-y-3 opacity-90">
-              <li>1 sesión semanal de 60 minutos</li>
+              <li>Lunes, de 14:00 a 15:00 (primaria)</li>
+              <li>Miércoles, de 14:00 a 15:00 (primaria)</li>
+              <li>Una sesión semanal de 60 minutos</li>
               <li>Grupos de 6 a 10 alumnos</li>
-              <li>Inicio: septiembre 2026</li>
+            </ul>
+
+            <h3 className="mt-8 mb-3 font-semibold">Nuevos grupos desde febrero de 2027</h3>
+            <ul className="ml-6 list-disc space-y-3 opacity-90">
+              <li>Dos sesiones semanales</li>
+              <li>Un grupo a mediodía y otro por la tarde, a las 17:00</li>
               <li>
-                Día y horario: <strong>por confirmar</strong>
+                Días: <strong>por confirmar</strong>
               </li>
             </ul>
 
             <p className="mt-6 leading-relaxed opacity-90">
-              Todavía no tenemos confirmado el horario. Si te interesa, escríbeme por WhatsApp
-              indicando qué días y horarios te vendrían mejor y en qué curso está tu hijo o hija. No
-              puedo garantizar que coincida con tu disponibilidad, pero nos ayuda mucho a coordinar
-              el horario con el colegio.
+              Si te interesa uno de los nuevos grupos, escríbeme por WhatsApp indicando qué días te
+              vendrían mejor y en qué curso está tu hijo o hija. No puedo garantizar que coincida
+              con tu disponibilidad, pero nos ayuda mucho a coordinar los días con el colegio. Y si
+              quieres enterarte en cuanto se abran las inscripciones,{' '}
+              <a
+                href="#boletin"
+                className="font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+              >
+                apúntate al boletín
+              </a>
+              .
             </p>
 
             <a
@@ -172,13 +189,19 @@ export default function AlemanYDuPage() {
           <div>
             <h2 className="mb-6 text-2xl font-semibold">Cuotas mensuales</h2>
 
+            <h3 className="mb-3 font-semibold">Una sesión semanal</h3>
             <ul className="ml-6 list-disc space-y-3 opacity-90">
               <li>40 € — Alumnos de La Salle Gràcia</li>
               <li>45 € — Alumnos externos</li>
             </ul>
 
-            <p className="mt-4 text-justify opacity-90">
-              La actividad comenzará al alcanzarse el número mínimo de alumnos.
+            <h3 className="mt-8 mb-3 font-semibold">Dos sesiones semanales</h3>
+            <p className="opacity-90">
+              <strong>Por confirmar</strong>
+            </p>
+
+            <p className="mt-6 text-justify opacity-90">
+              Los nuevos grupos empezarán al alcanzarse el número mínimo de alumnos.
             </p>
           </div>
         </div>
@@ -300,6 +323,17 @@ export default function AlemanYDuPage() {
         >
           Ver en Google Maps →
         </a>
+      </section>
+
+      {/* BOLETÍN */}
+      <section
+        id="boletin"
+        className="scroll-mt-20 rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-6 py-12 dark:bg-[#081C3C]"
+      >
+        <BoletinTexto />
+        <div className="mt-8">
+          <BoletinForm lista="alemanydu" />
+        </div>
       </section>
 
       {/* CTA FINAL */}

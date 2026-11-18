@@ -1,4 +1,6 @@
 import Link from '@/components/Link'
+import BoletinForm from '@/components/BoletinForm'
+import BoletinTexto from './BoletinTexto'
 import { frasePrueba } from '@/data/alemanydu-audios'
 import type { Grupo } from '@/data/alemanydu-grupos'
 import AudioPlayer from './AudioPlayer'
@@ -286,6 +288,17 @@ export default function PaginaFamilias({ grupo }: { grupo: Grupo }) {
         </div>
 
         <p className="mt-6 leading-relaxed opacity-90">{grupo.cierreCalendario}</p>
+      </section>
+
+      {/* BOLETÍN */}
+      <section
+        id="boletin"
+        className="scroll-mt-20 rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-5 py-10 sm:px-8 dark:bg-[#081C3C]"
+      >
+        <BoletinTexto />
+        <div className="mt-8">
+          <BoletinForm lista="alemanydu" />
+        </div>
       </section>
 
       {/* CONTACTO */}

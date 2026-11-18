@@ -418,6 +418,17 @@ export default async function LaJuntadaPage() {
           intención y pueden cambiar: la chacarera, el locro o los juegos de patio dependen de quién
           nos acompañe ese día.
         </p>
+
+        <p className="text-sm">
+          ¿Querés enterarte cuando se abre cada fecha?{' '}
+          <a
+            href="#boletin"
+            className="font-medium text-[#B3475A] underline underline-offset-4 hover:text-[#9f3f50]"
+          >
+            Suscribite al boletín
+          </a>
+          .
+        </p>
       </section>
 
       {/* PRECIO */}

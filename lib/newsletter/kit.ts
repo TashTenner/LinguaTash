@@ -12,8 +12,14 @@ export const LISTAS = {
     nombre: 'Nordkreis Newsletter',
     formEnv: 'CONVERTKIT_NORDKREIS_FORM_ID',
     tagEnv: 'CONVERTKIT_NORDKREIS_TAG_ID',
-    // Nordkreis has no channel of its own; its payments go to the general one too.
-    slackEnv: 'SLACK_WEBHOOK_URL',
+    // Each project's own channel when its webhook is set; the general one until then.
+    slackEnv: 'SLACK_WEBHOOK_URL_NORDKREIS',
+  },
+  alemanydu: {
+    nombre: 'Boletín de Alemán·y·Du',
+    formEnv: 'CONVERTKIT_ALEMANYDU_FORM_ID',
+    tagEnv: 'CONVERTKIT_ALEMANYDU_TAG_ID',
+    slackEnv: 'SLACK_WEBHOOK_URL_ALEMANYDU',
   },
   lajuntada: {
     nombre: 'Boletín de La Juntada',
