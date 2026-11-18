@@ -719,6 +719,9 @@ per Saturday already held, newest first; upcoming Saturdays folded below. Not
 linked from the public site, not in the sitemap, `noindex`. Parents get the
 link and the password by email. The content (titles, Wort der Woche, scripts)
 is written in a separate planning chat and arrives as `NK_Audio_*.md` files.
+Since 18 November 2026 only the **two** latest Saturdays are open; older ones
+fold under «Frühere Samstage», as on Alemán·y·Du, and the page uses the site's
+`max-w-5xl` width.
 
 Unlike Alemán·y·Du, **German text on the page is wanted**: the parents are
 native speakers. Same copy rules otherwise: Ihr, Euch, Euer, Du, Dir, Dein

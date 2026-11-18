@@ -28,6 +28,9 @@ export const dynamic = 'force-dynamic'
 
 const jahrgang = entdeckerkreis2026
 
+/** How many Saturdays stay open at the top. The rest go under «Frühere Samstage». */
+const OFFENE_SAMSTAGE = 2
+
 export default function Seite() {
   const vorbei = samstageVorbei(jahrgang)
 
@@ -70,8 +73,25 @@ export default function Seite() {
     src: audioUrl(x.datei),
   }))
 
+  const karte = (x: (typeof gewesen)[number]) => (
+    <SamstagKarte
+      key={x.n}
+      nummer={x.n}
+      datum={x.samstag.datum}
+      titel={x.aufnahme?.titel ?? ''}
+      wortDerWoche={x.aufnahme?.wortDerWoche ?? ''}
+      formeln={x.aufnahme?.formeln ?? []}
+      zwischenDenSamstagen={x.samstag.zwischenDenSamstagen ?? ''}
+      buch={x.aufnahme?.buch?.titel ?? ''}
+      stattBuch={x.aufnahme?.stattBuch ?? ''}
+      datei={x.datei}
+      dauer={x.aufnahme?.dauer ?? 0}
+      verfuegbar={Boolean(x.datei && x.aufnahme?.verfuegbar)}
+    />
+  )
+
   return (
-    <main className="mx-auto max-w-3xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
+    <main className="mx-auto max-w-5xl space-y-16 px-4 font-['Noto_Sans'] text-[#081C3C] sm:px-6 lg:px-8 dark:text-[#F4EFE8]">
       <AudioStatistik
         titel={sperrbildschirm}
         album={`Nordkreis ${jahrgang.name} · Zyklus ${jahrgang.zyklus.toUpperCase()}`}
@@ -133,30 +153,27 @@ export default function Seite() {
         <h2 className="sr-only">Die Samstage</h2>
 
         {gewesen.length > 0 ? (
-          <div className="space-y-6">
-            {gewesen.map((x) => (
-              <SamstagKarte
-                key={x.n}
-                nummer={x.n}
-                datum={x.samstag.datum}
-                titel={x.aufnahme?.titel ?? ''}
-                wortDerWoche={x.aufnahme?.wortDerWoche ?? ''}
-                formeln={x.aufnahme?.formeln ?? []}
-                zwischenDenSamstagen={x.samstag.zwischenDenSamstagen ?? ''}
-                buch={x.aufnahme?.buch?.titel ?? ''}
-                stattBuch={x.aufnahme?.stattBuch ?? ''}
-                datei={x.datei}
-                dauer={x.aufnahme?.dauer ?? 0}
-                verfuegbar={Boolean(x.datei && x.aufnahme?.verfuegbar)}
-              />
-            ))}
-          </div>
+          <div className="space-y-6">{gewesen.slice(0, OFFENE_SAMSTAGE).map(karte)}</div>
         ) : (
           <p className="leading-relaxed opacity-90">
             Der erste Samstag ist am {formatDatum(jahrgang.samstage[0].datum)}. Danach findet Ihr
             hier das erste Audio.
           </p>
         )}
+
+        {/*
+          Older Saturdays fold away. By June there are twenty, and the one a
+          family comes for is almost always the latest. «Alles abspielen» still
+          plays every one of them.
+        */}
+        {gewesen.length > OFFENE_SAMSTAGE ? (
+          <details className="mt-8 rounded-2xl border border-[#9A8F85]/25 px-5 py-4 sm:px-8">
+            <summary className="min-h-11 cursor-pointer list-none text-sm font-semibold text-[#B3475A]">
+              Frühere Samstage ({gewesen.length - OFFENE_SAMSTAGE})
+            </summary>
+            <div className="mt-6 mb-2 space-y-6">{gewesen.slice(OFFENE_SAMSTAGE).map(karte)}</div>
+          </details>
+        ) : null}
 
         {/* Folded: early in the year these far outnumber the Saturdays already held. */}
         {kommend.length > 0 ? (
