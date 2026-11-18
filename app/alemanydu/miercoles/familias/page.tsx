@@ -1,12 +1,6 @@
-import { Metadata } from 'next'
-import PaginaFamilias from '@/components/alemanydu/PaginaFamilias'
-import { grupoMiercoles } from '@/data/alemanydu-grupos'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: 'Para las familias · Alemán·y·Du',
-  robots: { index: false, follow: false, nocache: true },
-}
-
+/** Ver `app/alemanydu/familias/page.tsx`. */
 export default function Pagina() {
-  return <PaginaFamilias grupo={grupoMiercoles} />
+  redirect('/alemanydu/miercoles/audios')
 }

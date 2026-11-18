@@ -341,23 +341,33 @@ Atlas → comment HAFEN from a fresh account → confirm DM arrives.
 **Status as of 2026-11-10: live. Classes 1 to 8 published, plus the Sankt
 Martin songs. The Monday group is on class 8, the Wednesday group on class 5.**
 
-Unlisted pages for the families, **one pair per group**. All are `noindex`,
+Unlisted pages for the families, **one page per group**. All are `noindex`,
 absent from the header nav and `sitemap.ts`, and not linked from `/alemanydu`.
 Parents reach them by a QR card handed out in class and by WhatsApp.
 
-| Group               | familias                        | audios                        |
-| ------------------- | ------------------------------- | ----------------------------- |
-| Primaria, lunes     | `/alemanydu/familias`           | `/alemanydu/audios`           |
-| Primaria, miércoles | `/alemanydu/miercoles/familias` | `/alemanydu/miercoles/audios` |
+| Group               | page                          | old familias URL, now a 307 to it |
+| ------------------- | ----------------------------- | --------------------------------- |
+| Primaria, lunes     | `/alemanydu/audios`           | `/alemanydu/familias`             |
+| Primaria, miércoles | `/alemanydu/miercoles/audios` | `/alemanydu/miercoles/familias`   |
 
 The Monday group keeps the bare URLs because its QR cards are already printed.
-A new group gets a slug and two five line route files; everything else is
+A new group gets a slug and one five line route file; everything else is
 shared.
 
-- `/alemanydu/familias` — the method, what is normal, what helps at home, the
-  four phases of the year, the pre-A1 level, the Monday by Monday calendar
-- `/alemanydu/audios` — one audio per class, play and download, plus a
-  **Reproducir todo** button that plays every published class in order
+**There used to be a separate familias page, and it was merged into the audios
+page on 18 November 2026** because no parent opened it: the audios page is the
+one families use. `PaginaAudios.tsx` now carries, in this order: a short
+header with how to listen (what helps at home folded into it), Reproducir
+todo, the **two** latest classes open and older ones under «Clases
+anteriores», then «Para las familias» as `<details>` folds (why only German,
+what is normal, the year and the level, the test phrase, the calendar), the
+boletín and contact. Inside the year fold the current phase is marked «ahora»,
+derived from the group's classes held (`components/alemanydu/fases.ts`). A
+visible «Ahora estamos en» block above the folds was tried and removed on
+Tash's call. The page uses `max-w-5xl` like the rest of the site. Keep the
+folds closed by default: the point is that this week's audio is on the first
+screen of a phone. The old familias routes redirect with `redirect` (307), not
+`permanentRedirect`, so a 308 is not cached in parents' browsers forever.
 
 **One audio per class, and that is the whole model.** There is no cumulative
 track. A song taught in a class lives inside that class's own audio and is not
@@ -434,10 +444,9 @@ that never happened, because what a group sees is derived from its dates.
 **Do it before the hour the class would have ended**, or the page announces a
 Clase 4 that afternoon.
 
-A banner on the familias page saying "hoy no hay clase" was built and then
-taken out again, deliberately: the calendar row already says it. A note that
-says "hoy" is not free, it needs `force-dynamic` on the familias routes and a
-window to expire in, or it is still there on Thursday with nobody deploying to
+A banner saying "hoy no hay clase" was built and then taken out again,
+deliberately: the calendar row already says it. A note that says "hoy" needs
+a window to expire in, or it is still there on Thursday with nobody deploying to
 remove it. That is the price if one is ever actually wanted.
 
 ### Still written as if there were one of it: the level
@@ -457,7 +466,7 @@ that meant two things at once while there was only one group:
 
 **The level is the same trap, not yet sprung.** `pre-A1` is written by hand in
 the 33 filenames, the MediaSession album in `AudioStats.tsx`, the title prefix
-in `PaginaAudios.tsx`, the whole "El nivel" section of `PaginaFamilias.tsx`,
+in `PaginaAudios.tsx`, the whole level fold in `PaginaAudios.tsx`,
 the ID3 tags in `publicar-clase.mjs`, and `NOMBRE_VALIDO`. Right now `clases`
 is both "the audio library" and "the pre-A1 audio library".
 
@@ -640,15 +649,15 @@ no slashes):
 
 ```
 ayd_pre_a1_cNN.mp3     the audio for class NN of pre-A1, two digits
-ayd_frase_prueba.mp3   the phrase on the familias page
+ayd_frase_prueba.mp3   the test phrase, in «Una cosa para probar»
 ```
 
 **The level is in the name on purpose.** A1.1 will have its own class 1, and it
 could run at the same time as pre-A1 rather than after it, so separating by
 level is what keeps two different recordings from fighting over one key. A new
 level means a new segment (`ayd_a1_1_cNN.mp3`) and one more branch in
-`NOMBRE_VALIDO`. The phrase file has no level: it lives on the familias page,
-which is deliberately general across years and groups.
+`NOMBRE_VALIDO`. The phrase file has no level: it belongs to the families
+section, which is deliberately general across years and groups.
 
 The level also goes in the ID3 title (`pre-A1 · Clase 3`) and album
 (`Alemán y Du · pre-A1`), because a downloaded file shows up in a flat list
@@ -659,10 +668,15 @@ sort into a course, and the page's own MediaSession would still say
 `pre-A1 · Clase 9`, naming one track two ways depending on how it is played. A
 suelto is the opposite case: with no number and no position, the descriptive
 title is the only thing identifying it. It stays **out** of the card titles on the
-page: the whole page is one course, and the familias page already explains what
+page: the whole page is one course, and the level fold already explains what
 pre-A1 means.
 
-### Copy rules for these two pages
+### Copy rules for these pages
+
+- **No German written anywhere on the page**, families section included. The
+  phases have no German names here (the old familias page had «Ohren auf» and
+  the like). The one exception is **Sankt Martin**, kept in German on Tash's
+  call (18 November 2026): the festival has that name, as its file does.
 
 - Register is **tú** for the singular, throughout. No vos, no vosotros, no
   ustedes. Every reader is one parent on a phone, and `tu hijo o hija` is the
@@ -670,7 +684,7 @@ pre-A1 means.
 - **No hyphens, en dashes or em dashes** anywhere in copy. The single exception
   is the level name `pre-A1`. Ranges use "a" or "hasta".
 - **No emoji** in body text.
-- The familias page never asks a parent to say German aloud. The phrase box
+- The page never asks a parent to say German aloud. The phrase box
   plays the recording instead, so the child hears it in Tash's voice rather
   than read with Spanish vowels.
 
@@ -861,15 +875,15 @@ So **always send a broadcast to a tag, never to "subscribers of a form"**: the
 LinguaTash form holds people who only chose, say, Nordkreis and Resuena. The
 Salten checkout's "novedades de LinguaTash" box tags `linguatash` only.
 
-| Lista        | Kit form | Kit tag  | Signup                                                  | Kit redirects to                   | Register                               |
-| ------------ | -------- | -------- | ------------------------------------------------------- | ---------------------------------- | -------------------------------------- |
-| `nordkreis`  | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                   | `/nordkreis/newsletter/bestaetigt` | German, Du                             |
-| `lajuntada`  | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe              | `/lajuntada/boletin/confirmado`    | Spanish, **vos**                       |
-| `alemanydu`  | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every familias page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German                 |
-| `fonetikas`  | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                      | `/fonetikas/boletin/confirmado`    | Spanish, tú                            |
-| `resuena`    | 10210245 | 26136454 | `/resuena/boletin`, `/resuena`                          | `/resuena/boletin/confirmado`      | Spanish, tú                            |
-| `1p2l`       | 10210291 | 26136479 | `/1p2l/newsletter`, `/1p2l`                             | `/1p2l/newsletter/confirmed`       | English emails, page English · Spanish |
-| `linguatash` | 9385501  | 26136488 | `/`, `/boletin` (with several chips), Salten checkout   | `/boletin/confirmado`              | Spanish, tú                            |
+| Lista        | Kit form | Kit tag  | Signup                                                | Kit redirects to                   | Register                               |
+| ------------ | -------- | -------- | ----------------------------------------------------- | ---------------------------------- | -------------------------------------- |
+| `nordkreis`  | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`                 | `/nordkreis/newsletter/bestaetigt` | German, Du                             |
+| `lajuntada`  | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe            | `/lajuntada/boletin/confirmado`    | Spanish, **vos**                       |
+| `alemanydu`  | 10209941 | 26135363 | `/alemanydu/boletin`, `/alemanydu`, every audios page | `/alemanydu/boletin/confirmado`    | Spanish, tú, no German                 |
+| `fonetikas`  | 10210126 | 26136360 | `/fonetikas/boletin`, `/fonetikas`                    | `/fonetikas/boletin/confirmado`    | Spanish, tú                            |
+| `resuena`    | 10210245 | 26136454 | `/resuena/boletin`, `/resuena`                        | `/resuena/boletin/confirmado`      | Spanish, tú                            |
+| `1p2l`       | 10210291 | 26136479 | `/1p2l/newsletter`, `/1p2l`                           | `/1p2l/newsletter/confirmed`       | English emails, page English · Spanish |
+| `linguatash` | 9385501  | 26136488 | `/`, `/boletin` (with several chips), Salten checkout | `/boletin/confirmado`              | Spanish, tú                            |
 
 La Juntada also asks while booking: the payment link's `boletin` dropdown,
 and a "Sí" makes the webhook subscribe the family (Kit still sends the

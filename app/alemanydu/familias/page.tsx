@@ -1,12 +1,13 @@
-import { Metadata } from 'next'
-import PaginaFamilias from '@/components/alemanydu/PaginaFamilias'
-import { grupoLunes } from '@/data/alemanydu-grupos'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: 'Para las familias · Alemán·y·Du',
-  robots: { index: false, follow: false, nocache: true },
-}
-
+/**
+ * La página de familias ahora vive dentro de la de audios, plegada debajo de
+ * las clases. Esta ruta queda para los QR y los mensajes de WhatsApp que ya
+ * apuntan aquí.
+ *
+ * `redirect` (307) y no `permanentRedirect`: un 308 se queda guardado en el
+ * navegador del padre y no se puede deshacer si algún día vuelve esta página.
+ */
 export default function Pagina() {
-  return <PaginaFamilias grupo={grupoLunes} />
+  redirect('/alemanydu/audios')
 }
