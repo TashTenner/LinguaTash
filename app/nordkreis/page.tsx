@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from '../../components/Link'
 import EnrollButton from '@/components/nordkreis/EnrollButton'
+import NewsletterForm from '@/components/nordkreis/NewsletterForm'
+import NewsletterTexto from '@/components/nordkreis/NewsletterTexto'
 
 export default function NordkreisPage() {
   return (
@@ -712,6 +714,17 @@ export default function NordkreisPage() {
               </li>
             </ol>
           </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section
+        id="newsletter"
+        className="scroll-mt-24 rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-6 py-16 dark:bg-[#081C3C]"
+      >
+        <NewsletterTexto />
+        <div className="mt-10">
+          <NewsletterForm />
         </div>
       </section>
 

@@ -829,6 +829,35 @@ works.
 
 ---
 
+## Newsletters: one Kit account, one form and one tag per project
+
+**Status as of 2026-11-18: the Nordkreis Newsletter is live.** Signup at
+`/nordkreis/newsletter` (the QR code target) and in the `#newsletter` section of
+`/nordkreis`. After confirming, Kit redirects to `/nordkreis/newsletter/bestaetigt`.
+
+Each project newsletter is its own Kit **form** (own double opt-in email, own
+language) plus a **tag** to send broadcasts to. One subscriber list underneath,
+so a family interested in two projects is one contact with two tags. Kit's
+unsubscribe link removes someone from everything, not just one project.
+
+`app/api/newsletter/route.ts` takes `lista: 'nordkreis'` and maps it to
+`CONVERTKIT_NORDKREIS_FORM_ID` (10207429) and `CONVERTKIT_NORDKREIS_TAG_ID`
+(26104535). Without `lista` it is the homepage waitlist, unchanged. A new
+project newsletter is one more entry in `LISTAS`, two env vars, and a form.
+
+In Kit: sender `Nordkreis <nordkreis@linguatash.com>`, double opt-in on, and
+**Auto-confirm must stay off**: the confirmation is the proof of consent. The
+sending domain linguatash.com is verified in Kit (records `ckespa`,
+`cka._domainkey`, `cka2._domainkey` and `_dmarc` with `p=none` in Vercel DNS).
+Keep DMARC at `p=none`: Gmail "Send mail as" aliases do not align and would be
+rejected under a stricter policy. The English "confirm your subscription" page
+between the email and the redirect is Kit's own and cannot be translated.
+
+Never import families from WhatsApp, Stripe or class lists. Only people who
+signed up through a form.
+
+---
+
 ## Invoices: recorded in Declarando, not issued by the website
 
 **Decided 2026-09-27.** Tash is autónoma since 09/09/2026 and uses

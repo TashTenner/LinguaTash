@@ -94,8 +94,9 @@ export default function PoliticaPrivacidadPage() {
             6. Boletín y lista de espera — Kit (ConvertKit)
           </h2>
           <p>
-            Si se suscribe a nuestra lista de espera o boletín, su dirección de correo electrónico y
-            los proyectos de interés seleccionados se transmiten a Kit (ConvertKit, Inc.), proveedor
+            Si se suscribe a nuestra lista de espera o a uno de nuestros boletines (por ejemplo, el
+            boletín de Nordkreis), su dirección de correo electrónico, su nombre si lo indica y los
+            proyectos de interés seleccionados se transmiten a Kit (ConvertKit, Inc.), proveedor
             externo de servicios de email marketing con sede en Estados Unidos.
           </p>
           <p>
