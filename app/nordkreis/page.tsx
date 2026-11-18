@@ -255,6 +255,42 @@ export default function NordkreisPage() {
           </div>
         </div>
       </section>
+
+      {/* PIEP UND BRUMM: a public sample of the audio work. Permanent. */}
+      <section className="rounded-2xl border border-l-4 border-[#9A8F85]/40 border-l-[#B3475A] bg-[#F4EFE8] px-6 py-8 dark:bg-[#081C3C]">
+        <div className="grid gap-8 md:grid-cols-2">
+          <div lang="de">
+            <h2 className="text-lg font-semibold">
+              Zum Ausprobieren: Piep und Brumm zum Nachhören
+            </h2>
+            <p className="mt-3 leading-relaxed opacity-90">
+              So klingt meine Arbeit mit Audios: Vier kurze Hörspiele für Kinder von 3 bis 6 Jahren,
+              entstanden zum Vorlesefest am Goethe-Institut Barcelona.
+            </p>
+            <Link
+              href="/piepundbrumm"
+              className="mt-4 inline-flex min-h-11 items-center font-semibold text-[#B3475A] underline-offset-4 hover:underline"
+            >
+              Jetzt anhören
+            </Link>
+          </div>
+          <div lang="es">
+            <h2 className="text-lg font-semibold">Para probar: Piep und Brumm para escuchar</h2>
+            <p className="mt-3 leading-relaxed opacity-90">
+              Así suena mi trabajo con audios: cuatro audios cortos en alemán para niñas y niños de
+              3 a 6 años, creados para la fiesta de lectura en voz alta del Goethe-Institut
+              Barcelona.
+            </p>
+            <Link
+              href="/piepundbrumm"
+              className="mt-4 inline-flex min-h-11 items-center font-semibold text-[#B3475A] underline-offset-4 hover:underline"
+            >
+              Escuchar ahora
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section>
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-[Caveat] text-3xl leading-relaxed">
