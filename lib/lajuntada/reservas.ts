@@ -28,6 +28,8 @@ export interface ReservaLaJuntada {
   chicos: string | null
   edades: string | null
   origen: string | null
+  /** La respuesta a «¿Querés recibir el boletín?»: 'si', 'no', o null si el link no lo preguntaba. */
+  boletin: string | null
   /** En euros, lo que pagó de verdad. */
   importe: number
   /** Una devuelta ya no ocupa lugar, pero sigue siendo parte del historial. */
@@ -132,6 +134,32 @@ function campo(session: Stripe.Checkout.Session, palabra: string): string | null
 }
 
 /**
+ * Cuántos chicos vienen.
+ *
+ * Hasta el 13 de diciembre de 2026 el formulario lo preguntaba aparte, en el
+ * único campo numérico: esas reservas lo siguen leyendo de ahí. Desde que ese
+ * lugar pasó al boletín (Stripe admite tres campos y no más), la pregunta de
+ * las edades pide una por chico, «4, 7, 10», y la cantidad es cuántos números
+ * hay. Por tipo y no por etiqueta, porque la etiqueta de las edades también
+ * nombra a los chicos.
+ */
+function cuantosChicos(s: Stripe.Checkout.Session): string | null {
+  const numerico = s.custom_fields?.find((f) => f.type === 'numeric')?.numeric?.value
+  if (numerico) return numerico
+  const edades = campo(s, 'edades')
+  const cuantos = edades?.match(/\d+/g)?.length ?? 0
+  return cuantos > 0 ? String(cuantos) : null
+}
+
+/**
+ * La respuesta a la pregunta del boletín, el único desplegable del formulario.
+ * Exportada porque el webhook decide con ella si suscribe a la familia en Kit.
+ */
+export function respuestaBoletin(s: Stripe.Checkout.Session): string | null {
+  return s.custom_fields?.find((f) => f.type === 'dropdown')?.dropdown?.value ?? null
+}
+
+/**
  * Cuántas familias reservaron una fecha, contando las traspasadas. Devuelve
  * null si la fecha no tiene link todavía, o si Stripe no contesta: la página
  * distingue "ninguna reserva" de "no lo pudimos averiguar", y no debe inventar
@@ -165,9 +193,10 @@ function aReserva(s: Stripe.Checkout.Session, traspasadaDe: string | null): Rese
     nombre: s.customer_details?.name ?? null,
     email: s.customer_details?.email ?? null,
     telefono: s.customer_details?.phone ?? null,
-    chicos: campo(s, 'chicos'),
+    chicos: cuantosChicos(s),
     edades: campo(s, 'edades'),
     origen: campo(s, 'parte'),
+    boletin: respuestaBoletin(s),
     importe: (s.amount_total ?? 0) / 100,
     estado: estaDevuelta(s) ? ('devuelta' as const) : ('pagada' as const),
     traspasadaDe,

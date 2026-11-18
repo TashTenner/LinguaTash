@@ -4,6 +4,8 @@ import { diaDe, fechasLaJuntada } from '@/content/lajuntada/fechas'
 import { contarFamilias } from '@/lib/lajuntada/reservas'
 import FaqAccordion from '@/components/lajuntada/FaqAccordion'
 import FlyerAmpliable from '@/components/lajuntada/FlyerAmpliable'
+import BoletinForm from '@/components/BoletinForm'
+import BoletinTexto from '@/components/lajuntada/BoletinTexto'
 
 export const metadata = genPageMetadata({
   title: 'La Juntada',
@@ -517,6 +519,17 @@ export default async function LaJuntadaPage() {
           </a>
           .
         </p>
+      </section>
+
+      {/* BOLETÍN */}
+      <section
+        id="boletin"
+        className="scroll-mt-20 rounded-2xl border border-[#9A8F85]/40 bg-[#E3DED7] px-6 py-12 dark:bg-[#081C3C]"
+      >
+        <BoletinTexto />
+        <div className="mt-8">
+          <BoletinForm lista="lajuntada" />
+        </div>
       </section>
 
       {/* PREGUNTAS FRECUENTES */}

@@ -193,6 +193,7 @@ function Detalle({
                 <th className="px-3 py-3 font-medium">Chicos</th>
                 <th className="px-3 py-3 font-medium">Edades</th>
                 <th className="px-3 py-3 font-medium">De dónde</th>
+                <th className="px-3 py-3 font-medium">Boletín</th>
                 <th className="px-3 py-3 font-medium">Pagó</th>
               </tr>
             </thead>
@@ -248,6 +249,9 @@ function Detalle({
                     </td>
                     <td className={`px-3 py-3 ${devuelta ? 'opacity-60' : ''}`}>
                       {r.origen ?? '—'}
+                    </td>
+                    <td className={`px-3 py-3 ${devuelta ? 'opacity-60' : ''}`}>
+                      {r.boletin === 'si' ? 'Sí' : r.boletin === 'no' ? 'No' : '—'}
                     </td>
                     <td
                       className={`px-3 py-3 whitespace-nowrap ${devuelta ? 'line-through opacity-60' : ''}`}

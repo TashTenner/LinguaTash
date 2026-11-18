@@ -4,6 +4,8 @@ import { registerVerifactuInvoice } from '../../../../lib/verifactu'
 import Stripe from 'stripe'
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { suscribirAKit } from '@/lib/newsletter/kit'
+import { respuestaBoletin } from '@/lib/lajuntada/reservas'
 
 // ── Stripe ───────────────────────────────────────────────────────────────────
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -560,7 +562,8 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
   const campos = (session.custom_fields ?? [])
     .map((f) => {
       const etiqueta = f.label?.custom ?? f.key
-      const valor = f.text?.value ?? f.numeric?.value ?? '—'
+      const elegida = f.dropdown?.options.find((o) => o.value === f.dropdown?.value)?.label
+      const valor = f.text?.value ?? f.numeric?.value ?? elegida ?? '—'
       return `*${etiqueta}* ${valor}`
     })
     .join('\n')
@@ -610,6 +613,32 @@ function slackJuntadaBlocks(session: Stripe.Checkout.Session): object[] {
       ],
     },
   ]
+}
+
+/**
+ * Si la familia contestó «Sí» a la pregunta del boletín al reservar, la
+ * suscribe en Kit. Kit le manda entonces el mail de confirmación: sin ese
+ * clic no recibe nada, igual que quien se apunta desde la web.
+ *
+ * Nunca falla hacia afuera. La reserva ya está avisada en Slack, y un error
+ * aquí haría que Stripe reintentara el evento y repitiera ese aviso.
+ */
+async function suscribirAlBoletinDeLaJuntada(session: Stripe.Checkout.Session): Promise<void> {
+  const email = session.customer_details?.email
+  if (respuestaBoletin(session) !== 'si' || !email) return
+  try {
+    const nombre = session.customer_details?.name?.trim().split(/\s+/)[0]
+    const fecha = fechaJuntada(session)
+    const { ok } = await suscribirAKit({
+      lista: 'lajuntada',
+      email,
+      nombre,
+      origen: `al reservar${fecha ? ` para el ${fecha}` : ''}`,
+    })
+    console.log(`[Webhook] La Juntada boletín: ${ok ? 'suscripta' : 'falló'}`, session.id)
+  } catch (err) {
+    console.warn('[Webhook] La Juntada boletín error (non-fatal):', err)
+  }
 }
 
 function slackOrderBlocks({
@@ -757,6 +786,7 @@ export async function POST(req: NextRequest) {
     if (esReservaJuntada(fresca)) {
       console.log('[Webhook] La Juntada booking:', fresca.id)
       await sendSlackNotification(slackJuntadaBlocks(fresca), SLACK_LAJUNTADA)
+      await suscribirAlBoletinDeLaJuntada(fresca)
     } else if (fresca.payment_link) {
       console.log('[Webhook] Payment link sale without a known project:', fresca.id)
       await sendSlackNotification(

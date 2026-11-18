@@ -138,8 +138,12 @@ if (limite < 1) cortar(`las ${venidas.length} reservas venidas de otras fechas y
 const modelo = links.sort((a, b) => (a.metadata.evento < b.metadata.evento ? 1 : -1))[0]
 if (!modelo) cortar('no hay ningún link anterior de La Juntada del que copiar el formulario.')
 const camposModelo = modelo.custom_fields ?? []
-for (const clave of ['chicos', 'edades', 'origen']) {
-  // El panel busca los campos por estas palabras (ver `campo` en reservas.ts).
+// Desde el 13 de diciembre de 2026: edades (una por chico, de ahí sale cuántos
+// son), origen y la pregunta del boletín. «chicos» se fue para dejarle lugar,
+// porque Stripe no admite más de tres campos.
+for (const clave of ['edades', 'origen', 'boletin']) {
+  // El panel busca los campos por estas palabras (ver `campo` en reservas.ts),
+  // y el webhook suscribe a Kit a quien conteste «si» en `boletin`.
   if (!camposModelo.some((c) => c.key === clave)) {
     cortar(`el link modelo (${modelo.metadata.evento}) no tiene el campo "${clave}".`)
   }
@@ -149,6 +153,9 @@ const camposNuevos = camposModelo.map((c) => ({
   label: { type: 'custom', custom: c.label.custom },
   type: c.type,
   optional: c.optional,
+  ...(c.type === 'dropdown' && {
+    dropdown: { options: c.dropdown.options.map(({ label, value }) => ({ label, value })) },
+  }),
 }))
 
 // ── 4. textos ────────────────────────────────────────────────────────────────

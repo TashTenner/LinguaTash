@@ -1,23 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { esLista, suscribirAKit } from '@/lib/newsletter/kit'
 
 export const dynamic = 'force-dynamic'
 
-// Each project newsletter is its own Kit form (own double opt-in email, own
-// language) plus a tag, so that one subscriber list can be sent to by project.
-// No `lista` in the request keeps the original behaviour: the homepage form.
-const LISTAS: Record<string, { formEnv: string; tagEnv: string }> = {
-  nordkreis: {
-    formEnv: 'CONVERTKIT_NORDKREIS_FORM_ID',
-    tagEnv: 'CONVERTKIT_NORDKREIS_TAG_ID',
-  },
-}
+// A request with `lista` subscribes to that project's newsletter (see
+// lib/newsletter/kit.ts). No `lista` keeps the original behaviour: the
+// homepage waitlist form.
 
 const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
   let email: string | undefined
   let projects: string[] = []
-  let lista: string | undefined
+  let lista: unknown
   let nombre: string | undefined
   let trampa: string | undefined
 
@@ -25,7 +20,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     email = typeof body?.email === 'string' ? body.email.trim() : undefined
     projects = Array.isArray(body?.projects) ? body.projects : []
-    lista = typeof body?.lista === 'string' ? body.lista : undefined
+    lista = body?.lista
     nombre = typeof body?.nombre === 'string' ? body.nombre.trim().slice(0, 100) : undefined
     trampa = typeof body?.website === 'string' ? body.website : undefined
   } catch {
@@ -42,23 +37,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   }
 
-  if (lista !== undefined && !LISTAS[lista]) {
-    return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
+  if (lista !== undefined) {
+    if (!esLista(lista)) {
+      return NextResponse.json({ error: 'Unknown list' }, { status: 400 })
+    }
+    const { ok, status } = await suscribirAKit({ lista, email, nombre, origen: 'web' })
+    return ok
+      ? NextResponse.json({ message: 'Subscribed' }, { status: 201 })
+      : NextResponse.json({ error: 'Error subscribing' }, { status })
   }
 
-  const config = lista ? LISTAS[lista] : undefined
-  const FORM_ID = config ? process.env[config.formEnv] : process.env.CONVERTKIT_FORM_ID
-  const TAG_ID = config ? process.env[config.tagEnv] : undefined
+  // The homepage waitlist.
+  const FORM_ID = process.env.CONVERTKIT_FORM_ID
   const API_KEY = process.env.CONVERTKIT_API_KEY
 
   if (!FORM_ID || !API_KEY) {
-    console.error(`Missing Kit form ID or CONVERTKIT_API_KEY (lista: ${lista ?? 'general'})`)
+    console.error('Missing CONVERTKIT_FORM_ID or CONVERTKIT_API_KEY')
     return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
   }
 
   const payload: Record<string, unknown> = { email, api_key: API_KEY }
-  if (nombre) payload.first_name = nombre
-  if (TAG_ID) payload.tags = [Number(TAG_ID)]
   if (projects.length > 0) {
     payload.fields = { projects: projects.join(', ') }
   }

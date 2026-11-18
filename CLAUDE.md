@@ -840,10 +840,28 @@ language) plus a **tag** to send broadcasts to. One subscriber list underneath,
 so a family interested in two projects is one contact with two tags. Kit's
 unsubscribe link removes someone from everything, not just one project.
 
-`app/api/newsletter/route.ts` takes `lista: 'nordkreis'` and maps it to
-`CONVERTKIT_NORDKREIS_FORM_ID` (10207429) and `CONVERTKIT_NORDKREIS_TAG_ID`
-(26104535). Without `lista` it is the homepage waitlist, unchanged. A new
-project newsletter is one more entry in `LISTAS`, two env vars, and a form.
+`lib/newsletter/kit.ts` holds `LISTAS` and `suscribirAKit`, used by
+`app/api/newsletter/route.ts` (the site forms, `lista` in the body) and by the
+Stripe webhook. Without `lista` the route is the homepage waitlist, unchanged.
+A new project newsletter is one more entry in `LISTAS`, two env vars, a Kit
+form and tag, and its copy in `components/BoletinForm.tsx` (Spanish) or its
+own form (Nordkreis is bilingual, in `components/nordkreis/`).
+
+| Lista       | Kit form | Kit tag  | Signup                                     | Kit redirects to                   | Register         |
+| ----------- | -------- | -------- | ------------------------------------------ | ---------------------------------- | ---------------- |
+| `nordkreis` | 10207429 | 26104535 | `/nordkreis/newsletter`, `/nordkreis`      | `/nordkreis/newsletter/bestaetigt` | German, Du       |
+| `lajuntada` | 10208510 | 26128720 | `/lajuntada/boletin`, `/lajuntada`, Stripe | `/lajuntada/boletin/confirmado`    | Spanish, **vos** |
+
+La Juntada also asks while booking: the payment link's `boletin` dropdown,
+and a "Sí" makes the webhook subscribe the family (Kit still sends the
+confirmation email). The answer shows in Slack and in the admin panel.
+
+Every signup posts one line to Slack ("📬 … Falta que confirme"), La Juntada to
+its own channel, Nordkreis to the general one (`slackEnv` in `LISTAS`). It is
+sent at signup, not at confirmation. A family that says "Sí" again on a later
+booking produces another line and nothing changes in Kit. A "No" on a later
+booking does **not** unsubscribe: leaving is only through the link in each
+email, so a habitual "No" never silently drops someone who wanted it.
 
 In Kit: sender `Nordkreis <nordkreis@linguatash.com>`, double opt-in on, and
 **Auto-confirm must stay off**: the confirmation is the proof of consent. The
@@ -971,7 +989,12 @@ the Dashboard instead:
    Stripe's count: after a cancellation, raise the limit by one and reactivate.
 4. **Confirmation page message** with date, time, place and the cancellation
    rule. Stripe's receipt and this page are the family's only confirmation.
-5. Put the link's URL in `content/lajuntada/fechas.ts`. The counter, the
+5. **Three custom fields, Stripe's maximum:** `edades` (text, one age per
+   child, "4, 7, 10": the admin counts children from it), `origen` (text,
+   optional) and `boletin` (dropdown, `si` / `no`). A "Sí" subscribes the
+   family to the boletín in Kit from the webhook. Links up to 13 December
+   2026 asked `chicos` as a number instead; the admin still reads it there.
+6. Put the link's URL in `content/lajuntada/fechas.ts`. The counter, the
    "Completo" state and the admin panel find the link by that URL, so **never
    replace a link that already has bookings**: edit it instead.
 
