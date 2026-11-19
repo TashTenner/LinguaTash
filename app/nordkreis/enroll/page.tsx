@@ -94,6 +94,8 @@ interface FormState {
   enrollmentFeeConsent: boolean
   sepaConsent: boolean
   legalConsent: boolean
+  /** Optional, never preselected: the Nordkreis Newsletter, confirmed by Kit's own email. */
+  newsletterConsent: boolean
   signatureDataUrl: string
   // Honeypot — must stay empty
   _trap: string
@@ -274,6 +276,7 @@ function EnrollForm() {
     enrollmentFeeConsent: false,
     sepaConsent: false,
     legalConsent: false,
+    newsletterConsent: false,
     signatureDataUrl: '',
     _trap: '',
   })
@@ -898,6 +901,25 @@ function EnrollForm() {
                 . Consiento el tratamiento de mis datos personales conforme al RGPD. Las
                 cancelaciones deben notificarse con al menos 7 días de antelación a
                 nordkreis@linguatash.com.
+              </span>
+            </ConsentBox>
+
+            {/* Newsletter: optional, its own consent */}
+            <ConsentBox
+              checked={form.newsletterConsent}
+              onChange={(v) => setForm((f) => ({ ...f, newsletterConsent: v }))}
+            >
+              <span className="font-semibold text-[#081C3C] dark:text-[#F4EFE8]">
+                Nordkreis Newsletter / Boletín de Nordkreis (optional)
+              </span>
+              <br />
+              Ich möchte den Nordkreis Newsletter erhalten: Termine, Feste und Neuigkeiten, etwa
+              einmal im Monat. Dafür kommt eine Mail zur Bestätigung, und ich kann mich jederzeit
+              mit einem Klick abmelden.
+              <br />
+              <span className="mt-1 block text-[#9A8F85]">
+                Quiero recibir el boletín de Nordkreis, en alemán, más o menos una vez al mes.
+                Llegará un correo para confirmarlo y puedo darme de baja cuando quiera.
               </span>
             </ConsentBox>
 

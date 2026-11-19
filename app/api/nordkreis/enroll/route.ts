@@ -45,6 +45,7 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { generateContractPdf } from '@/lib/nordkreis/generatePdf'
 import { getSheetsToken, SHEET_NAME, SHEET_ID } from '@/lib/nordkreis/googleAuth'
 import { buildEnrollmentEmailHtml, buildEnrollmentEmailText } from '@/lib/nordkreis/enrollmentEmail'
+import { suscribirAKit } from '@/lib/newsletter/kit'
 
 const r2 = new S3Client({
   region: 'auto',
@@ -234,9 +235,21 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: `📋 *Neue Nordkreis Anmeldung*\nKind: ${form.childFirstName} ${form.childSurname1 ?? ''} · ${form.childGroup}\nElternteil: ${parentName} · ${form.parent1Email}\nRef: \`${contractNo}\``,
+          text: `📋 *Neue Nordkreis Anmeldung*\nKind: ${form.childFirstName} ${form.childSurname1 ?? ''} · ${form.childGroup}\nElternteil: ${parentName} · ${form.parent1Email}\nNewsletter: ${form.newsletterConsent === true ? 'ja' : 'nein'}\nRef: \`${contractNo}\``,
         }),
       }).catch(console.error)
+    }
+
+    // Its own optional box on the form: the data consent above covers course
+    // administration only. Kit sends the German confirmation email; until it
+    // is clicked the family gets nothing. Never fails the enrollment.
+    if (form.newsletterConsent === true) {
+      await suscribirAKit({
+        lista: 'nordkreis',
+        email: String(form.parent1Email).trim(),
+        nombre: String(form.parent1FirstName ?? '').trim() || undefined,
+        origen: `Anmeldung ${contractNo}`,
+      }).catch((err) => console.warn('Newsletter (non-fatal):', err))
     }
 
     return NextResponse.json({ success: true, contractNo })
