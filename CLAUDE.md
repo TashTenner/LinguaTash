@@ -852,6 +852,22 @@ works.
 general LinguaTash boletín. The Nordkreis signup at `/nordkreis/newsletter` is
 a printed QR code target.
 
+### Before sending any newsletter in Kit
+
+1. **Recipients: always a tag, never "subscribers of a form".** The
+   LinguaTash form also holds people who ticked only projects on the homepage
+   (say Nordkreis and Resuena), so sending the general boletín to that form
+   reaches people who never asked for it. Tags: `linguatash`, `nordkreis`,
+   `lajuntada`, `alemanydu`, `fonetikas`, `resuena`, `1p2l`.
+2. **Sender: the project's own address**, never `tashfonetikas@gmail.com`.
+   Nordkreis from `nordkreis@`, La Juntada from `lajuntada@`, and so on; the
+   general boletín from `info@`.
+3. **Language and register of that list**: German with Du/Ihr capitalised for
+   Nordkreis, vos for La Juntada, tú and no German for Alemán·y·Du, English
+   for 1P2L, tú for the rest. No hyphens, dashes or emoji, as on the site.
+
+When helping Tash write or send a newsletter, go through these three with her.
+
 Each project newsletter is its own Kit **form** (own double opt-in email, own
 language) plus a **tag** to send broadcasts to. One subscriber list underneath,
 so a family interested in two projects is one contact with two tags. Kit's
