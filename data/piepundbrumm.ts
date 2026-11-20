@@ -28,19 +28,19 @@ export const piepUndBrummAudios: PiepUndBrummAudio[] = [
     nummer: 1,
     titel: 'Wer macht das?',
     beschreibung: 'Tierlaute raten: Spatz, Krähe, Frosch, Katze, Bär und Fisch.',
-    dauer: 0,
+    dauer: 120,
   },
   {
     nummer: 2,
     titel: 'Wo ist der Spatz?',
     beschreibung: 'Auf dem Dach, im Baum, unter dem Tisch: Euer Kind sagt, wo er sitzt.',
-    dauer: 0,
+    dauer: 112,
   },
   {
     nummer: 3,
     titel: 'Ab ins Wasser!',
     beschreibung: 'Schwimmflügel aufpusten, springen, tauchen und Blasen zählen.',
-    dauer: 0,
+    dauer: 118,
   },
 ]
 
