@@ -332,7 +332,8 @@ if (trocken) {
   console.log(grau(`     zum Anhören: ${vorschau}`))
 } else {
   fs.copyFileSync(fertig, zielKopie)
-  const wavKopie = path.join(kopie, path.basename(wav))
+  // Named after the MP3, like the nk_*.wav masters beside it, not "Recording (59).wav".
+  const wavKopie = path.join(kopie, `${path.parse(name).name}.wav`)
   if (!fs.existsSync(wavKopie)) fs.copyFileSync(wav, wavKopie)
   console.log(grau(`     ${zielKopie}`))
   console.log(grau(`     ${wavKopie}`))

@@ -13,7 +13,7 @@
  * The one switch. While false, the page shows titles and descriptions with a
  * single note instead of the players.
  */
-export const AUDIOS_READY = false
+export const AUDIOS_READY = true
 
 export type PiepUndBrummAudio = {
   nummer: number
