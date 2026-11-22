@@ -145,12 +145,23 @@ export default function PiepUndBrummSeite() {
           Familien. Auch dort arbeite ich mit Audios: So können die Kinder zu Hause wiederholen, was
           wir am Samstag gemacht haben, und die Zeit bis zum nächsten Mal wird nicht zu lang.
         </p>
-        <Link
-          href="/nordkreis"
-          className="mt-6 inline-flex min-h-12 items-center rounded-xl bg-[#B3475A] px-6 py-3 font-semibold text-[#F4EFE8] transition-opacity hover:opacity-90"
-        >
-          Mehr über Nordkreis
-        </Link>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link
+            href="/nordkreis"
+            data-umami-event="pub-link-nordkreis"
+            className="inline-flex min-h-12 items-center rounded-xl bg-[#B3475A] px-6 py-3 font-semibold text-[#F4EFE8] transition-opacity hover:opacity-90"
+          >
+            Mehr über Nordkreis
+          </Link>
+          {/* A link, not a form: the signup lives on its own page. */}
+          <Link
+            href="/nordkreis/newsletter"
+            data-umami-event="pub-link-newsletter"
+            className="inline-flex min-h-12 items-center rounded-xl border border-[#B3475A] px-6 py-3 font-semibold text-[#B3475A] transition-colors hover:bg-[#B3475A] hover:text-[#F4EFE8]"
+          >
+            Newsletter abonnieren
+          </Link>
+        </div>
       </section>
 
       <p className="px-1 text-sm leading-relaxed text-[#9A8F85] dark:text-[#F4EFE8]/60">

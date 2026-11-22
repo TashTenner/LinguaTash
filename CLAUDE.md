@@ -846,6 +846,43 @@ works.
 
 ---
 
+## Piep und Brumm — public audio page
+
+**Status as of 2026-11-22: live, three audios.** Made for the Vorlesefest at
+the Goethe-Institut Barcelona on 21 November 2026. `/piepundbrumm` is
+**printed as a QR code** on the cards handed out there, so the address never
+changes. Linked from `/nordkreis` (a permanent block after the pedagogical
+section), and it links back to `/nordkreis` and `/nordkreis/newsletter`.
+
+Unlike every other audio page here it is **public and indexable**: no
+password, no `noindex`, listed in `sitemap.ts`. That is deliberate.
+
+- The MP3s live in the **Nordkreis bucket**, folder `piepundbrumm/`, and are
+  served by `app/api/piepundbrumm/audio/[datei]/route.ts`. That route is
+  **public on purpose and must stay out of the middleware matcher**. Its
+  allowlist, `^piepundbrumm-0[1-3]\.mp3$`, is the only thing keeping it from
+  being a public door into the password protected Nordkreis recordings in
+  the same bucket. Do not widen it. Node runtime and Range forwarding, as on
+  the other audio routes.
+- Cache is `public, max-age=31536000, immutable`, so a published file is
+  never replaced under the same name. A re-recording needs a new name.
+- Content and durations live in `data/piepundbrumm.ts`. `AUDIOS_READY` was
+  the placeholder switch before the audios existed; it stays `true`.
+- Published with `scripts/publicar-piepundbrumm.mjs` (`--audio 1` to `3`):
+  trims only edge silence, leaving 0.5 s, because the pauses inside are where
+  the children answer; then the Nordkreis loudness system at **128 kbps**, as
+  the brief asked. Masters and MP3s are on Drive in
+  `G:\My Drive\LinguaTash\Nordkreis\Audios` as `piepundbrumm-0N.wav/.mp3`,
+  the only copy of the WAVs.
+- There were four planned; «Laut und leise» was dropped before recording, so
+  «Ab ins Wasser!» is number 3.
+- Umami events: `pub-audio-play`, `pub-audio-ende` (property `datei`),
+  `pub-link-nordkreis`, `pub-link-newsletter`.
+
+Copy: German, Ihr/Euch/Euer/Du capitalised, no dashes, no emoji, as Nordkreis.
+
+---
+
 ## Newsletters: one Kit account, one form and one tag per project
 
 **Status as of 2026-11-18: seven newsletters live**, one per project plus the
