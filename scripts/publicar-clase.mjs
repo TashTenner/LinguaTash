@@ -1,8 +1,8 @@
 /**
  * Publica el audio de una clase de Alemán·y·Du.
  *
- *   node scripts/publicar-clase.mjs --clase 3 --wav "D:/grabaciones/clase03.wav" \
- *        --copia "D:/Mi unidad/AlemanYDu"
+ *   node scripts/publicar-clase.mjs --clase 10 --wav "C:/.../Recording (63).wav" \
+ *        --copia "G:/My Drive/LinguaTash/Aleman y Du/Audios pre-A1"
  *
  * Qué hace, en orden:
  *

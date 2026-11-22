@@ -539,8 +539,12 @@ its scope, otherwise every request returns `AccessDenied`.
 own work:
 
 ```bash
-node scripts/publicar-clase.mjs --clase 3   --wav "D:/grabaciones/clase03.wav"   --copia "D:/Mi unidad/AlemanYDu"
+node scripts/publicar-clase.mjs --clase 10 --wav "C:/Users/34665/Documents/Sound Recordings/Recording (63).wav" --copia "G:/My Drive/LinguaTash/Aleman y Du/Audios pre-A1"
 ```
+
+`--copia` is the Google Drive folder, directly. There is no local archive
+folder any more: the old `Sound Recordings\Aleman y Du pre-A1` was emptied on
+22 November 2026 after its 26 files were checked byte for byte against Drive.
 
 Add `--dry-run` to do everything except the upload.
 
@@ -697,6 +701,13 @@ versioning enabled here, so an overwrite or a delete has no undo.
 Keep the WAV masters somewhere independent of Cloudflare, and take a copy of
 the bucket from time to time. Everything else in this repo can be rebuilt from
 git. These cannot.
+
+**The WAV masters exist in one place only:**
+`G:\My Drive\LinguaTash\Aleman y Du\Audios pre-A1` (WAV and MP3 of every class,
+Sankt Martin and the test phrase). The bucket holds only the MP3s, and the
+laptop no longer holds anything. Never clear that Drive folder to free space.
+The raw class recordings in `Sound Recordings` are a different thing: they only
+exist to be transcribed and can be deleted once they are.
 
 ### R2 buckets, and a preview trap
 
