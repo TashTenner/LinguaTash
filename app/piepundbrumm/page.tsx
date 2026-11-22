@@ -2,7 +2,13 @@ import Image from 'next/image'
 import Link from '@/components/Link'
 import { genPageMetadata } from 'app/seo'
 import { formatDuracion } from '@/components/alemanydu/format'
-import { AUDIOS_READY, piepUndBrummAudios, piepUndBrummUrl } from '@/data/piepundbrumm'
+import AudioStatistik from '@/components/piepundbrumm/AudioStatistik'
+import {
+  AUDIOS_READY,
+  piepUndBrummAudios,
+  piepUndBrummDatei,
+  piepUndBrummUrl,
+} from '@/data/piepundbrumm'
 
 /**
  * /piepundbrumm is printed as a QR code on the Vorlesefest cards
@@ -33,11 +39,18 @@ const tipps = [
 ]
 
 export default function PiepUndBrummSeite() {
+  // Narrowed to plain strings: this goes to a client component.
+  const sperrbildschirm = Object.fromEntries(
+    piepUndBrummAudios.map((a) => [piepUndBrummDatei(a.nummer), a.titel])
+  )
+
   return (
     <main
       lang="de"
       className="mx-auto max-w-3xl space-y-10 px-0 pb-10 font-['Noto_Sans'] text-[#081C3C] sm:px-4 dark:text-[#F4EFE8]"
     >
+      {AUDIOS_READY ? <AudioStatistik titel={sperrbildschirm} /> : null}
+
       <section className="rounded-2xl border border-[#9A8F85]/40 bg-[#F4EFE8] px-5 py-10 sm:px-8 sm:py-14 dark:bg-[#081C3C]">
         <h1 className="text-3xl leading-tight font-semibold sm:text-4xl">
           Piep und Brumm zum Nachhören
