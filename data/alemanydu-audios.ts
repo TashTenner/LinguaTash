@@ -141,10 +141,11 @@ export const clases: AudioTrack[] = [
   {
     clase: 10,
     titulo: 'Clase 10',
-    resumen: '',
+    resumen:
+      'Dónde están las cosas, cerca y lejos, los cuatro vehículos en singular y en plural, y las órdenes de encender la luz y abrir la puerta.',
     archivo: 'ayd_pre_a1_c10.mp3',
-    duracion: 0,
-    disponible: false,
+    duracion: 247,
+    disponible: true,
   },
   {
     clase: 11,
