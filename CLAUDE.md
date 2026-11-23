@@ -55,17 +55,39 @@ Remove-Item -Force tsconfig.tsbuildinfo
 Seen on 2026-10-07, when the code compiled, typechecked, linted and rendered
 correctly in dev, and the build still failed until those three were cleared.
 
-**The same cause wears other masks.** On 2026-11-23 the build died with
+### A next/font build failure is Google Fonts, not stale state
+
+On 2026-11-23 the build died with
 
 ```
 An error occurred in `next/font`.
 TypeError: Cannot read properties of null (reading '1')
 ```
 
-on a commit whose only change was one string in a data file. Nothing was wrong
-with the fonts. Clearing the same three made it build first time. So treat any
-build error that points at a part of the app the change did not touch as stale
-state first, and only read the error literally if clearing does not fix it.
+on a commit whose only change was one string in a data file. Clearing `.next`
+fixed it, and this file briefly said it was stale state. **That was wrong**,
+and the correct reading matters because the two have different cures.
+
+`next/font/google` downloads every font file **at build time**. The throw is
+`loader.js:122` in Next's own compiled code:
+
+```js
+const ext = /\.(woff|woff2|eot|ttf|otf)$/.exec(googleFontFileUrl)[1]
+```
+
+`googleFontFileUrl` is parsed out of the CSS Google returns. When that response
+is not what Next expects, the match is `null` and indexing `[1]` throws. It is
+Google answering oddly, not our state. Clearing `.next` only helped because the
+next attempt downloaded cleanly.
+
+So: **just build again.** It is not deterministic and there is nothing in this
+repo to fix. The guard is in Next's compiled output and is not ours to patch.
+
+This has never failed a Vercel build (checked 2026-11-23: zero deployments in
+`ERROR` state, ever). It is a local annoyance, not a deployment risk. The build
+fetches 36 font files, so a cold build has 36 chances to meet a bad response;
+that number is worth keeping small, which is why the font list should not grow
+without a reason.
 
 ---
 
