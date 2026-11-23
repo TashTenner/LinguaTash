@@ -55,6 +55,18 @@ Remove-Item -Force tsconfig.tsbuildinfo
 Seen on 2026-10-07, when the code compiled, typechecked, linted and rendered
 correctly in dev, and the build still failed until those three were cleared.
 
+**The same cause wears other masks.** On 2026-11-23 the build died with
+
+```
+An error occurred in `next/font`.
+TypeError: Cannot read properties of null (reading '1')
+```
+
+on a commit whose only change was one string in a data file. Nothing was wrong
+with the fonts. Clearing the same three made it build first time. So treat any
+build error that points at a part of the app the change did not touch as stale
+state first, and only read the error literally if clearing does not fix it.
+
 ---
 
 ## Email addresses on linguatash.com
