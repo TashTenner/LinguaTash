@@ -84,10 +84,21 @@ So: **just build again.** It is not deterministic and there is nothing in this
 repo to fix. The guard is in Next's compiled output and is not ours to patch.
 
 This has never failed a Vercel build (checked 2026-11-23: zero deployments in
-`ERROR` state, ever). It is a local annoyance, not a deployment risk. The build
-fetches 36 font files, so a cold build has 36 chances to meet a bad response;
-that number is worth keeping small, which is why the font list should not grow
-without a reason.
+`ERROR` state, ever). It is a local annoyance, not a deployment risk.
+
+A cold build fetches **10 font files** from Google, so it has ten chances to
+meet a bad response. Keep that number small: it was 16 until two dead families
+came out on 2026-11-23. `.next/static/media` holds about thirty woff2 files,
+but twenty of them are KaTeX's, shipped with the package and never fetched, so
+count only the hashed `<hex>-s.woff2` ones when judging this.
+
+**The fonts in use are Noto Sans (`--font-sans`, latin and latin-ext) and
+Caveat (`--font-accent`).** Noto Sans Hebrew and Inter were removed: the Hebrew
+variable was set on `<html>` and no rule ever read it, and Inter was only in
+`components/LayoutWrapper.tsx`, a starter-template file nothing imported. The
+cyrillic subsets went with them; there is not one cyrillic character in the
+content. Adding a family or a subset costs build-time fetches, so it needs a
+reason beyond liking the look of it.
 
 ---
 

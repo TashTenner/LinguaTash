@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Noto_Sans, Noto_Sans_Hebrew, Caveat } from 'next/font/google'
+import { Noto_Sans, Caveat } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import ChatWidget from '@/components/ChatWidget'
@@ -14,17 +14,10 @@ import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 
 const notoSans = Noto_Sans({
-  subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
+  subsets: ['latin', 'latin-ext'],
   weight: ['100', '200', '300', '400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-sans',
-})
-
-const notoSansHebrew = Noto_Sans_Hebrew({
-  subsets: ['hebrew'],
-  weight: ['400', '700'],
-  display: 'swap',
-  variable: '--font-hebrew',
 })
 
 const caveat = Caveat({
@@ -81,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${notoSans.variable} ${notoSansHebrew.variable} ${caveat.variable} scroll-smooth`}
+      className={`${notoSans.variable} ${caveat.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link
